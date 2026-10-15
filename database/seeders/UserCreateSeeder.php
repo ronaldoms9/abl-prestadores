@@ -19,7 +19,6 @@ class UserCreateSeeder extends Seeder
         //
 
         $datas = [[
-            'tenant_id' => null, // time interno
             'name' => 'Administrador',
             'email' => 'ronaldo@rmsti.com.br',
             'email_verified_at' => now(),

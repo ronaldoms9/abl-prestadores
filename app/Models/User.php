@@ -7,7 +7,6 @@ use App\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
@@ -25,7 +24,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'tenant_id',
         'name',
         'email',
         'password',
@@ -106,17 +104,6 @@ class User extends Authenticatable
     public function esquecerPermissoes(): void
     {
         $this->permissionNamesCache = null;
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
-    }
-
-    /** Sem tenant = time interno, que administra a plataforma. */
-    public function ehTimeInterno(): bool
-    {
-        return $this->getAttribute('tenant_id') === null;
     }
 
     public function roles()

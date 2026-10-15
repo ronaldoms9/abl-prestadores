@@ -37,7 +37,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\ResolveTenant::class,
         ],
 
         'api' => [
@@ -66,7 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         'permission' => Middleware\PermissionRouteMiddleware::class,
-        'waha.hmac' => Middleware\VerifyWahaHmac::class,
         // 'role' => \Trebol\Entrust\Middleware\EntrustRole::class,
         // 'permission' => \Trebol\Entrust\Middleware\EntrustPermission::class,
         // 'ability' => \Trebol\Entrust\Middleware\EntrustAbility::class,

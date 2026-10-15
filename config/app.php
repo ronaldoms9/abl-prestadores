@@ -177,8 +177,6 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\PermissionProvider::class,
-        App\WhatsApp\WhatsAppServiceProvider::class,
-        App\Providers\BotServiceProvider::class,
 
 
 

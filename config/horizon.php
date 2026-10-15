@@ -197,22 +197,6 @@ return [
     */
 
     'defaults' => [
-        // Resposta a cliente final não espera atrás de envio de e-mail: a fila
-        // 'whatsapp' vem antes da 'default' na lista, e é isso que dá a prioridade.
-        'supervisor-whatsapp' => [
-            'connection' => 'redis',
-            'queue' => ['whatsapp'],
-            'balance' => 'auto',
-            'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
-            'maxTime' => 0,
-            'maxJobs' => 0,
-            'memory' => 128,
-            'tries' => 1,
-            'timeout' => 120,
-            'nice' => 0,
-        ],
-
         'supervisor-default' => [
             'connection' => 'redis',
             'queue' => ['default'],
@@ -230,12 +214,6 @@ return [
 
     'environments' => [
         'production' => [
-            'supervisor-whatsapp' => [
-                'maxProcesses' => 10,
-                'balanceMaxShift' => 1,
-                'balanceCooldown' => 3,
-            ],
-
             'supervisor-default' => [
                 'maxProcesses' => 3,
                 'balanceMaxShift' => 1,
@@ -244,10 +222,6 @@ return [
         ],
 
         'local' => [
-            'supervisor-whatsapp' => [
-                'maxProcesses' => 3,
-            ],
-
             'supervisor-default' => [
                 'maxProcesses' => 1,
             ],

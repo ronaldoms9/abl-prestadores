@@ -15,8 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Retenção de 90 dias: conversa e mensagem vão embora, métrica fica.
-        $schedule->command('conversas:expurgar')->dailyAt('03:30');
+        //
     }
 
     /**

@@ -79,28 +79,6 @@ services:
         depends_on:
             - redis
             - mysql
-    waha:
-        image: 'devlikeapro/waha:noweb-2026.8.2'
-        # A tag noweb só publica amd64: em Mac Apple Silicon roda emulado.
-        platform: linux/amd64
-        restart: unless-stopped
-        # Sem ports: publicar a porta é entregar a API do WhatsApp de todos os
-        # clientes para a internet. O acesso é só pela rede interna do Docker.
-        environment:
-            WHATSAPP_DEFAULT_ENGINE: NOWEB
-            WAHA_API_KEY: '${WAHA_API_KEY}'
-            WHATSAPP_HOOK_HMAC_KEY: '${WAHA_HMAC_KEY}'
-            WHATSAPP_HOOK_RETRIES_POLICY: linear
-            WHATSAPP_HOOK_RETRIES_ATTEMPTS: 3
-            WHATSAPP_HOOK_RETRIES_DELAY_SECONDS: 5
-            WAHA_EVENTS_DOWNLOAD_MEDIA: 'True'
-        volumes:
-            # Volume crítico: perdê-lo desconecta todos os clientes ao mesmo
-            # tempo e exige QR novo de cada um. Backup diário obrigatório.
-            - 'waha-sessions:/app/.sessions'
-            - 'waha-media:/app/.media'
-        networks:
-            - sail
 networks:
     sail:
         driver: bridge
@@ -108,8 +86,4 @@ volumes:
     sail-mysql:
         driver: local
     sail-redis:
-        driver: local
-    waha-sessions:
-        driver: local
-    waha-media:
         driver: local
