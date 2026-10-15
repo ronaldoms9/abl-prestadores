@@ -44,7 +44,7 @@ Seis relatórios da proposta (seção 2.11), cada um com filtros e tabela:
 
 | Relatório | Filtros | Fonte |
 | --- | --- | --- |
-| Custo por obra / centro de custo | Competência (de–até), empresa, obra | `fechamentos` + `fechamento_itens` (snapshot) |
+| Custo por obra | Competência (de–até), empresa, obra | `fechamentos` + `fechamento_itens` (snapshot) |
 | Benefícios | Competência, benefício, obra | `fechamento_itens` tipo benefício |
 | Férias e saldos | Obra, equipe, saldo mínimo | `ferias_periodos`, `ferias_solicitacoes` |
 | Qualificações vencendo | Janela de dias, cargo, obra | `colaborador_qualificacoes` + matriz |
@@ -69,7 +69,7 @@ Relatórios de custo leem só fechamentos aprovados (snapshot), nunca recalculam
 ### 5. Produção — 14 h
 
 - Provisionar servidor (PHP 8.4, MySQL 8, Redis, Nginx/Apache, Supervisor para o Horizon, cron do scheduler), HTTPS com Let's Encrypt.
-- Deploy de `main` com o mesmo script da homologação; `.env` de produção com as credenciais do UAU de produção.
+- Instalação pelo roteiro `docs/infra/homologacao.md` da E1; deploy manual de `main` com o mesmo `deploy.sh`; `.env` de produção com as credenciais do UAU de produção.
 - Backup diário do banco e de `storage/app` fora do servidor, com teste de restauração documentado.
 - Sentry para erros; alerta de fila parada (Horizon) e de falhas de integração por e-mail.
 - Virada: importação completa do UAU de produção, conferência de amostra com a ABL PRIME, criação dos usuários reais, cadastro de modelos, benefícios e de-para de produção.

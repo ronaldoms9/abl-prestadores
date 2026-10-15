@@ -53,7 +53,7 @@ Tabelas da spec 3.3: `contrato_modelos`, `contratos`, `beneficios`, `beneficio_v
 
 ### 4. Vigência e alertas — 6 h
 
-- Comando diário `alertas:contratos`: vencendo em 30/15/5 dias e vencidos.
+- Comando diário `alertas:contratos` para quem tem `alerta-contratos`: vencendo em 30/15/5 dias e vencidos.
 - Ação "Renovar": gera aditivo de prorrogação com nova `vigencia_fim`.
 
 ### 5. Admissão com checklist — 14 h

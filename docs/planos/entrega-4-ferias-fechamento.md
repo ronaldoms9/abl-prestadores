@@ -36,7 +36,7 @@ reduzem a remuneração, benefício fixo proporcional.
 ### 1. Migrations e models — 6 h
 
 Tabelas da spec 3.4: `ferias_periodos`, `ferias_solicitacoes`, `ferias_aprovacoes`, `feriados`, `ocorrencias`, `competencias`, `fechamentos`, `fechamento_itens`, `ajustes_avulsos`. Acréscimos:
-- `ferias_niveis` (ordem, tipo_aprovador `gestor_equipe` | `perfil`, role_id nullable, ativo). Seed padrão: 1. gestor da equipe → 2. RH.
+- `ferias_niveis` (ordem, tipo_aprovador `gestor_equipe` | `permissao`, permission_id nullable, ativo). Seed padrão: 1. gestor da equipe → 2. `ferias-aprovar-rh`. Permissões novas: `ferias-aprovar-rh`, `ferias-aprovar-qualquer`, `ferias-solicitar`, `ferias-niveis-configurar`.
 - `ferias_solicitacoes.nivel_atual`.
 - `ferias_aprovacoes.escalada` (bool) e `motivo_escalada` — registra quando um nível foi pulado ou subiu por falta de aprovador.
 
@@ -54,14 +54,14 @@ Tabelas da spec 3.4: `ferias_periodos`, `ferias_solicitacoes`, `ferias_aprovacoe
 - Fluxo: cada nível aprova ou recusa com observação; recusa encerra; o último nível aprova a solicitação, baixa o saldo e grava `dias_utilizados`.
 - Serviço `AprovadoresFerias::doNivel($solicitacao, $nivel, $data)` (regras do README, D7):
     - nível `gestor_equipe`: gestores vigentes em `$data` de todas as equipes vigentes em `$data` do colaborador;
-    - nível `perfil`: usuários ativos do perfil;
+    - nível `permissao`: usuários ativos com a permissão;
     - remove o solicitante e o próprio colaborador (se tiver usuário);
-    - lista vazia → o nível é pulado e registrado como escalada; sem nível seguinte → admin.
+    - lista vazia → o nível é pulado e registrado como escalada; sem nível seguinte → usuários com `ferias-aprovar-qualquer` (ninguém com ela → log + aviso no painel do admin).
 - Aprovadores calculados no dia da decisão: troca de equipe com solicitação pendente muda a fila automaticamente; os novos gestores recebem e-mail.
 - Qualquer aprovador do nível decide; os demais deixam de ver a pendência.
 - E-mails: nova solicitação a todos os aprovadores do nível; decisão ao solicitante.
 - Cancelamento de férias aprovadas devolve o saldo, se a competência não estiver fechada.
-- Tela de configuração dos níveis (admin): ordem, tipo, perfil.
+- Tela de configuração dos níveis (`ferias-niveis-configurar`): ordem, tipo, permissão.
 
 ### 4. Calendário de ausências — 10 h
 
@@ -122,7 +122,7 @@ Fechamento paralelo de um mês real: a ABL PRIME compara o resultado com o cálc
 - Matriz de cenários da fatia 6.
 - Saldo de férias: geração do período, baixa na aprovação, devolução no cancelamento, recusa por saldo insuficiente.
 - Aprovação em dois níveis; gestor não aprova fora das suas equipes.
-- `AprovadoresFerias`: colaborador em duas equipes (gestores das duas elegíveis); colaborador sem equipe (nível pulado); gestor pedindo as próprias férias com e sem outro gestor na equipe; RH pedindo as próprias férias no último nível (vai ao admin); troca de equipe com solicitação pendente; gestor com vínculo encerrado deixa de ser elegível.
+- `AprovadoresFerias`: colaborador em duas equipes (gestores das duas elegíveis); colaborador sem equipe (nível pulado); gestor pedindo as próprias férias com e sem outro gestor na equipe; RH pedindo as próprias férias no último nível (vai a `ferias-aprovar-qualquer`); troca de equipe com solicitação pendente; gestor com vínculo encerrado deixa de ser elegível.
 - Fechamento aprovado não recalcula e recusa novos lançamentos no mês.
 
 ## Critério de aceite

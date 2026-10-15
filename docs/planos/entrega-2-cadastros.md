@@ -43,24 +43,26 @@ Acréscimos à spec:
 ### 2. Cadastro de PF, PJ e colaborador — 16 h
 
 - Liberar edição nas telas da E1 (PF e PJ), mantendo a lista e o detalhe.
+- **Busca avulsa no UAU (veio da E1):** primeiro passo do cadastro: o RH digita CPF/CNPJ, o sistema procura localmente e no UAU (`ImportarPessoa` da E1) e, se achar, importa e abre para edição em vez de criar outra pessoa.
+- **Vínculos sugeridos:** ao criar o colaborador a partir de uma PF, pré-preencher a PJ pelo `vinculos_sugeridos` da carga da E1 e marcar `utilizado_em`.
 - Formulário de PF: dados pessoais, endereço (json com CEP preenchendo via ViaCEP), contatos.
 - Formulário de PJ: CNPJ, razão social, nome fantasia, regime tributário, inscrição municipal, endereço.
 - Dados bancários (morph) em PF e PJ: vários por pessoa, um `principal`; chave PIX validada por tipo.
-- Colaborador: liga PF + PJ + cargo + empresa + obra + centro de custo; status `pre_admissao` ao criar. Uma PF pode ter histórico com mais de uma PJ (um colaborador ativo por vez).
+- Colaborador: liga PF + PJ + cargo + empresa + obra (a obra faz o papel de centro de custo, README D8); status `pre_admissao` ao criar. Uma PF pode ter histórico com mais de uma PJ (um colaborador ativo por vez).
 - Histórico de alterações na aba "Histórico" (activitylog com os campos alterados).
 - Policy: RH/admin editam; financeiro consulta tudo; gestor consulta só os colaboradores das equipes que gere hoje (vínculos vigentes).
 
 ### 2b. Equipes, gestores e vínculos — 6 h
 
 - CRUD de equipes (independentes da obra).
-- Gestores da equipe: adicionar (só usuários com perfil `gestor`) e encerrar, com data; lista mostra atuais e anteriores.
+- Gestores da equipe: adicionar (só usuários com a permissão `equipe-gerir`) e encerrar, com data; lista mostra atuais e anteriores.
 - Equipes do colaborador: aba na tela do colaborador para incluir e encerrar vínculos com data; um colaborador pode estar em várias equipes ou em nenhuma.
 - Escopos reutilizados na E4: `Colaborador::equipesVigentesEm($data)`, `Equipe::gestoresVigentesEm($data)`, `User::colaboradoresGeridosEm($data)`.
 - Equipe não é item obrigatório da admissão (E3).
 
 ### 3. Validação de CPF/CNPJ e consulta de CNPJ — 6 h
 
-- Rules `Cpf` e `Cnpj` (dígitos verificadores) em `app/Rules`.
+- Rules `Cpf` e `Cnpj` já existem (criadas na E1 para a planilha); aplicar nos formulários.
 - Botão "Buscar CNPJ" na PJ: consulta BrasilAPI, preenche razão social, endereço e situação cadastral; avisa se a situação não for "ativa".
 - Resposta em cache por 24 h; falha da consulta não impede o cadastro manual.
 
@@ -70,13 +72,13 @@ Acréscimos à spec:
 - Job: monta o payload pelo mapper, chave de idempotência `pessoa:{tipo}:{id}:{updated_at}`, cria no UAU se não houver `uau_codigo`, altera se houver; grava o código retornado.
 - Conflito (spec 5.2): antes de alterar, consulta a pessoa no UAU; se mudou depois de `sincronizado_em`, não envia, marca o log como `conflito` e mostra a diferença campo a campo na tela de monitoramento, com as opções "usar o do sistema" e "usar o do UAU".
 - Selo de status na tela da pessoa: sincronizada, pendente, erro, conflito.
-- Importação horária da E1 passa a respeitar registros com envio pendente (não sobrescreve).
+- A conciliação diária da E1 passa a respeitar registros com envio pendente (não sobrescreve).
 
 ### 5. Documentos com validade e alertas — 12 h
 
 - Upload em `storage/app/documentos/{tipo}/{id}` (disco privado), download por rota autorizada.
 - Tipos de documento configuráveis; validade obrigatória quando o tipo exige.
-- Comando diário `alertas:documentos`: e-mail a todos os usuários ativos do perfil RH com documentos vencendo em 30 dias e vencidos (um resumo por dia, não um e-mail por documento). Serviço `DestinatariosAlerta::doPerfil('rh')` reaproveitado por todos os alertas.
+- Comando diário `alertas:documentos`: e-mail a todos os usuários ativos com a permissão `alerta-documentos`, com documentos vencendo em 30 dias e vencidos (um resumo por dia, não um e-mail por documento). Serviço `DestinatariosAlerta::comPermissao('alerta-documentos')` reaproveitado por todos os alertas; sem ninguém com a permissão → log + aviso no painel do admin (README D2).
 - Indicador na tela do colaborador: documentos vencidos.
 
 ### 6. Cargos, remuneração e reajustes — 20 h
@@ -94,7 +96,7 @@ Acréscimos à spec:
 - Matriz cargo × qualificação (tela em grade, marca obrigatória).
 - Qualificações do colaborador com certificado anexo; validade calculada a partir da conclusão.
 - Lista "pendentes": colaboradores sem uma qualificação obrigatória do cargo ou com ela vencida.
-- Comando diário `alertas:qualificacoes`, mesmo formato do de documentos.
+- Comando diário `alertas:qualificacoes` para quem tem `alerta-qualificacoes`, mesmo formato do de documentos.
 
 ### 8. Homologação — 4 h
 

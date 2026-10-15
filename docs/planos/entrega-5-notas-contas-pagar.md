@@ -13,7 +13,7 @@ pelo UAU.
 | Amostras reais de XML de cada município (2 a 3 por layout) | ABL PRIME | Fatia 3 |
 | Endpoint de inclusão de título/processo de pagamento e de anexo/comentário | Nós (Swagger) + ABL PRIME | Fatia 6 |
 | Regra de vencimento do título (ex.: dia 10 do mês seguinte) | ABL PRIME (financeiro) | Fatia 6 |
-| De-para: tipo de conta, plano de contas, centro de custo por obra | ABL PRIME (financeiro) | Fatia 6 |
+| De-para: tipo de conta, plano de contas e CAP/categoria por obra (a obra faz o papel de centro de custo) | ABL PRIME (financeiro) | Fatia 6 |
 | Prazo de envio da nota (dia do mês) e tolerância de valor | ABL PRIME | Fatias 4–5 |
 
 ## Fatias
@@ -36,7 +36,7 @@ Tabelas da spec 3.5: `notas_fiscais`, `nota_retencoes`, `titulos_pagar`. Unicida
 ### 2. Portal: login, notas e "Minhas férias" — 18 h
 
 O portal nasce nesta entrega, em Blade com o layout da base e menu reduzido
-(README, D1). Login com o mesmo `users`, perfil `colaborador`, ligado à
+(README, D1). Login com o mesmo `users`, permissão `portal-acessar`, ligado à
 `pessoa_fisica_id`; o colaborador só vê os próprios dados (Policy).
 
 - "Minhas férias": saldo, solicitar e acompanhar, usando as ações e o fluxo de aprovação da E4 (~4 h).
@@ -76,7 +76,7 @@ Ação `ConferirNota`, roda ao enviar e grava cada resultado:
 
 ### 5. Alertas e download em lote — 8 h
 
-- Comando diário: após o prazo, e-mail ao colaborador e ao responsável com notas não enviadas da competência.
+- Comando diário: após o prazo, e-mail ao colaborador e a quem tem `alerta-notas` com as notas não enviadas da competência.
 - Tela de notas por competência com filtros (status, obra, colaborador).
 - Download em lote (ZIP gerado em job, link por e-mail ou notificação na tela).
 
@@ -84,7 +84,7 @@ Ação `ConferirNota`, roda ao enviar e grava cada resultado:
 
 - Ação `GerarTituloPagar`: só com fechamento aprovado e nota aprovada; vencimento pela regra configurada; valor líquido da nota.
 - Job `EnviarTituloPagarUau`: chave de idempotência `titulo:{competencia}:{colaborador}`; antes de reenviar, consulta se o título já existe no UAU.
-- De-para (`uau_mapeamentos`): empresa, obra, centro de custo, tipo de conta, plano de contas; tela de manutenção do de-para (admin/financeiro).
+- De-para (`uau_mapeamentos`): empresa, obra, tipo de conta, plano de contas, CAP/categoria (`ProcessoPagamento/GerarProcesso` exige empresa, obra e código do fornecedor); tela de manutenção do de-para (permissão `uau-depara-editar`).
 - Grava `uau_processo` retornado; status `enviado` ou `erro`, visível no monitoramento com reenvio.
 - Anexo da nota (PDF/XML) ou comentário no processo, se a API permitir (spec 5.1, a confirmar).
 - Após o envio, o fechamento fica "lançado" e a reabertura da competência passa a ser recusada.
@@ -105,7 +105,7 @@ Deploy, ciclo completo com 3 a 5 prestadores reais em homologação, roteiro de 
 
 1. Um colaborador envia a nota pelo portal; os dados lidos batem com o XML.
 2. Nota com CNPJ errado vira `divergente`; recusada, o colaborador reenvia.
-3. Nota aprovada gera o título no UAU de homologação com valor, vencimento, centro de custo e conta certos.
+3. Nota aprovada gera o título no UAU de homologação com valor, vencimento, obra e conta certos.
 4. Derrubar o UAU durante o envio não duplica o título quando ele volta.
 5. O colaborador solicita férias pelo portal; a solicitação chega aos gestores das suas equipes.
 
