@@ -34,8 +34,8 @@ Página inicial por perfil, substituindo o `HomeController` atual.
 
 - Indicadores: colaboradores ativos, admissões e desligamentos do mês, custo do mês (último fechamento), notas pendentes, integrações com erro.
 - Gráfico do custo mensal dos últimos 12 meses (Chart.js) e quadro de ativos por obra.
-- Listas de atenção: documentos, qualificações e contratos vencendo em 30 dias; férias perto do limite.
-- Gestor vê só a sua equipe; financeiro vê custo e notas; RH vê cadastros e vencimentos.
+- Listas de atenção: documentos, qualificações e contratos vencendo em 30 dias; férias perto do limite; colaboradores ativos sem equipe vigente (o nível "gestor da equipe" é pulado para eles).
+- Gestor vê só os colaboradores das equipes que gere hoje; financeiro vê custo e notas; RH vê cadastros e vencimentos.
 - Consultas com cache curto (5 min) para não pesar.
 
 ### 2. Relatórios — 24 h
@@ -46,7 +46,7 @@ Seis relatórios da proposta (seção 2.11), cada um com filtros e tabela:
 | --- | --- | --- |
 | Custo por obra / centro de custo | Competência (de–até), empresa, obra | `fechamentos` + `fechamento_itens` (snapshot) |
 | Benefícios | Competência, benefício, obra | `fechamento_itens` tipo benefício |
-| Férias e saldos | Obra, gestor, saldo mínimo | `ferias_periodos`, `ferias_solicitacoes` |
+| Férias e saldos | Obra, equipe, saldo mínimo | `ferias_periodos`, `ferias_solicitacoes` |
 | Qualificações vencendo | Janela de dias, cargo, obra | `colaborador_qualificacoes` + matriz |
 | Contratos vencendo | Janela de dias, obra | `contratos` |
 | Notas pendentes | Competência, status, obra | `notas_fiscais` + `fechamentos` |

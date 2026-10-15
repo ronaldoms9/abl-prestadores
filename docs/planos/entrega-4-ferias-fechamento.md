@@ -35,7 +35,10 @@ reduzem a remuneração, benefício fixo proporcional.
 
 ### 1. Migrations e models — 6 h
 
-Tabelas da spec 3.4: `ferias_periodos`, `ferias_solicitacoes`, `ferias_aprovacoes`, `feriados`, `ocorrencias`, `competencias`, `fechamentos`, `fechamento_itens`, `ajustes_avulsos`. Acréscimo: `ferias_niveis` (ordem, perfil ou usuário aprovador).
+Tabelas da spec 3.4: `ferias_periodos`, `ferias_solicitacoes`, `ferias_aprovacoes`, `feriados`, `ocorrencias`, `competencias`, `fechamentos`, `fechamento_itens`, `ajustes_avulsos`. Acréscimos:
+- `ferias_niveis` (ordem, tipo_aprovador `gestor_equipe` | `perfil`, role_id nullable, ativo). Seed padrão: 1. gestor da equipe → 2. RH.
+- `ferias_solicitacoes.nivel_atual`.
+- `ferias_aprovacoes.escalada` (bool) e `motivo_escalada` — registra quando um nível foi pulado ou subiu por falta de aprovador.
 
 ### 2. Períodos aquisitivos e saldo — 10 h
 
@@ -46,19 +49,25 @@ Tabelas da spec 3.4: `ferias_periodos`, `ferias_solicitacoes`, `ferias_aprovacoe
 
 ### 3. Solicitação e aprovação em níveis — 18 h
 
-- Solicitação por RH, gestor ou o próprio colaborador; valida saldo, fracionamento mínimo, sobreposição com outra solicitação e desligamento.
-- Aviso (não bloqueio) de conflito: outro colaborador da mesma equipe/obra ausente no período.
+- Solicitação por RH ou gestor (o colaborador solicita pelo portal a partir da E5); valida saldo, fracionamento mínimo, sobreposição com outra solicitação e desligamento. Gestor só solicita para colaboradores que gere.
+- Aviso (não bloqueio) de conflito: outro colaborador de uma mesma equipe ou da mesma obra ausente no período.
 - Fluxo: cada nível aprova ou recusa com observação; recusa encerra; o último nível aprova a solicitação, baixa o saldo e grava `dias_utilizados`.
-- Gestor só aprova colaboradores com `gestor_user_id` = ele (Policy).
-- E-mails: nova solicitação ao aprovador do nível; decisão ao solicitante.
+- Serviço `AprovadoresFerias::doNivel($solicitacao, $nivel, $data)` (regras do README, D7):
+    - nível `gestor_equipe`: gestores vigentes em `$data` de todas as equipes vigentes em `$data` do colaborador;
+    - nível `perfil`: usuários ativos do perfil;
+    - remove o solicitante e o próprio colaborador (se tiver usuário);
+    - lista vazia → o nível é pulado e registrado como escalada; sem nível seguinte → admin.
+- Aprovadores calculados no dia da decisão: troca de equipe com solicitação pendente muda a fila automaticamente; os novos gestores recebem e-mail.
+- Qualquer aprovador do nível decide; os demais deixam de ver a pendência.
+- E-mails: nova solicitação a todos os aprovadores do nível; decisão ao solicitante.
 - Cancelamento de férias aprovadas devolve o saldo, se a competência não estiver fechada.
-- **Portal do colaborador (casca):** layout reduzido, login com perfil `colaborador`, telas "Minhas férias" (saldo, solicitar, acompanhar). A E5 acrescenta as notas.
+- Tela de configuração dos níveis (admin): ordem, tipo, perfil.
 
 ### 4. Calendário de ausências — 10 h
 
-- Visão mensal com FullCalendar (via CDN), filtros por obra e por equipe (gestor).
+- Visão mensal com FullCalendar (via CDN), filtros por obra (obra do colaborador) e por equipe (membros com vínculo vigente em algum dia do período exibido).
 - Mostra férias aprovadas, pendentes (tracejado) e ocorrências.
-- Gestor vê só a sua equipe.
+- Gestor vê só os colaboradores das equipes que gere hoje.
 
 ### 5. Feriados e ocorrências — 8 h
 
@@ -112,14 +121,16 @@ Fechamento paralelo de um mês real: a ABL PRIME compara o resultado com o cálc
 
 - Matriz de cenários da fatia 6.
 - Saldo de férias: geração do período, baixa na aprovação, devolução no cancelamento, recusa por saldo insuficiente.
-- Aprovação em dois níveis; gestor não aprova fora da sua equipe.
+- Aprovação em dois níveis; gestor não aprova fora das suas equipes.
+- `AprovadoresFerias`: colaborador em duas equipes (gestores das duas elegíveis); colaborador sem equipe (nível pulado); gestor pedindo as próprias férias com e sem outro gestor na equipe; RH pedindo as próprias férias no último nível (vai ao admin); troca de equipe com solicitação pendente; gestor com vínculo encerrado deixa de ser elegível.
 - Fechamento aprovado não recalcula e recusa novos lançamentos no mês.
 
 ## Critério de aceite
 
 1. Fechamento paralelo de um mês bate com o cálculo da ABL PRIME, centavo a centavo, ou a diferença é explicada por regra.
-2. Uma solicitação feita pelo colaborador no portal chega ao gestor por e-mail, é aprovada e aparece no calendário e no saldo.
-3. Após a aprovação do fechamento, nenhum valor do mês muda.
+2. Uma solicitação feita pelo RH chega por e-mail aos gestores das equipes do colaborador, passa pelos dois níveis e aparece no calendário e no saldo. (Solicitação pelo próprio colaborador só na E5 — avisar no roteiro.)
+3. Um gestor que pede as próprias férias não as aprova: a solicitação vai a outro gestor da equipe ou ao RH.
+4. Após a aprovação do fechamento, nenhum valor do mês muda.
 
 ## Riscos
 

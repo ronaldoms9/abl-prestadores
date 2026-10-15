@@ -24,25 +24,18 @@ municípios forem definidos cedo.
 
 ## Decisões transversais
 
-Estas decisões valem para todos os planos. As marcadas **(confirmar)** divergem
-da especificação e precisam de um "ok" antes da Entrega 1.
+Estas decisões valem para todos os planos. D1 diverge da especificação técnica
+por escolha deliberada (decidido em 2026-10-15).
 
-### D1 — Interface: manter a base do repositório **(confirmar)**
+### D1 — Interface: manter a base do repositório (decidido)
 
-A spec prevê Filament (painel) + Livewire (portal). O repositório foi reiniciado
-a partir de uma base que já tem login, CRUD de usuários e de grupos de acesso,
-layout Bootstrap, DataTables server-side (yajra) e middleware `permission:`.
-
-Recomendação: **seguir a base** — controller + `Yajra\DataTables\Html\Builder`
-+ form Blade, como em `app/Http/Controllers/Config/UserController.php`. O
-portal do colaborador usa o mesmo layout, com menu reduzido.
-
-- A favor: nada a reescrever; o padrão já está provado no projeto.
-- Contra: cada CRUD custa mais horas que no Filament. Os planos já contam com
-  isso nas estimativas de tela.
-- Se a escolha for Filament, só as fatias de "telas" mudam; ações, jobs,
-  migrations e testes ficam iguais. Instalar o Filament na E1 custa ~6 h e
-  devolve tempo a partir da E2.
+A spec prevê Filament (painel) + Livewire (portal). O repositório já tem login,
+CRUD de usuários e de grupos de acesso, layout Bootstrap, DataTables
+server-side (yajra) e middleware `permission:`, e o projeto **segue essa base**:
+controller + `Yajra\DataTables\Html\Builder` + form Blade, como em
+`app/Http/Controllers/Config/UserController.php`. O portal do colaborador
+(E5) usa o mesmo layout em Blade, com menu reduzido — sem Livewire nem
+Filament. As estimativas de tela dos planos já contam com esse padrão.
 
 ### D2 — Perfis e permissões: usar as tabelas existentes
 
@@ -63,6 +56,12 @@ em Policies, não em permissões.
 | PDF | barryvdh/laravel-dompdf | E3 |
 | Excel | maatwebsite/excel | E6 |
 | Erros em produção | Sentry (sentry/sentry-laravel) | E6 |
+
+### Alertas por e-mail
+
+Vão a todos os usuários ativos do perfil responsável (ex.:
+documentos e qualificações → RH; integrações → financeiro). Não há lista de
+destinatários para manter.
 
 ### D4 — Organização do código
 
@@ -101,16 +100,27 @@ de valor tem teste de unidade na ação, sem passar pela tela.
   memória. Deploy em homologação ao integrar em `develop`.
 - Credenciais do UAU só no `.env` do servidor.
 
-## Lacunas encontradas na spec
+## Decisões sobre as lacunas da spec
 
-Pontos que os planos precisaram resolver e que a spec não cobre. Cada um tem
-uma proposta no plano indicado.
+Pontos que a spec não cobria, decididos em 2026-10-15.
 
-| Lacuna | Proposta | Plano |
+| Lacuna | Decisão | Plano |
 | --- | --- | --- |
-| "Gestor aprova férias da sua equipe" e "calendário por equipe", mas não há relação gestor ↔ colaborador | Campo `gestor_user_id` em `colaboradores`; equipe = colaboradores com o mesmo gestor | E2 |
-| Colaborador solicita as próprias férias (E4), mas o portal só aparece na E5 | Criar a casca do portal (login do colaborador, "Minhas férias") na E4; a E5 acrescenta as notas | E4 |
-| "Cálculo de valores finais proporcionais" no desligamento (E3) depende da calculadora da E4 | E3 entrega `RemuneracaoProporcional` (só remuneração); a E4 a reaproveita dentro da `CalculadoraFechamento` | E3, E4 |
-| Destinatários dos alertas por e-mail não definidos | Tabela `configuracoes` (chave/valor) com os e-mails por tipo de alerta, editável pelo admin | E2 |
-| Numeração de contratos | Sequencial por ano: `AAAA/NNNN`, aditivos `AAAA/NNNN-A01` | E3 |
-| Testes de Breeze herdados falham (`docs/desenvolvimento.md`) | Remover Breeze e os testes órfãos na E1 | E1 |
+| "Gestor aprova férias da sua equipe" e "calendário por equipe", sem relação gestor ↔ colaborador | Entidade `equipes` (ver D7) | E2, E4 |
+| Colaborador solicita as próprias férias, mas o portal só aparece na E5 | Na E4, só RH e gestor solicitam; "Minhas férias" entra no portal da E5. Avisar no roteiro de homologação da E4 | E4, E5 |
+| "Cálculo de valores finais proporcionais" no desligamento (E3) depende da calculadora da E4 | A prévia da E3 calcula remuneração proporcional + benefício fixo; benefícios por dia entram no fechamento da E4. Avisar a ABL PRIME | E3, E4 |
+| Destinatários dos alertas por e-mail | Por perfil: o alerta vai a todos os usuários ativos do perfil responsável; nota não enviada vai também ao colaborador | E2 |
+| Numeração de contratos | `AAAA/NNNN`, aditivo `AAAA/NNNN-A01`, distrato `AAAA/NNNN-D`; prefixo e reinício anual configuráveis | E3 |
+| Testes de Breeze herdados falham | Remover controllers Breeze não usados, `routes/auth.php` e testes órfãos; manter `Auth::routes(['register' => false])` e o `LoginController` | E1 |
+
+### D7 — Equipes e aprovação de férias
+
+- `equipes`: independentes da obra (o filtro "por obra" do calendário usa a obra do colaborador).
+- `equipe_gestores` (equipe, user, início, fim): uma equipe pode ter vários gestores, todos com perfil `gestor`; um gestor pode gerir várias equipes; histórico com vigência.
+- `colaborador_equipes` (colaborador, equipe, início, fim): um colaborador pode estar em várias equipes, ou em nenhuma; histórico com vigência.
+- Níveis de aprovação configuráveis pelo admin, cada um do tipo "gestor da equipe" ou "perfil X". Padrão: 1. gestor da equipe → 2. RH.
+- Aprovadores do nível "gestor da equipe": qualquer gestor vigente de qualquer equipe vigente do colaborador, **no dia da decisão**. Todos recebem o e-mail; o primeiro a decidir encerra o nível. Se o colaborador muda de equipe com solicitação pendente, ela passa para os novos gestores.
+- Nos níveis por perfil, qualquer usuário do perfil decide.
+- Colaborador sem equipe vigente: o nível "gestor da equipe" é pulado.
+- Ninguém aprova as próprias férias: o solicitante sai da lista do nível; se não sobrar aprovador, a solicitação sobe ao nível seguinte; se era o último, vai ao admin.
+- Visibilidade do gestor: colaboradores com vínculo vigente hoje em equipes que ele gere hoje.

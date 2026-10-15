@@ -13,7 +13,6 @@ UAU.
 | Endpoints de autenticação, empresas/obras, pessoas e centros de custo mapeados no Swagger (spec 5.3) | Nós, com acesso | Fatias 4–5 |
 | Centro de custo existe como entidade própria no UAU? | ABL PRIME / Swagger | Tabela `centros_custo` |
 | Webhook do UAU disponível no ambiente da ABL PRIME? | ABL PRIME | Fatia 6 (parte do webhook) |
-| Decisão D1 (base vs. Filament) | Nós | Fatias 1 e 7 |
 | Servidor de homologação contratado | ABL PRIME | Fatia 9 |
 
 Sem a API em HTTPS, as fatias 1–3 e 7–8 andam com o `FakeUauClient` (fatia 4)
@@ -36,7 +35,7 @@ e a integração real fica para a última semana.
 
 ### 1. Setup e limpeza da base — 12 h
 
-- Remover Breeze: controllers `Auth/*` não usados (`AuthenticatedSessionController`, `RegisteredUserController` etc.), `routes/auth.php`, `tests/Feature/Auth/*`, `tests/Feature/ExampleTest.php`. Manter `Auth::routes(['register' => false])`.
+- Remover Breeze: controllers `Auth/*` não usados (`AuthenticatedSessionController`, `RegisteredUserController` etc.), `routes/auth.php`, `tests/Feature/Auth/*`, `tests/Feature/ExampleTest.php`. Manter `Auth::routes(['register' => false])` e o `LoginController`.
 - Remover views de demo (`resources/views/pages/*`, `welcome.blade.php`) e o `ModelTrait` vazio.
 - `.env.example`: `APP_NAME="Gestão de Prestadores"`, `APP_LOCALE=pt_BR`, `APP_TIMEZONE=America/Sao_Paulo`, bloco `UAU_*` (base_url, usuario, senha, timeout).
 - `config/uau.php` lendo essas variáveis.

@@ -45,7 +45,7 @@ Tabelas da spec 3.3: `contrato_modelos`, `contratos`, `beneficios`, `beneficio_v
 ### 3. Geração em PDF — 20 h
 
 - Ação `GerarContrato` (tipos contrato, aditivo, distrato): renderiza, grava `conteudo_renderizado`, gera PDF com dompdf em job, status `gerado`.
-- Numeração `AAAA/NNNN`; aditivos `AAAA/NNNN-A01` apontando para `contrato_pai_id`.
+- Numeração `AAAA/NNNN`; aditivos `AAAA/NNNN-A01` e distrato `AAAA/NNNN-D`, apontando para `contrato_pai_id`. Prefixo e reinício anual configuráveis em `configuracoes` (padrão: sem prefixo, reinicia todo ano).
 - Pré-visualização HTML antes de gerar.
 - Upload do PDF assinado → status `assinado`.
 - Linha do tempo na tela do colaborador: contrato, aditivos e distrato, com download de cada versão.
@@ -59,7 +59,7 @@ Tabelas da spec 3.3: `contrato_modelos`, `contratos`, `beneficios`, `beneficio_v
 ### 5. Admissão com checklist — 14 h
 
 - Ação `IniciarAdmissao`: colaborador em `pre_admissao` recebe os itens configurados.
-- Itens automáticos marcados pelo sistema: "PJ gravada no UAU", "contrato assinado anexado", "qualificações obrigatórias do cargo em dia", "documentos obrigatórios enviados".
+- Itens automáticos marcados pelo sistema: "PJ gravada no UAU", "contrato assinado anexado", "qualificações obrigatórias do cargo em dia", "documentos obrigatórios enviados". Equipe não é item obrigatório (README, D7).
 - Itens manuais marcados pelo RH, com autor e data.
 - `ConcluirAdmissao`: exige todos os obrigatórios, muda o status para `ativo`, grava `data_admissao`, cria a primeira remuneração e os benefícios padrão do cargo.
 
@@ -67,7 +67,7 @@ Tabelas da spec 3.3: `contrato_modelos`, `contratos`, `beneficios`, `beneficio_v
 
 - Ação `DesligarColaborador`: data, motivo, observação; gera o distrato pelo modelo.
 - Serviço `RemuneracaoProporcional` (data inicial, data final, remuneração vigente em cada dia → valor) com a base de dias definida no kickoff. É o mesmo cálculo que a `CalculadoraFechamento` (E4) vai chamar.
-- Prévia dos valores finais na tela de desligamento (remuneração proporcional + benefícios fixos conforme a regra). Os benefícios por dia entram no fechamento da E4.
+- Prévia dos valores finais na tela de desligamento: remuneração proporcional + benefícios fixos conforme a regra. **Limite decidido:** até a E4, a prévia não inclui benefícios por dia, faltas nem feriados; eles entram no fechamento do mês. A tela mostra esse aviso, e ele consta do roteiro de homologação da E3.
 - Bloqueio: colaborador `desligado` não recebe remuneração, benefício, ajuste, férias ou nota com data posterior ao desligamento (Policy + validação nas ações).
 - Encerra contrato (`encerrado`), remuneração e benefícios abertos na data do desligamento.
 
@@ -107,7 +107,7 @@ Deploy, cadastro dos modelos reais da ABL PRIME, roteiro de validação.
 1. Contrato gerado a partir do cadastro sai idêntico ao modelo da ABL PRIME, com os dados preenchidos.
 2. Reajuste em lote de um cargo gera um aditivo por colaborador.
 3. Admissão só conclui com todos os itens obrigatórios; o colaborador vira `ativo`.
-4. Desligamento gera distrato, mostra a prévia dos valores finais e bloqueia novos lançamentos.
+4. Desligamento gera distrato, mostra a prévia dos valores finais (remuneração + benefício fixo) e bloqueia novos lançamentos.
 
 ## Riscos
 

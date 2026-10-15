@@ -1,6 +1,6 @@
 # Entrega 5 — Notas fiscais e contas a pagar · 88 h · semanas 13–15
 
-Ao fim da E5, o colaborador envia a NFS-e do mês pelo portal, o sistema lê o
+Ao fim da E5, o colaborador entra no portal, pede férias e envia a NFS-e do mês; o sistema lê o
 XML e confere com o fechamento, o financeiro aprova, e o título de contas a
 pagar é lançado no UAU com a nota anexada. O pagamento continua sendo feito
 pelo UAU.
@@ -21,21 +21,25 @@ pelo UAU.
 | # | Fatia | Horas |
 | --- | --- | --- |
 | 1 | Migrations e models da spec 3.5 | 4 |
-| 2 | Portal: envio de nota, status e histórico | 14 |
+| 2 | Portal: login, notas e "Minhas férias" | 18 |
 | 3 | Leitor de XML | 16 |
 | 4 | Conferência, aprovação e recusa | 14 |
 | 5 | Alertas e download em lote | 8 |
 | 6 | Título de contas a pagar no UAU | 20 |
-| 7 | Testes e homologação | 12 |
+| 7 | Testes e homologação | 8 |
 | | **Total** | **88** |
 
 ### 1. Migrations e models — 4 h
 
 Tabelas da spec 3.5: `notas_fiscais`, `nota_retencoes`, `titulos_pagar`. Unicidade: `chave_acesso` única; sem chave, único em (`cnpj_emissor`, `numero`, `serie`) — validado na ação, porque as colunas são nulas em parte dos casos.
 
-### 2. Portal: envio de nota — 14 h
+### 2. Portal: login, notas e "Minhas férias" — 18 h
 
-Sobre a casca do portal da E4.
+O portal nasce nesta entrega, em Blade com o layout da base e menu reduzido
+(README, D1). Login com o mesmo `users`, perfil `colaborador`, ligado à
+`pessoa_fisica_id`; o colaborador só vê os próprios dados (Policy).
+
+- "Minhas férias": saldo, solicitar e acompanhar, usando as ações e o fluxo de aprovação da E4 (~4 h).
 
 - "Minhas notas": competências com fechamento aprovado e o valor esperado; status de cada nota.
 - Envio: XML (obrigatório quando o município emite XML) e PDF; leitura imediata mostra os dados lidos para o colaborador conferir antes de confirmar.
@@ -85,7 +89,7 @@ Ação `ConferirNota`, roda ao enviar e grava cada resultado:
 - Anexo da nota (PDF/XML) ou comentário no processo, se a API permitir (spec 5.1, a confirmar).
 - Após o envio, o fechamento fica "lançado" e a reabertura da competência passa a ser recusada.
 
-### 7. Testes e homologação — 12 h
+### 7. Testes e homologação — 8 h
 
 Deploy, ciclo completo com 3 a 5 prestadores reais em homologação, roteiro de validação.
 
@@ -103,6 +107,7 @@ Deploy, ciclo completo com 3 a 5 prestadores reais em homologação, roteiro de 
 2. Nota com CNPJ errado vira `divergente`; recusada, o colaborador reenvia.
 3. Nota aprovada gera o título no UAU de homologação com valor, vencimento, centro de custo e conta certos.
 4. Derrubar o UAU durante o envio não duplica o título quando ele volta.
+5. O colaborador solicita férias pelo portal; a solicitação chega aos gestores das suas equipes.
 
 ## Riscos
 
