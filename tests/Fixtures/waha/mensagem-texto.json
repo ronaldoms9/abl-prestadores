@@ -1,0 +1,20 @@
+{
+  "id": "evt_01HV0000000000000000000001",
+  "timestamp": 1789000000000,
+  "event": "message",
+  "session": "demo",
+  "engine": "NOWEB",
+  "payload": {
+    "id": "false_5511999999999@c.us_3EB0C1D2E3F4A5B6C7D8",
+    "timestamp": 1789000000,
+    "from": "5511999999999@c.us",
+    "fromMe": false,
+    "source": "app",
+    "body": "vocês atendem sábado?",
+    "hasMedia": false,
+    "media": null,
+    "ack": 1,
+    "vCards": [],
+    "_data": {}
+  }
+}

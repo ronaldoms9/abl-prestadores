@@ -1,0 +1,22 @@
+{
+  "id": "evt_01HV0000000000000000000003",
+  "timestamp": 1789000002000,
+  "event": "message",
+  "session": "demo",
+  "engine": "NOWEB",
+  "payload": {
+    "id": "false_5511999999999@c.us_3EB0BBBB",
+    "timestamp": 1789000002,
+    "from": "5511999999999@c.us",
+    "fromMe": false,
+    "body": "",
+    "hasMedia": true,
+    "media": {
+      "url": "http://waha:3000/api/files/demo/3EB0BBBB.oga",
+      "mimetype": "audio/ogg; codecs=opus",
+      "filename": "3EB0BBBB.oga",
+      "error": null
+    },
+    "_data": {}
+  }
+}

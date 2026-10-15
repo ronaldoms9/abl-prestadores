@@ -1,0 +1,50 @@
+/*CUSTOM STYLES*/
+
+.hidden-component{
+    display: none;
+}
+.text-semibold{
+    font-weight: 600 !important;
+}
+.nowrap{
+    white-space: normal;
+    display: inline-flex;
+}
+.nav-link.active{
+    color: var(--primary) !important;
+}
+div.dataTables_wrapper div.dataTables_processing{
+    box-shadow: 1rem 1rem 10rem 100rem rgba(0, 0, 0, .15);
+}
+.hidden{
+    display: none !important;
+}
+
+.td-actions{
+    max-width: 10%;
+    white-space: nowrap;
+}
+
+.td-actions a {
+    margin-right: 15px;
+}
+.td-actions a:last-child {
+    margin-right: 0;
+}
+
+@media (min-width: 920px)
+{
+    .modal-xl
+    {
+        max-width: 800px;
+    }
+}
+
+@media (min-width: 1200px)
+{
+    .modal-xl
+    {
+        max-width: 1140px;
+    }
+}
+

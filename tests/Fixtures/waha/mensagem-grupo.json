@@ -1,0 +1,18 @@
+{
+  "id": "evt_01HV0000000000000000000002",
+  "timestamp": 1789000001000,
+  "event": "message",
+  "session": "demo",
+  "engine": "NOWEB",
+  "payload": {
+    "id": "false_120363000000000000@g.us_3EB0AAAA",
+    "timestamp": 1789000001,
+    "from": "120363000000000000@g.us",
+    "participant": "5511999999999@c.us",
+    "fromMe": false,
+    "body": "alguém sabe o horário?",
+    "hasMedia": false,
+    "media": null,
+    "_data": {}
+  }
+}

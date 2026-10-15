@@ -1,0 +1,115 @@
+services:
+    app:
+        build:
+            context: ./.docker
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-80}:80'
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - mysql
+            - redis
+        #command: sh -c "composer install --ignore-platform-reqs && php artisan key:generate"
+    mysql:
+        image: 'mysql/mysql-server:8.0'
+        ports:
+            - '${FORWARD_DB_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE:-laravel}'
+            MYSQL_USER: '${DB_USERNAME:-laravel}'
+            MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
+            # MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        volumes:
+            - 'sail-mysql:/var/lib/mysql'
+           # - './.docker/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD:-secret}'
+            retries: 3
+            timeout: 5s
+    redis:
+        image: 'redis:7-alpine'
+        restart: unless-stopped
+        # Sem ports: o Redis fica acessível só pela rede interna do Docker.
+        command: 'redis-server --appendonly yes'
+        volumes:
+            - 'sail-redis:/data'
+        networks:
+            - sail
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            retries: 3
+            timeout: 5s
+    horizon:
+        build:
+            context: ./.docker
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        restart: unless-stopped
+        entrypoint: ['php', '/var/www/html/artisan', 'horizon']
+        environment:
+            LARAVEL_SAIL: 1
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - redis
+            - mysql
+    waha:
+        image: 'devlikeapro/waha:noweb-2026.8.2'
+        # A tag noweb só publica amd64: em Mac Apple Silicon roda emulado.
+        platform: linux/amd64
+        restart: unless-stopped
+        # Sem ports: publicar a porta é entregar a API do WhatsApp de todos os
+        # clientes para a internet. O acesso é só pela rede interna do Docker.
+        environment:
+            WHATSAPP_DEFAULT_ENGINE: NOWEB
+            WAHA_API_KEY: '${WAHA_API_KEY}'
+            WHATSAPP_HOOK_HMAC_KEY: '${WAHA_HMAC_KEY}'
+            WHATSAPP_HOOK_RETRIES_POLICY: linear
+            WHATSAPP_HOOK_RETRIES_ATTEMPTS: 3
+            WHATSAPP_HOOK_RETRIES_DELAY_SECONDS: 5
+            WAHA_EVENTS_DOWNLOAD_MEDIA: 'True'
+        volumes:
+            # Volume crítico: perdê-lo desconecta todos os clientes ao mesmo
+            # tempo e exige QR novo de cada um. Backup diário obrigatório.
+            - 'waha-sessions:/app/.sessions'
+            - 'waha-media:/app/.media'
+        networks:
+            - sail
+networks:
+    sail:
+        driver: bridge
+volumes:
+    sail-mysql:
+        driver: local
+    sail-redis:
+        driver: local
+    waha-sessions:
+        driver: local
+    waha-media:
+        driver: local
