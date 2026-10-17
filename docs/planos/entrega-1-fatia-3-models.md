@@ -261,6 +261,7 @@ Ordem das migrations: `uau_mapeamentos` → `integracao_logs` → `importacoes_p
 | --- | --- |
 | Mappers, jobs e regras de upsert/inativação | Fatias 4 e 5 |
 | Rules `Cpf`/`Cnpj` (dígito verificador) | Fatia 5b |
+| Documento numérico vindo do UAU: se a API devolver CPF/CNPJ como número, o zero à esquerda some antes do cast. O mapper converte para texto com `str_pad` (11 ou 14 dígitos, conforme o `tipo` da pessoa) e cobre o caso com fixture | Fatia 5 (mappers) |
 | Telas de consulta e rótulo do `status_uau` | Fatia 7 |
 | Auditoria (`Auditavel`) nos cadastros: na E1 só a importação os altera, e ela já gera `integracao_logs` | E2, quando houver edição pela tela |
 | `uau_alterado_em` nas pessoas (detecção de conflito) | E2 |
