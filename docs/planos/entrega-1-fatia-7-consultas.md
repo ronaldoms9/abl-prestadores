@@ -154,6 +154,19 @@ planilha (e o inverso), com o CNPJ/CPF formatado e a situação. Aceitar ou desc
 3. A busca acha o documento com e sem máscara.
 4. As rotas estão em `PermissoesRotasTest`.
 
+## Notas da implementação (2026-10-17)
+
+- A busca usa `LIKE ... ESCAPE '!'`. O `\\` como escape não funciona igual no MySQL e no
+  SQLite (no SQLite vira dois caracteres), e `!` funciona nos dois.
+- Uma view de lista só (`cadastros.index`) serve as quatro telas, com filtros extras por
+  partial (empresa, na de obras). As opções de situação vão pela view, porque constante de trait não pode ser lida de fora.
+- A obra de empresa excluída continua mostrando a empresa (`withTrashed()` no `with`).
+- **Verificado no Docker (MySQL), com os dados do simulado:**
+  - as quatro listas e os quatro detalhes abrem;
+  - busca por CPF parcial com máscara, por nome, por CNPJ com máscara e por código de obra;
+  - `100%` não vira curinga;
+  - o perfil RH vê Pessoas (3 itens), Empresas e Obras.
+
 ## Riscos
 
 | Risco | Saída |
