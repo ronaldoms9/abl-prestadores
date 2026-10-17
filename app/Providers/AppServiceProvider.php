@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Integrations\Uau\RegistroIntegracao;
 use App\Integrations\Uau\Sanitizador;
+use App\Integrations\Uau\UauClient;
 use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(Sanitizador::class, fn () => new Sanitizador(config('uau.campos_ocultos', [])));
+        $this->app->bind(UauClient::class, fn ($app) => new UauClient($app->make(RegistroIntegracao::class), config('uau')));
     }
 
     /**
