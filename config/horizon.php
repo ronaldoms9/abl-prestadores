@@ -236,6 +236,18 @@ return [
             ],
         ],
 
+        // Homologação (fatia 9): os mesmos supervisores de produção.
+        'homologacao' => [
+            'supervisor-default' => [
+                'maxProcesses' => 3,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+            ],
+            'supervisor-uau' => [
+                'maxProcesses' => 1,
+            ],
+        ],
+
         'local' => [
             'supervisor-default' => [
                 'maxProcesses' => 1,

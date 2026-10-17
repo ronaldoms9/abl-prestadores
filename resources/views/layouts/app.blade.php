@@ -69,6 +69,7 @@
         @include('layouts.partials._sidebar')
         <!--begin::App Main-->
         <main class="app-main">
+            @include('layouts.partials._ambiente')
             <!--begin::App Content Header-->
             @if (isset($title))
                 <div class="app-content-header">
@@ -106,6 +107,7 @@
     <!--end::App Wrapper-->
 @else
 <body class="login-page bg-body-secondary">
+    @include('layouts.partials._ambiente')
     @yield('content')
 @endauth
 
