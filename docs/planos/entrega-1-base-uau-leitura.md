@@ -42,6 +42,8 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 | | Folga | 3 | |
 | | **Total** | **96** | 30 h + 32 h + 31 h |
 
+Situação e sequência das fatias restantes: [próximos passos](entrega-1-proximos-passos.md).
+
 Ordem: 3 depende de 1; 4 depende de 3 (logs); 5 e 5b dependem de 4; 6–8
 dependem de 5. A fatia 9 é independente do código e deve começar assim que a
 VPS existir.
