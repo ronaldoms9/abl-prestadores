@@ -1,0 +1,70 @@
+{
+  "codigoPessoa": 2001,
+  "nomePessoa": "M A Ribeiro Serviços de Engenharia Ltda",
+  "tipo": 1,
+  "cpfCnpj": "27543198000106",
+  "dataDeCadastro": "2024-02-01T10:00:00",
+  "dataDeNascimento": "0001-01-01T00:00:00",
+  "pessoaInterna": 2,
+  "usuarioCadastro": "RH",
+  "usuarioAlteracao": "RH",
+  "status": 2,
+  "tratamentoPessoa": null,
+  "email": "contato@marengenharia.exemplo.com.br",
+  "enderecoURL": null,
+  "matricula": null,
+  "pessoaAtiva": 0,
+  "dataDeAlteracao": "2026-09-01T08:30:00",
+  "nomeFantasia": "MAR Engenharia",
+  "anexos": 0,
+  "inscricaoMunicipal": "4567890",
+  "inscricaoEstadual": "ISENTO",
+  "loguinUauWeb": null,
+  "senhaUauWeb": null,
+  "codigoAtividade": null,
+  "dataCadastroPortal": "0001-01-01T00:00:00",
+  "cadastradoPrefeituraGoiania": false,
+  "habilitadoRiscoSacado": false,
+  "cei": null,
+  "dadosBancarios": [],
+  "enderecos": [
+    {
+      "tipoEndereco": 2,
+      "endereco": "Av. 85",
+      "bairro": "Setor Marista",
+      "cidade": "Goiânia",
+      "uf": "GO",
+      "cep": "74160010",
+      "numeroEndereco": "1200",
+      "complementoEndereco": "Sala 304",
+      "referencia": null,
+      "imovelProprio": 0,
+      "numeroCidade": 0,
+      "numeroBairro": 0,
+      "numeroLogradouro": 0,
+      "codigoEmpresa": 0,
+      "nomeEmpresa": null,
+      "tipoEnderecoEmpresa": 0
+    }
+  ],
+  "dadosPessoaFisica": [],
+  "dadosPessoaJuridica": [
+    {
+      "contato": "Mariana",
+      "contato2": null,
+      "inscricaoSuframa": null,
+      "naturezaJuridica": 2,
+      "optanteSimples": true,
+      "registroAns": null
+    }
+  ],
+  "documentos": [],
+  "telefones": [
+    {
+      "numero": "33334444",
+      "ddd": "62",
+      "Complemento": null,
+      "tipo": 1
+    }
+  ]
+}

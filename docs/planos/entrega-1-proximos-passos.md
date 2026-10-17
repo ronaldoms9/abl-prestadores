@@ -17,10 +17,10 @@ fatias 1 a 3.
 
 | Fatia | Horas | Situação | Branch |
 | --- | --- | --- | --- |
-| 1 · Setup, limpeza, e-mail, identidade | 12 | Pronta. Falta: e-mail real em homologação (depende do DNS) | `e1/fatia-1-setup` (só local) |
-| 2 · Perfis, permissões, auditoria | 10 | Pronta | `e1/fatia-2-permissoes` (no GitHub) |
-| 3 · Migrations e models | 8 | Pronta | `e1/fatia-3-models` (só local) |
-| 4 · UauClient + fake | 16 | Próxima | — |
+| 1 · Setup, limpeza, e-mail, identidade | 12 | Pronta, na `develop`. Falta: e-mail real em homologação (depende do DNS) | `e1/fatia-1-setup` |
+| 2 · Perfis, permissões, auditoria | 10 | Pronta, na `develop` | `e1/fatia-2-permissoes` |
+| 3 · Migrations e models | 8 | Pronta, na `develop` | `e1/fatia-3-models` |
+| 4 · UauClient + fake | 16 | Pronta ([detalhe](entrega-1-fatia-4-uau-client.md)); falta confirmar D4.5 e D4.8 no UAU real | `e1/fatia-4-uau-client` |
 | 5 · Importação | 13 | Depende da 4 | — |
 | 5b · Carga por planilha | 5 | Depende da 5 | — |
 | 6 · Agendamento + "Sincronizar agora" | 5 | Depende da 5 e da 8 | — |
@@ -67,6 +67,11 @@ flowchart LR
 
 Antes da fatia 4, para não acumular branches sem revisão.
 
+**Feito em 2026-10-17**, com uma diferença: sem o GitHub CLI, as fatias foram
+juntadas na `develop` por `git merge --no-ff` (o mesmo commit de merge de um PR),
+sem PR aberto. Pendente: enviar `develop`, `e1/fatia-1-setup`, `e1/fatia-3-models`
+e `e1/fatia-4-uau-client` ao GitHub.
+
 1. Criar `develop` a partir de `main` (D6: `develop` é a homologação) e enviar ao GitHub.
 2. Enviar `e1/fatia-1-setup` e `e1/fatia-3-models`. Abrir os PRs das fatias 1,
    2 e 3 contra `develop`, nessa ordem (cada uma parte da anterior).
@@ -76,6 +81,8 @@ Antes da fatia 4, para não acumular branches sem revisão.
 5. As próximas branches saem da `develop`: `e1/fatia-4-uau-client` e assim por diante.
 
 ## Fatia 4 — UauClient + fake · 16 h · semana 2
+
+Plano detalhado: [entrega-1-fatia-4-uau-client.md](entrega-1-fatia-4-uau-client.md). O Swagger foi lido e responde aos pontos abaixo.
 
 **Entrega:** `app/Integrations/Uau/` com
 - a interface `UauGateway` (`empresasAtivas`, `obrasAtivas`, `pessoaPorDocumento`);
@@ -116,8 +123,13 @@ E `uau:ping` roda contra o fake.
 **Já decidido, e vale aqui**
 - `ativo × deleted_at` (D3.1 da fatia 3): a importação nunca apaga. Busca com
   `withTrashed()`, restaura e atualiza. O que sumiu do UAU vira `ativo = false`.
-- Documento numérico vindo do UAU: o mapper completa com zeros (`str_pad`, 11 ou
-  14 dígitos conforme o `tipo`), e uma fixture cobre o caso.
+- Documento já chega normalizado: o DTO `PessoaUau` da fatia 4 limpa e completa
+  com zeros (11 ou 14 dígitos conforme o `tipo`).
+- Endereço de empresa e obra vem do UAU num texto só: o mapper grava em
+  `endereco.logradouro`. O da pessoa vem separado (`PessoaUau::enderecoPrincipal()`).
+- O job não envolve a chamada ao UAU em transação, senão o rollback apaga o log da falha.
+- Lista vazia do UAU não inativa tudo: zero empresas ou obras ativas é tratado como suspeito.
+- Testes de retentativa com `FakeUauClient::falharEm()`.
 - Endereço pelo `Endereco::fromArray()`; o cast descarta chaves fora do formato.
 - `integracao_logs.entidade` aponta para a empresa, obra ou pessoa, que já estão no mapeamento de nomes polimórficos.
 

@@ -1,0 +1,29 @@
+[
+  {
+    "Codigo_emp": 1,
+    "Desc_emp": "Construtora Horizonte Ltda",
+    "CGC_emp": "11222333000181",
+    "IE_emp": "104567890",
+    "InscrMunic_emp": "2345678",
+    "Endereco_emp": "Av. T-63, 1234, Setor Bueno, Goiânia - GO, 74230-100",
+    "Fone_emp": "(62) 3201-4500"
+  },
+  {
+    "Codigo_emp": 2,
+    "Desc_emp": "Incorporadora Cerrado SPE Ltda",
+    "CGC_emp": "04252011000110",
+    "IE_emp": "",
+    "InscrMunic_emp": "3456789",
+    "Endereco_emp": "Rua 9, 150, Setor Oeste, Goiânia - GO",
+    "Fone_emp": null
+  },
+  {
+    "Codigo_emp": 3,
+    "Desc_emp": "Engenharia Araguaia Ltda",
+    "CGC_emp": "33876544000170",
+    "IE_emp": "109876543",
+    "InscrMunic_emp": null,
+    "Endereco_emp": "Av. Anhanguera, 5000, Centro, Goiânia - GO",
+    "Fone_emp": "(62) 3212-0000"
+  }
+]

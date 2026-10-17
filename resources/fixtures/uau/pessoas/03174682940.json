@@ -1,0 +1,68 @@
+{
+  "codigoPessoa": 1003,
+  "nomePessoa": "João Pedro Martins",
+  "tipo": 0,
+  "cpfCnpj": "031.746.829-40",
+  "dataDeCadastro": "2024-02-01T10:00:00",
+  "dataDeNascimento": "1992-01-30T00:00:00",
+  "pessoaInterna": 2,
+  "usuarioCadastro": "RH",
+  "usuarioAlteracao": "RH",
+  "status": 2,
+  "tratamentoPessoa": null,
+  "email": "joao.martins@exemplo.com.br",
+  "enderecoURL": null,
+  "matricula": null,
+  "pessoaAtiva": 0,
+  "dataDeAlteracao": "2026-09-01T08:30:00",
+  "nomeFantasia": null,
+  "anexos": 0,
+  "inscricaoMunicipal": null,
+  "inscricaoEstadual": null,
+  "loguinUauWeb": "joaoweb",
+  "senhaUauWeb": "segredo-uau-web-123",
+  "codigoAtividade": null,
+  "dataCadastroPortal": "0001-01-01T00:00:00",
+  "cadastradoPrefeituraGoiania": false,
+  "habilitadoRiscoSacado": false,
+  "cei": null,
+  "dadosBancarios": [
+    {
+      "banco": "001",
+      "agencia": "1234",
+      "conta": "56789-0",
+      "tipoConta": 1
+    }
+  ],
+  "enderecos": [
+    {
+      "tipoEndereco": 0,
+      "endereco": "Rua 15",
+      "bairro": "Setor Marista",
+      "cidade": "Goiânia",
+      "uf": "GO",
+      "cep": "74150020",
+      "numeroEndereco": "88",
+      "complementoEndereco": null,
+      "referencia": null,
+      "imovelProprio": 0,
+      "numeroCidade": 0,
+      "numeroBairro": 0,
+      "numeroLogradouro": 0,
+      "codigoEmpresa": 0,
+      "nomeEmpresa": null,
+      "tipoEnderecoEmpresa": 0
+    }
+  ],
+  "dadosPessoaFisica": [],
+  "dadosPessoaJuridica": [],
+  "documentos": [],
+  "telefones": [
+    {
+      "numero": "981112222",
+      "ddd": "62",
+      "Complemento": null,
+      "tipo": 2
+    }
+  ]
+}

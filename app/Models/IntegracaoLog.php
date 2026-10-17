@@ -28,6 +28,7 @@ class IntegracaoLog extends Model
         'operacao',
         'rota',
         'chave_idempotencia',
+        'correlacao',
         'payload',
         'resposta',
         'http_status',
