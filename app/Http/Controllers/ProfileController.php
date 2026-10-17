@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\PasswordRequest;
 use App\Models\User;
+use App\Support\Auditoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -71,34 +72,10 @@ class ProfileController extends Controller
      */
     public function password(PasswordRequest $request)
     {
+        auth()->user()->update(['password' => Hash::make($request->validated('password'))]);
+        Auditoria::registrar('usuario-senha-alterada', auth()->user());
 
-        try{
-
-            $validator = Validator::make($request->all(), [
-                'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
-                'password_confirmation' => 'min:6',
-                'old_password' => 'required'
-            ]);
-
-            $validator->after(function($validator) use($request) {
-                if(!empty($request->cpf) &&  !validaCPF($request->cpf)) {
-                    $validator->errors()->add('cpf', 'Informe um CPF Válido');
-                }
-            });
-
-            if($validator->fails())
-                return back()->withErrors($validator->errors());
-
-
-            auth()->user()->update(['password' => Hash::make($request->get('password'))]);
-
-            return back()->with('success', 'Senha atualizada com sucesso');
-        }catch (\Exception $e){
-            report($e);
-            DB::rollBack();
-            return back()->with('error', $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro ao tentar atualizar os seus dados');
-        }
-
+        return back()->with('success', 'Senha atualizada com sucesso');
     }
 
     public function updatePhoto(Request $request)

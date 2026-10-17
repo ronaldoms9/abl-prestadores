@@ -29,8 +29,8 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 
 | # | Fatia | Horas | Semana |
 | --- | --- | --- | --- |
-| 1 | Setup, limpeza, e-mail e identidade visual | 12 | 1 |
-| 2 | Perfis, permissões e auditoria | 10 | 1 |
+| 1 | Setup, limpeza, e-mail e identidade visual ([detalhe](entrega-1-fatia-1-setup.md)) | 12 | 1 |
+| 2 | Perfis, permissões e auditoria ([detalhe](entrega-1-fatia-2-permissoes.md)) | 10 | 1 |
 | 3 | Migrations e models | 8 | 1 |
 | 4 | UauClient + fake | 16 | 2 |
 | 5 | Importação de empresas, obras e pessoas | 13 | 2 |

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Config;
 use App\Http\Controllers\Controller;
 use App\Permission;
 use App\Role;
+use App\Support\Auditoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -114,8 +115,16 @@ class PermissoesController extends Controller
                 $role = Role::create($array_data);
             }
 
-            $role->permissions()->sync([]);
-            $role->permissions()->attach($request->permissoes);
+            $mudancas = $role->permissions()->sync($request->permissoes);
+
+            if ($mudancas['attached'] || $mudancas['detached']) {
+                $nomes = fn (array $ids) => Permission::whereIn('id', $ids)->orderBy('display_name')->pluck('display_name')->all();
+
+                Auditoria::registrar('perfil-permissoes-alteradas', $role, [
+                    'incluidas' => $nomes($mudancas['attached']),
+                    'removidas' => $nomes($mudancas['detached']),
+                ]);
+            }
 
 
             DB::commit();
@@ -123,7 +132,7 @@ class PermissoesController extends Controller
         }catch (\Exception $e){
             report($e);
             DB::rollBack();
-            return response()->json(['success'=> true, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
+            return response()->json(['success'=> false, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
         }
     }
 

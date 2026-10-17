@@ -3,54 +3,65 @@
 namespace Database\Seeders;
 
 use App\Permission;
-use App\Role;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
+/**
+ * Cria e atualiza as permissões. Não mexe nos vínculos com perfis: isso é
+ * do PerfilSeeder, que usa a lista das permissões criadas nesta execução.
+ */
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    /** @var array<int, string> Nomes das permissões criadas na última execução. */
+    public static array $criadas = [];
+
+    public function run(): void
     {
-        //
-        $permissoes = [
-            ['name' => 'user-list', 'display_name' => 'Listar Usuários', 'description' => 'Usuário acessa tela de controle de usuário e lista os usuarios ativos no sistema', 'module'=> 'Usuários'],
-            ['name' => 'user-create', 'display_name' => 'Cadastrar Usuários', 'description' => 'Dá acesso à cadastrar usuários', 'module' => 'Usuários'],
-            ['name' => 'user-edit', 'display_name' => 'Editar Usuários', 'description' => 'Dá acesso à editar usuários', 'module' => 'Usuários'],
-            ['name' => 'user-delete', 'display_name' => 'Excluir Usuários', 'description'=> 'Dá acesso a remover usuários do sistema', 'module' => 'Usuários'],
+        static::$criadas = [];
 
-            ['name' => 'grupo-list', 'display_name' => 'Listar Grupos de Acesso', 'description' => 'Usuário acessa tela de controle de grupos de acesso e lista os grupos de acesso ativos no sistema', 'module'=> 'Grupos De Acesso'],
-            ['name' => 'grupo-create', 'display_name' => 'Cadastrar Grupos de Acesso', 'description' => 'Dá acesso à cadastrar grupos de acesso', 'module' => 'Grupos De Acesso'],
-            ['name' => 'grupo-edit', 'display_name' => 'Editar Grupos de Acesso', 'description' => 'Dá acesso à editar grupos de acesso', 'module' => 'Grupos De Acesso'],
-            ['name' => 'grupo-delete', 'display_name' => 'Excluir Grupos de Acesso', 'description'=> 'Dá acesso a remover grupos de acesso do sistema', 'module' => 'Grupos De Acesso'],
+        foreach ($this->permissoes() as $permissao) {
+            $registro = Permission::updateOrCreate(
+                ['name' => $permissao['name']],
+                [
+                    'display_name' => $permissao['display_name'],
+                    'description' => $permissao['description'] ?? null,
+                    'module' => $permissao['module'],
+                ],
+            );
+
+            if ($registro->wasRecentlyCreated) {
+                static::$criadas[] = $registro->name;
+            }
+        }
+    }
+
+    /**
+     * @return array<int, array{name: string, display_name: string, description?: string, module: string}>
+     */
+    protected function permissoes(): array
+    {
+        return [
+            ['name' => 'user-list', 'display_name' => 'Listar usuários', 'description' => 'Acessa a tela de usuários e lista os cadastrados', 'module' => 'Usuários'],
+            ['name' => 'user-create', 'display_name' => 'Cadastrar usuários', 'description' => 'Cadastra usuários', 'module' => 'Usuários'],
+            ['name' => 'user-edit', 'display_name' => 'Editar usuários', 'description' => 'Edita usuários, inclusive ativa e desativa', 'module' => 'Usuários'],
+            ['name' => 'user-delete', 'display_name' => 'Excluir usuários', 'description' => 'Exclui usuários cadastrados por engano', 'module' => 'Usuários'],
+
+            ['name' => 'grupo-list', 'display_name' => 'Listar perfis', 'description' => 'Acessa a tela de perfis e lista os cadastrados', 'module' => 'Perfis'],
+            ['name' => 'grupo-create', 'display_name' => 'Cadastrar perfis', 'description' => 'Cadastra perfis de acesso', 'module' => 'Perfis'],
+            ['name' => 'grupo-edit', 'display_name' => 'Editar perfis', 'description' => 'Edita perfis e suas permissões', 'module' => 'Perfis'],
+            ['name' => 'grupo-delete', 'display_name' => 'Excluir perfis', 'description' => 'Exclui perfis de acesso', 'module' => 'Perfis'],
+
+            ['name' => 'empresa-list', 'display_name' => 'Ver empresas', 'module' => 'Cadastros UAU'],
+            ['name' => 'obra-list', 'display_name' => 'Ver obras', 'module' => 'Cadastros UAU'],
+
+            ['name' => 'pessoa-list', 'display_name' => 'Ver pessoas', 'module' => 'Pessoas'],
+            ['name' => 'pessoa-importar', 'display_name' => 'Carregar planilha de pessoas', 'description' => 'Carrega a planilha e vê os relatórios de carga', 'module' => 'Pessoas'],
+
+            ['name' => 'integracao-list', 'display_name' => 'Ver monitoramento das integrações', 'module' => 'Integrações'],
+            ['name' => 'integracao-sincronizar', 'display_name' => 'Sincronizar agora', 'module' => 'Integrações'],
+            ['name' => 'integracao-reenviar', 'display_name' => 'Reprocessar falha de integração', 'module' => 'Integrações'],
+
+            ['name' => 'auditoria-list', 'display_name' => 'Ver auditoria', 'module' => 'Configurações'],
+            ['name' => 'horizon-acessar', 'display_name' => 'Acessar painel de filas (Horizon)', 'module' => 'Configurações'],
         ];
-
-        $role = Role::where('name', 'superadmin')->first();
-
-        if(!$role){
-            $role = Role::create([
-               'name' => 'superadmin',
-               'display_name' => 'Super Administrador',
-               'description' => 'Tem permissão máxima no sistema'
-            ]);
-        }
-
-        foreach($permissoes as $permissao){
-            $perm = Permission::where('name', $permissao['name'])->first();
-            if(!$perm)
-                $perm = Permission::create($permissao);
-
-
-            $attach = ['permission_id' => $perm->id, 'role_id' => $role->id];
-            DB::table('permission_role')->where($attach)->delete();
-
-            DB::table('permission_role')
-                ->insert($attach);
-        }
-
     }
 }

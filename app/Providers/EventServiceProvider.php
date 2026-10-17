@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Listeners\RegistrarAcesso;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -12,7 +16,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<class-string, array<int, class-string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        Login::class => [[RegistrarAcesso::class, 'login']],
+        Logout::class => [[RegistrarAcesso::class, 'logout']],
+        Failed::class => [[RegistrarAcesso::class, 'falha']],
+    ];
 
     /**
      * Register any events for your application.

@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Config;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Role;
+use App\Support\Auditoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -25,7 +27,16 @@ class UserController extends Controller
     {
         if (request()->ajax()) {
 
-            return DataTables::of(User::query())
+            $query = User::query()
+                ->when(request('situacao') === 'ativos', fn ($q) => $q->where('ativo', true))
+                ->when(request('situacao') === 'inativos', fn ($q) => $q->where('ativo', false));
+
+            return DataTables::of($query)
+                ->editColumn('ativo', function ($model) {
+                    return $model->ativo
+                        ? '<span class="badge text-bg-success">Ativo</span>'
+                        : '<span class="badge text-bg-secondary">Inativo</span>';
+                })
                 ->editColumn('created_at', function($model){
                     return $model->created_at->format('d/m/Y H:i');
                 })
@@ -37,7 +48,7 @@ class UserController extends Controller
                         'model' => $model,
                     ]);
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['ativo', 'action'])
                 ->make(true);
         }
         $html = $builder->columns([
@@ -46,7 +57,8 @@ class UserController extends Controller
 
             ['data' => 'name', 'name' => 'name', 'title' => 'Nome','class'=> 'text-semibold',],
             ['data' => 'email', 'name' => 'email', 'title' => 'Email',],
-            ['data' => 'permission', 'name' => 'permission', 'title' => 'Permissão', 'searchable'     => false,],
+            ['data' => 'permission', 'name' => 'permission', 'title' => 'Perfil', 'searchable'     => false, 'orderable' => false,],
+            ['data' => 'ativo', 'name' => 'ativo', 'title' => 'Ativo', 'searchable'     => false,],
             ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Cadastrado em', 'searchable'     => false,],
             [
                 'title'          => 'Ações',
@@ -58,7 +70,7 @@ class UserController extends Controller
                 'class'          => 'td-actions '
             ],
 
-        ])->parameters([
+        ])->ajaxWithForm(route('user.index'), '#filtros-usuarios')->parameters([
             'id'=> 'dataTableTeste',
             'searchDelay' => 300,
             'language' => [
@@ -106,7 +118,7 @@ class UserController extends Controller
                 'nome'=> 'required',
                 'email'=> "required|email|unique:users,email,{$id}",
                 'cpf'=> "nullable|unique:users,cpf,{$id}",
-                'senha'=> $id == 0 ? 'required|min:8' : (!empty($request->password) ? 'min:8': ''),
+                'senha'=> [$id ? 'nullable' : 'required', Password::defaults()],
                 'telefone'=> 'nullable',
                 'grupo_acesso'=> 'required',
             ]);
@@ -119,11 +131,19 @@ class UserController extends Controller
                 throw new \Exception('Informe um CPF válido!',-1);
             }
 
+            // Sem o campo, mantém a situação atual (novo usuário nasce ativo).
+            $ativo = $request->boolean('ativo', $id ? (bool) User::findOrFail($id)->ativo : true);
+
+            if ($id == auth()->id() && ! $ativo) {
+                throw new \Exception('Você não pode desativar o próprio acesso.', -1);
+            }
+
             $array_store =[
                 'name'=> $request->nome,
                 'email'=> $request->email,
-                'cpf'=> filtraNumeros($request->cpf),
-                'telefone'=> $request->telefone
+                'cpf'=> filled($request->cpf) ? filtraNumeros($request->cpf) : null,
+                'telefone'=> $request->telefone,
+                'ativo'=> $ativo,
             ];
 
             if(isset($request->senha) && trim($request->senha)) {
@@ -133,15 +153,22 @@ class UserController extends Controller
             if($id != 0) {
                 $user = User::findOrFail($id);
                 $user->update($array_store);
+
+                if (isset($array_store['password'])) {
+                    Auditoria::registrar('usuario-senha-alterada', $user);
+                }
             }else {
                 //INSERT
                 $user = User::create($array_store);
             }
 
+            $perfisAntes = $user->roles()->orderBy('display_name')->pluck('display_name')->all();
+            $user->roles()->sync([$request->grupo_acesso]);
+            $perfisDepois = $user->roles()->orderBy('display_name')->pluck('display_name')->all();
 
-            $user->roles()->detach();
-
-            $user->roles()->attach($request->grupo_acesso);
+            if ($perfisAntes !== $perfisDepois) {
+                Auditoria::registrar('usuario-perfil-alterado', $user, ['antes' => $perfisAntes, 'depois' => $perfisDepois]);
+            }
 
 
             DB::commit();
@@ -149,7 +176,7 @@ class UserController extends Controller
         }catch (\Exception $e){
             report($e);
             DB::rollBack();
-            return response()->json(['success'=> true, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
+            return response()->json(['success'=> false, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
         }
     }
 
@@ -163,6 +190,10 @@ class UserController extends Controller
     {
         try{
             DB::beginTransaction();
+            if ($id == auth()->id()) {
+                throw new \Exception('Você não pode excluir o próprio usuário.', -1);
+            }
+
             $usuario = User::findOrFail($id);
             $usuario->delete();
 

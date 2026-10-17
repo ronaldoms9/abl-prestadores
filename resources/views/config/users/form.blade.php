@@ -1,6 +1,6 @@
 @extends('layouts.modal', [
     'title' => 'Cadastro de usuário',
-    'formroute'=> route('user.store',[$grupo->id])
+    'formroute'=> route('user.store', [$user->id])
 ])
 {{--@section('size', 'modal-sm')--}}
 {{--@section('title', "Inclusao de Etapa")--}}
@@ -47,13 +47,30 @@
             @endif
         </div>
         <div class="col form-group">
-            <label for="grupo_acesso" class="text-semibold small">Grupo de acesso</label>
+            <label for="grupo_acesso" class="text-semibold small">Perfil</label>
             <select id="grupo_acesso" name="grupo_acesso" class="form-control">
                 <option value="">SELECIONE</option>
                 @foreach($grupos as $grupo)
                     <option {{ $user->roles()->value('id') == $grupo->id ?  'selected' : '' }} value="{{ $grupo->id }}">{{ $grupo->display_name }}</option>
                 @endforeach
             </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col form-group">
+            <div class="form-check form-switch">
+                <input type="hidden" name="ativo" value="0">
+                <input id="ativo" type="checkbox" role="switch" class="form-check-input" name="ativo" value="1"
+                    @checked($user->ativo) @disabled($user->id && $user->id === auth()->id())>
+                <label for="ativo" class="form-check-label">Ativo</label>
+            </div>
+            @if ($user->id && $user->id === auth()->id())
+                {{-- Campo desabilitado não é enviado: mantém o próprio usuário ativo. --}}
+                <input type="hidden" name="ativo" value="1">
+                <span class="text-muted small">Você não pode desativar o próprio acesso.</span>
+            @else
+                <span class="text-muted small">Usuário inativo não entra no sistema.</span>
+            @endif
         </div>
     </div>
 @endsection
