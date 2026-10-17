@@ -7,6 +7,7 @@ use App\Permission;
 use App\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Gate;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /** @var array<int, string>|null */
     protected ?array $permissionNamesCache = null;
@@ -33,8 +34,13 @@ class User extends Authenticatable
         'cpf',
         'photo',
         'photo_url',
-        'photo_url_expire'
+        'photo_url_expire',
+        'ativo',
+    ];
 
+    /** Valores padrão em memória, iguais aos da tabela. */
+    protected $attributes = [
+        'ativo' => true,
     ];
 
     /**
@@ -54,6 +60,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'ativo' => 'boolean',
     ];
 
     protected $dates = [

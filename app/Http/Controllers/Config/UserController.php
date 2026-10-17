@@ -26,7 +26,16 @@ class UserController extends Controller
     {
         if (request()->ajax()) {
 
-            return DataTables::of(User::query())
+            $query = User::query()
+                ->when(request('situacao') === 'ativos', fn ($q) => $q->where('ativo', true))
+                ->when(request('situacao') === 'inativos', fn ($q) => $q->where('ativo', false));
+
+            return DataTables::of($query)
+                ->editColumn('ativo', function ($model) {
+                    return $model->ativo
+                        ? '<span class="badge text-bg-success">Ativo</span>'
+                        : '<span class="badge text-bg-secondary">Inativo</span>';
+                })
                 ->editColumn('created_at', function($model){
                     return $model->created_at->format('d/m/Y H:i');
                 })
@@ -38,7 +47,7 @@ class UserController extends Controller
                         'model' => $model,
                     ]);
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['ativo', 'action'])
                 ->make(true);
         }
         $html = $builder->columns([
@@ -47,7 +56,8 @@ class UserController extends Controller
 
             ['data' => 'name', 'name' => 'name', 'title' => 'Nome','class'=> 'text-semibold',],
             ['data' => 'email', 'name' => 'email', 'title' => 'Email',],
-            ['data' => 'permission', 'name' => 'permission', 'title' => 'Permissão', 'searchable'     => false,],
+            ['data' => 'permission', 'name' => 'permission', 'title' => 'Perfil', 'searchable'     => false, 'orderable' => false,],
+            ['data' => 'ativo', 'name' => 'ativo', 'title' => 'Ativo', 'searchable'     => false,],
             ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Cadastrado em', 'searchable'     => false,],
             [
                 'title'          => 'Ações',
@@ -59,7 +69,7 @@ class UserController extends Controller
                 'class'          => 'td-actions '
             ],
 
-        ])->parameters([
+        ])->ajaxWithForm(route('user.index'), '#filtros-usuarios')->parameters([
             'id'=> 'dataTableTeste',
             'searchDelay' => 300,
             'language' => [
@@ -120,11 +130,19 @@ class UserController extends Controller
                 throw new \Exception('Informe um CPF válido!',-1);
             }
 
+            // Sem o campo, mantém a situação atual (novo usuário nasce ativo).
+            $ativo = $request->boolean('ativo', $id ? (bool) User::findOrFail($id)->ativo : true);
+
+            if ($id == auth()->id() && ! $ativo) {
+                throw new \Exception('Você não pode desativar o próprio acesso.', -1);
+            }
+
             $array_store =[
                 'name'=> $request->nome,
                 'email'=> $request->email,
                 'cpf'=> filtraNumeros($request->cpf),
-                'telefone'=> $request->telefone
+                'telefone'=> $request->telefone,
+                'ativo'=> $ativo,
             ];
 
             if(isset($request->senha) && trim($request->senha)) {
@@ -164,6 +182,10 @@ class UserController extends Controller
     {
         try{
             DB::beginTransaction();
+            if ($id == auth()->id()) {
+                throw new \Exception('Você não pode excluir o próprio usuário.', -1);
+            }
+
             $usuario = User::findOrFail($id);
             $usuario->delete();
 

@@ -7,7 +7,17 @@
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
-                            <div class="col text-right">
+                            <div class="col">
+                                <form id="filtros-usuarios" class="d-flex align-items-center gap-2" onsubmit="return false">
+                                    <label for="situacao" class="small text-semibold mb-0">Situação</label>
+                                    <select id="situacao" name="situacao" class="form-select form-select-sm w-auto">
+                                        <option value="">Todos</option>
+                                        <option value="ativos">Ativos</option>
+                                        <option value="inativos">Inativos</option>
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="col text-end">
                                 <a href="javascript:requestIntoModal('{{ route('user.form') }}')"
                                     class="btn btn-outline-primary btn-md">Adicionar</a>
                             </div>
@@ -32,4 +42,7 @@
 @endsection
 @push('js')
     {!! $html->scripts() !!}
+    <script>
+        $('#filtros-usuarios').on('change', () => $('#dataTableBuilder').DataTable().ajax.reload());
+    </script>
 @endpush
