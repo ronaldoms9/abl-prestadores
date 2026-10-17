@@ -20,7 +20,7 @@ fatias 1 a 3.
 | 1 · Setup, limpeza, e-mail, identidade | 12 | Pronta, na `develop`. Falta: e-mail real em homologação (depende do DNS) | `e1/fatia-1-setup` |
 | 2 · Perfis, permissões, auditoria | 10 | Pronta, na `develop` | `e1/fatia-2-permissoes` |
 | 3 · Migrations e models | 8 | Pronta, na `develop` | `e1/fatia-3-models` |
-| 4 · UauClient + fake | 16 | Plano pronto ([detalhe](entrega-1-fatia-4-uau-client.md)) | `e1/fatia-4-uau-client` |
+| 4 · UauClient + fake | 16 | Pronta ([detalhe](entrega-1-fatia-4-uau-client.md)); falta confirmar D4.5 e D4.8 no UAU real | `e1/fatia-4-uau-client` |
 | 5 · Importação | 13 | Depende da 4 | — |
 | 5b · Carga por planilha | 5 | Depende da 5 | — |
 | 6 · Agendamento + "Sincronizar agora" | 5 | Depende da 5 e da 8 | — |
@@ -128,6 +128,8 @@ E `uau:ping` roda contra o fake.
 - Endereço de empresa e obra vem do UAU num texto só: o mapper grava em
   `endereco.logradouro`. O da pessoa vem separado (`PessoaUau::enderecoPrincipal()`).
 - O job não envolve a chamada ao UAU em transação, senão o rollback apaga o log da falha.
+- Lista vazia do UAU não inativa tudo: zero empresas ou obras ativas é tratado como suspeito.
+- Testes de retentativa com `FakeUauClient::falharEm()`.
 - Endereço pelo `Endereco::fromArray()`; o cast descarta chaves fora do formato.
 - `integracao_logs.entidade` aponta para a empresa, obra ou pessoa, que já estão no mapeamento de nomes polimórficos.
 

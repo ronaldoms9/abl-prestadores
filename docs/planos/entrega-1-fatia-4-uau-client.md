@@ -312,3 +312,37 @@ $this->app->singleton(UauGateway::class, fn ($app) => config('uau.fake')
 | Token expira no meio da conciliação | 401 renova uma vez e repete (4.3) |
 | Duas autenticações simultâneas no worker (corrida no cache) | Aceitável na E1: no pior caso, uma autenticação a mais. Se o UAU limitar sessões, usar `Cache::lock` |
 | O Swagger muda (versão nova do UAU) | Os dados de exemplo e os DTOs são o retrato de 2026-10-17; a seção "O contrato no Swagger" diz a fonte e a data |
+
+---
+
+## Implementação (2026-10-17)
+
+Pronta na branch `e1/fatia-4-uau-client`: 5 commits, um por tarefa, cada um com
+a suíte verde (184 testes no fim). `php artisan uau:ping` sai com 0 contra o
+simulado no Docker. O ciclo de migrations foi testado no MySQL.
+
+**Acréscimos ao plano, vindos da integração do SGTR com o mesmo UAU** (`sgtr/app/Services/UauService.php`)
+
+| Acréscimo | Por quê |
+| --- | --- |
+| `RespostaUau` lê lista simples e DataSet do .NET (`[{"Tabela": [...]}]`), descartando a linha de esquema (`"System.Int32"`) | Endpoints do UAU respondem assim na prática, apesar do Swagger |
+| Campos lidos sem diferenciar maiúsculas | A API mistura `cod_pes` e `CodPessoa` |
+| Token aceito como string ou objeto (`token`/`Token`/`access_token`) | Visto no SGTR |
+| `Authorization` sem "Bearer" confirmado como padrão | O cURL que funciona no SGTR usa o token puro |
+| Header `X-Correlation-ID` em toda chamada, gravado na coluna nova `integracao_logs.correlacao` (migration `2026_10_17_140001`) | Localizar uma chamada junto ao suporte da Globaltec |
+| CNPJ da empresa também completado com zeros no DTO | Mesma regra da pessoa |
+
+**Outras decisões tomadas na implementação**
+- Uma resposta de lista que não é lista vira `UauRejeitou`, nunca lista vazia.
+- O token em cache tem chave por URL + login: trocar a credencial não reaproveita o token antigo.
+- O 401 na própria autenticação é credencial recusada, não "token expirado".
+- A autenticação é registrada sem a entidade do job (não é sobre ela), só com a tentativa.
+
+**Para a fatia 5**
+- Uma lista vazia legítima do UAU (`[]`) chega como lista vazia. O job de
+  importação não deve inativar tudo nesse caso: tratar zero empresas ou obras ativas como suspeito.
+- Nos testes de retentativa, use `FakeUauClient::falharEm()`.
+
+**Ainda pendente:** confirmar o D4.5 (pessoa não encontrada) e o D4.8 (prefixo)
+no primeiro acesso real, com `uau:ping --documento=`.
+
