@@ -37,6 +37,9 @@ class Auditoria
         'sincronizacao-solicitada' => 'Sincronização solicitada',
     ];
 
+    /** Ações que nunca têm autor (quem tentou entrar não está identificado). */
+    public const SEM_AUTOR = ['login-falhou'];
+
     /** Tipo de objeto => [rótulo, atributo que o identifica]. */
     public const OBJETOS = [
         User::class => ['Usuário', 'name'],
@@ -55,7 +58,8 @@ class Auditoria
     ];
 
     /**
-     * Registra uma ação do vocabulário. Sem $autor, vale o usuário logado.
+     * Registra uma ação do vocabulário. Sem $autor, vale o usuário logado
+     * (exceto nas ações de SEM_AUTOR).
      *
      * @param  array<string, mixed>  $dados  Nunca senhas nem hashes.
      */
@@ -73,7 +77,9 @@ class Auditoria
             $registro->performedOn($objeto);
         }
 
-        if ($autor instanceof Model) {
+        if (in_array($acao, self::SEM_AUTOR, true)) {
+            $registro->causedByAnonymous();
+        } elseif ($autor instanceof Model) {
             $registro->causedBy($autor);
         }
 

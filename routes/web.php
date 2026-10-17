@@ -56,5 +56,11 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('grupo.delete')->middleware('permission:grupo-delete');
     });
 
+    Route::group(['prefix' => 'auditoria', 'middleware' => 'permission:auditoria-list'], function(){
+        Route::get('/', [App\Http\Controllers\Config\AuditoriaController::class, 'index'])->name('auditoria.index');
+        Route::get('/{id}', [App\Http\Controllers\Config\AuditoriaController::class, 'show'])
+            ->whereNumber('id')->name('auditoria.show');
+    });
+
 });
 
