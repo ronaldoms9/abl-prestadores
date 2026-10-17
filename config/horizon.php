@@ -210,6 +210,18 @@ return [
             'timeout' => 60,
             'nice' => 10,
         ],
+        'supervisor-uau' => [
+            'connection' => 'redis',
+            'queue' => ['uau'],
+            'balance' => 'simple',
+            'maxProcesses' => 1,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 128,
+            'tries' => 1,
+            'timeout' => 900,
+            'nice' => 10,
+        ],
     ],
 
     'environments' => [
@@ -219,10 +231,16 @@ return [
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
+            'supervisor-uau' => [
+                'maxProcesses' => 1,
+            ],
         ],
 
         'local' => [
             'supervisor-default' => [
+                'maxProcesses' => 1,
+            ],
+            'supervisor-uau' => [
                 'maxProcesses' => 1,
             ],
         ],
