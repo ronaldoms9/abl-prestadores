@@ -44,6 +44,16 @@ class Obra extends Model
         ];
     }
 
+    /** Rótulo do Status_obr do UAU pelo mapa config('uau.status_obra'); sem rótulo, o código (D7.4 da fatia 7). */
+    public function statusRotulo(): string
+    {
+        if ($this->status_uau === null) {
+            return '—';
+        }
+
+        return config("uau.status_obra.{$this->status_uau}") ?? "Código {$this->status_uau}";
+    }
+
     public function empresa(): BelongsTo
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');

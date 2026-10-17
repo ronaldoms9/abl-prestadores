@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\IntegracaoLog;
+use App\Models\Obra;
 use App\Models\PessoaFisica;
 use App\Models\PessoaJuridica;
 use App\Models\User;
@@ -53,6 +55,10 @@ class PermissoesRotasTest extends TestCase
             'pessoa-fisica.show' => ['GET', 'pessoa-fisica.show', [':pessoa-fisica'], 'pessoa-list', 200],
             'pessoa-juridica.index' => ['GET', 'pessoa-juridica.index', [], 'pessoa-list', 200],
             'pessoa-juridica.show' => ['GET', 'pessoa-juridica.show', [':pessoa-juridica'], 'pessoa-list', 200],
+            'empresa.index' => ['GET', 'empresa.index', [], 'empresa-list', 200],
+            'empresa.show' => ['GET', 'empresa.show', [':empresa'], 'empresa-list', 200],
+            'obra.index' => ['GET', 'obra.index', [], 'obra-list', 200],
+            'obra.show' => ['GET', 'obra.show', [':obra'], 'obra-list', 200],
 
             'importacao-pessoa.index' => ['GET', 'importacao-pessoa.index', [], 'pessoa-importar', 200],
             'importacao-pessoa.modelo' => ['GET', 'importacao-pessoa.modelo', [], 'pessoa-importar', 200],
@@ -72,7 +78,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'empresa-list', 'obra-list'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -112,6 +118,8 @@ class PermissoesRotasTest extends TestCase
             ':integracao' => IntegracaoLog::factory()->erro()->create()->id,
             ':pessoa-fisica' => PessoaFisica::factory()->create()->id,
             ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
+            ':empresa' => Empresa::factory()->create()->id,
+            ':obra' => Obra::factory()->create()->id,
             default => $valor,
         }, $parametros);
 

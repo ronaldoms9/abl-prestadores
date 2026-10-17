@@ -71,6 +71,18 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-juridica.show');
     });
 
+    Route::group(['prefix' => 'empresas', 'middleware' => 'permission:empresa-list'], function(){
+        Route::get('/', [App\Http\Controllers\Cadastros\EmpresaController::class, 'index'])->name('empresa.index');
+        Route::get('/{id}', [App\Http\Controllers\Cadastros\EmpresaController::class, 'show'])
+            ->whereNumber('id')->name('empresa.show');
+    });
+
+    Route::group(['prefix' => 'obras', 'middleware' => 'permission:obra-list'], function(){
+        Route::get('/', [App\Http\Controllers\Cadastros\ObraController::class, 'index'])->name('obra.index');
+        Route::get('/{id}', [App\Http\Controllers\Cadastros\ObraController::class, 'show'])
+            ->whereNumber('id')->name('obra.show');
+    });
+
     Route::group(['prefix' => 'pessoas/planilhas', 'middleware' => 'permission:pessoa-importar'], function(){
         Route::get('/', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'index'])->name('importacao-pessoa.index');
         Route::get('/modelo', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'modelo'])->name('importacao-pessoa.modelo');
