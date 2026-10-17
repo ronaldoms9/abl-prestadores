@@ -23,7 +23,7 @@ fatias 1 a 3.
 | 4 · UauClient + fake | 16 | Pronta ([detalhe](entrega-1-fatia-4-uau-client.md)); falta confirmar D4.5 e D4.8 no UAU real | `e1/fatia-4-uau-client` |
 | 5 · Importação | 13 | Pronta ([detalhe](entrega-1-fatia-5-importacao.md)) | `e1/fatia-5-importacao` |
 | 5b · Carga por planilha | 5 | Pronta ([detalhe](entrega-1-fatia-5b-planilha.md)); falta validar com a planilha real | `e1/fatia-5b-planilha` |
-| 6 · Agendamento + "Sincronizar agora" | 5 | Plano pronto ([detalhe](entrega-1-fatia-6-agendamento.md)); 1,5 h já feitas na 8.1 | `e1/fatia-6-agendamento` |
+| 6 · Agendamento + "Sincronizar agora" | 5 | Pronta ([detalhe](entrega-1-fatia-6-agendamento.md)); 1,5 h feitas na 8.1 voltam para a folga | `e1/fatia-6-agendamento` |
 | 7 · Telas de consulta | 8 | Depende da 5 | — |
 | 8 · Monitoramento | 6 | Pronta ([detalhe](entrega-1-fatia-8-monitoramento.md)) | `e1/fatia-8-monitoramento` |
 | 9 · Homologação: VPS + `deploy.sh` | 10 | Independente; espera a VPS | — |

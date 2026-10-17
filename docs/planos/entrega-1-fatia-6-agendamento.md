@@ -117,6 +117,18 @@ A conciliação diária e o botão são o caminho. Vai para o roteiro de homolog
 3. O botão despacha a cadeia, e um segundo clique com ela em andamento é recusado com aviso na tela.
 4. A rota está em `PermissoesRotasTest`.
 
+## Notas da implementação (2026-10-17)
+
+- Sem `->environments()` no agendamento: os testes não rodam o scheduler, e o nome do
+  ambiente de homologação é decidido na fatia 9.
+- A rota `integracao.sincronizar` ficou fora do grupo `integracao-list`, como a de
+  reprocessar, e pede só `integracao-sincronizar`. O quadro fica na tela de integrações, que pede `integracao-list`.
+- `Auditoria::OBJETOS` ganhou a sincronização ("Sincronização · 3").
+- **Verificado no Docker** (serviço `scheduler` novo, Horizon, Redis):
+  - `schedule:list` mostra `0 5 * * *`;
+  - `schedule:test --name=uau:sincronizar` gerou uma sincronização `agendada`, concluída em 2 s com o simulado;
+  - um segundo `disparar()` seguido foi recusado com a mensagem.
+
 ## Riscos
 
 | Risco | Saída |
