@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        /**
+         * Colunas de autoria e de ciclo de vida, no lugar de timestamps() e
+         * softDeletes(). Os autores são opcionais: jobs e seeders gravam sem
+         * usuário logado. Par do trait App\Models\Concerns\RegistraAutoria.
+         */
+        Blueprint::macro('auditoria', function () {
+            /** @var Blueprint $this */
+            $this->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $this->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+            $this->timestamps();
+            $this->softDeletes();
+        });
     }
 }
