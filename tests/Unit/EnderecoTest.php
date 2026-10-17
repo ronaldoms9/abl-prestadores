@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Casts\AsEndereco;
 use App\Support\Endereco;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class EnderecoTest extends TestCase
@@ -72,6 +73,31 @@ class EnderecoTest extends TestCase
         $this->assertNull($cast->get($model, 'endereco', null, []));
         $this->assertNull($cast->get($model, 'endereco', '', []));
         $this->assertNull($cast->get($model, 'endereco', '{}', []));
+    }
+
+    public function test_json_em_texto_e_aceito(): void
+    {
+        $cast = new AsEndereco();
+        $model = new class extends Model {};
+
+        $json = $cast->set($model, 'endereco', '{"cidade":"Goiânia","uf":"go","outra":"x"}', []);
+
+        $this->assertSame('{"logradouro":null,"numero":null,"complemento":null,"bairro":null,"cidade":"Goiânia","uf":"GO","cep":null}', $json);
+    }
+
+    public function test_valor_invalido_falha_em_vez_de_apagar(): void
+    {
+        $cast = new AsEndereco();
+        $model = new class extends Model {};
+
+        foreach (['Rua X, 10', 123, new \stdClass()] as $invalido) {
+            try {
+                $cast->set($model, 'endereco', $invalido, []);
+                $this->fail('Deveria recusar '.get_debug_type($invalido));
+            } catch (InvalidArgumentException $e) {
+                $this->assertStringContainsString('endereco', $e->getMessage());
+            }
+        }
     }
 
     public function test_formatado_sem_partes_vazias(): void

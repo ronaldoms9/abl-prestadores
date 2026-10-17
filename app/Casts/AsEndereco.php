@@ -5,6 +5,7 @@ namespace App\Casts;
 use App\Support\Endereco;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 class AsEndereco implements CastsAttributes
 {
@@ -33,23 +34,33 @@ class AsEndereco implements CastsAttributes
     /**
      * Prepare the given value for storage.
      *
+     * Aceita Endereco, array, JSON em texto ou null. Qualquer outra coisa é erro
+     * de quem chamou: falha em vez de apagar o endereço em silêncio.
+     *
      * @param  array<string, mixed>  $attributes
+     *
+     * @throws InvalidArgumentException
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        if ($value === null) {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        if ($value instanceof Endereco) {
-            return $value->vazio() ? null : json_encode($value->toArray(), JSON_UNESCAPED_UNICODE);
+        if (is_string($value)) {
+            $value = json_decode($value, true);
+
+            if (! is_array($value)) {
+                throw new InvalidArgumentException("O campo {$key} recebeu um texto que não é um JSON de endereço.");
+            }
         }
 
-        if (is_array($value)) {
-            $endereco = Endereco::fromArray($value);
-            return $endereco->vazio() ? null : json_encode($endereco->toArray(), JSON_UNESCAPED_UNICODE);
-        }
+        $endereco = match (true) {
+            $value instanceof Endereco => $value,
+            is_array($value) => Endereco::fromArray($value),
+            default => throw new InvalidArgumentException("O campo {$key} espera Endereco, array ou JSON; recebeu ".get_debug_type($value).'.'),
+        };
 
-        return null;
+        return $endereco->vazio() ? null : json_encode($endereco->toArray(), JSON_UNESCAPED_UNICODE);
     }
 }
