@@ -156,7 +156,7 @@ planilha (e o inverso), com o CNPJ/CPF formatado e a situação. Aceitar ou desc
 
 ## Notas da implementação (2026-10-17)
 
-- A busca usa `LIKE ... ESCAPE '!'`. O `\\` como escape não funciona igual no MySQL e no
+- A busca usa `LIKE ... ESCAPE '!'`. O `\` como escape não funciona igual no MySQL e no
   SQLite (no SQLite vira dois caracteres), e `!` funciona nos dois.
 - Uma view de lista só (`cadastros.index`) serve as quatro telas, com filtros extras por
   partial (empresa, na de obras). As opções de situação vão pela view, porque constante de trait não pode ser lida de fora.
