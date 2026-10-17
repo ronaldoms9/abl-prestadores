@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
+use App\Models\IntegracaoLog;
 use App\Models\User;
 use App\Role;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -37,6 +38,7 @@ class Auditoria
         'perfil-permissoes-alteradas' => 'Permissões do perfil alteradas',
         'planilha-carregada' => 'Planilha carregada',
         'sincronizacao-solicitada' => 'Sincronização solicitada',
+        'integracao-reprocessada' => 'Integração reprocessada',
     ];
 
     /** Ações que nunca têm autor (quem tentou entrar não está identificado). */
@@ -47,6 +49,7 @@ class Auditoria
         User::class => ['Usuário', 'name'],
         Role::class => ['Perfil', 'display_name'],
         ImportacaoPessoa::class => ['Carga de planilha', 'nome_original'],
+        IntegracaoLog::class => ['Chamada ao UAU', 'operacao'],
     ];
 
     /** Campo auditado => rótulo. */

@@ -113,3 +113,28 @@ async function deleteDefault(url, data = {}, msg_alert = 'Deseja realmente exclu
     }
     return false;
 }
+
+
+/**
+ * POST simples a uma ação que responde {success, message}: pergunta antes (se
+ * houver pergunta), recarrega a tabela da tela e mostra a mensagem.
+ */
+async function postAction(url, pergunta = null, data = {}) {
+    if (pergunta && !confirm(pergunta)) {
+        return false;
+    }
+
+    blockpage();
+    return axios.post(url, data).then(res => {
+        unblockpage();
+        if ($('#dataTableBuilder').length) {
+            $('#dataTableBuilder').DataTable().ajax.reload(null, false);
+        }
+        showNotify('Sucesso', res.data.message || 'Pedido enviado.');
+        return true;
+    }).catch(err => {
+        unblockpage();
+        showNotify('Atenção', err.response?.data?.message || 'Ocorreu um erro ao enviar o pedido.', 'error');
+        return false;
+    });
+}

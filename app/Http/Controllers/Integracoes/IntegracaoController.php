@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Integracoes;
 
+use App\Actions\Integracoes\NaoReprocessavel;
+use App\Actions\Integracoes\ReprocessarFalha;
 use App\Enums\DirecaoIntegracao;
 use App\Enums\StatusIntegracao;
 use App\Http\Controllers\Controller;
@@ -75,6 +77,17 @@ class IntegracaoController extends Controller
             'registro' => $registro,
             'resolvidaPor' => $registro->resolvidaPor(),
         ]);
+    }
+
+    public function reprocessar($id, ReprocessarFalha $reprocessar)
+    {
+        $log = IntegracaoLog::findOrFail($id);
+
+        try {
+            return response()->json(['success' => true, 'message' => $reprocessar->executar($log)]);
+        } catch (NaoReprocessavel $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+        }
     }
 
     private function dados(Request $request)

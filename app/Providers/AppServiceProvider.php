@@ -11,6 +11,7 @@ use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
 use App\Models\PessoaFisica;
+use App\Models\IntegracaoLog;
 use App\Models\PessoaJuridica;
 use App\Models\Sincronizacao;
 use App\Models\User;
@@ -78,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
             'pessoa-juridica' => PessoaJuridica::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
             'sincronizacao' => Sincronizacao::class,
+            'integracao-log' => IntegracaoLog::class,
         ]);
 
         // Fora de produção, relação não carregada com with() quebra em vez de gerar N+1.

@@ -54,6 +54,7 @@ class PermissoesRotasTest extends TestCase
 
             'integracao.index' => ['GET', 'integracao.index', [], 'integracao-list', 200],
             'integracao.show' => ['GET', 'integracao.show', [':integracao'], 'integracao-list', 200],
+            'integracao.reprocessar' => ['POST', 'integracao.reprocessar', [':integracao'], 'integracao-reenviar', null],
 
             'horizon' => ['GET', '/horizon', [], 'horizon-acessar', 200],
         ];
@@ -63,7 +64,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
