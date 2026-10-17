@@ -56,6 +56,15 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('grupo.delete')->middleware('permission:grupo-delete');
     });
 
+    /**
+     * Telas de consulta (fatia 7), só leitura
+     */
+    Route::group(['prefix' => 'pessoas/fisicas', 'middleware' => 'permission:pessoa-list'], function(){
+        Route::get('/', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'index'])->name('pessoa-fisica.index');
+        Route::get('/{id}', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'show'])
+            ->whereNumber('id')->name('pessoa-fisica.show');
+    });
+
     Route::group(['prefix' => 'pessoas/planilhas', 'middleware' => 'permission:pessoa-importar'], function(){
         Route::get('/', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'index'])->name('importacao-pessoa.index');
         Route::get('/modelo', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'modelo'])->name('importacao-pessoa.modelo');
