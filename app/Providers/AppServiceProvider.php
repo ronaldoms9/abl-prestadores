@@ -7,6 +7,7 @@ use App\Integrations\Uau\RegistroIntegracao;
 use App\Integrations\Uau\Sanitizador;
 use App\Integrations\Uau\UauClient;
 use App\Integrations\Uau\UauGateway;
+use App\Http\View\Composers\IndicadorIntegracao;
 use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
@@ -88,5 +89,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.partials._sidebar', function ($view) {
             $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));
         });
+
+        View::composer('layouts.partials._navbar', IndicadorIntegracao::class);
     }
 }

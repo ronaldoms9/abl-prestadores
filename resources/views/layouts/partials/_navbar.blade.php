@@ -18,7 +18,38 @@
 
              <!--end::Navbar Search-->
 
-             {{-- Fatia 8: indicador de falhas de integração. --}}
+             @if ($indicadorIntegracao)
+                 <!--begin::Indicador de integrações (fatia 8)-->
+                 <li class="nav-item dropdown" id="indicador-integracao">
+                     <a class="nav-link" data-bs-toggle="dropdown" href="#" title="Integrações com o UAU">
+                         <i class="bi bi-bell"></i>
+                         @if ($indicadorIntegracao['falhas'] > 0)
+                             <span class="navbar-badge badge text-bg-danger">{{ $indicadorIntegracao['falhas'] }}</span>
+                         @endif
+                     </a>
+                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                         <span class="dropdown-item dropdown-header">Integrações com o UAU</span>
+                         <div class="dropdown-divider"></div>
+                         <a href="{{ route('integracao.index', ['situacao' => 'sem-solucao', 'de' => now()->subDay()->toDateString()]) }}" class="dropdown-item">
+                             <i class="bi bi-exclamation-triangle me-2 {{ $indicadorIntegracao['falhas'] > 0 ? 'text-danger' : 'text-muted' }}"></i>
+                             @if ($indicadorIntegracao['falhas'] === 0)
+                                 Nenhuma falha sem solução nas últimas 24 h
+                             @else
+                                 {{ $indicadorIntegracao['falhas'] }} {{ $indicadorIntegracao['falhas'] === 1 ? 'falha' : 'falhas' }} sem solução nas últimas 24 h
+                             @endif
+                         </a>
+                         <div class="dropdown-divider"></div>
+                         <span class="dropdown-item small text-muted">
+                             <i class="bi bi-arrow-repeat me-2"></i>
+                             Última sincronização concluída:
+                             {{ $indicadorIntegracao['ultima']?->format('d/m/Y H:i') ?? 'nenhuma' }}
+                         </span>
+                         <div class="dropdown-divider"></div>
+                         <a href="{{ route('integracao.index') }}" class="dropdown-item dropdown-footer">Ver todas as chamadas</a>
+                     </div>
+                 </li>
+                 <!--end::Indicador de integrações-->
+             @endif
 
              <!--begin::Fullscreen Toggle-->
              <li class="nav-item">
