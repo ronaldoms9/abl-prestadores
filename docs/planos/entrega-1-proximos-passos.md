@@ -21,8 +21,8 @@ fatias 1 a 3.
 | 2 · Perfis, permissões, auditoria | 10 | Pronta, na `develop` | `e1/fatia-2-permissoes` |
 | 3 · Migrations e models | 8 | Pronta, na `develop` | `e1/fatia-3-models` |
 | 4 · UauClient + fake | 16 | Pronta ([detalhe](entrega-1-fatia-4-uau-client.md)); falta confirmar D4.5 e D4.8 no UAU real | `e1/fatia-4-uau-client` |
-| 5 · Importação | 13 | Plano pronto ([detalhe](entrega-1-fatia-5-importacao.md)) | `e1/fatia-5-importacao` |
-| 5b · Carga por planilha | 5 | Depende da 5 | — |
+| 5 · Importação | 13 | Pronta ([detalhe](entrega-1-fatia-5-importacao.md)) | `e1/fatia-5-importacao` |
+| 5b · Carga por planilha | 5 | Plano pronto ([detalhe](entrega-1-fatia-5b-planilha.md)) | `e1/fatia-5b-planilha` |
 | 6 · Agendamento + "Sincronizar agora" | 5 | Depende da 5 e da 8 | — |
 | 7 · Telas de consulta | 8 | Depende da 5 | — |
 | 8 · Monitoramento | 6 | Depende da 4 (logs) e da 5 | — |
@@ -142,6 +142,8 @@ Plano detalhado: [entrega-1-fatia-5-importacao.md](entrega-1-fatia-5-importacao.
 - cada fixture vira os atributos esperados (teste do mapper).
 
 ## Fatia 5b — Carga por planilha · 5 h · semanas 2 e 3
+
+Plano detalhado: [entrega-1-fatia-5b-planilha.md](entrega-1-fatia-5b-planilha.md).
 
 **Entrega:**
 - tela `Pessoas › Carregar planilha` (`pessoa-importar`);
