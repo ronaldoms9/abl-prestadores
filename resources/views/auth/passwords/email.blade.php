@@ -1,52 +1,36 @@
-@extends('layouts.app', ['class' => 'bg-default'])
+@extends('layouts.auth', ['title' => 'Esqueci minha senha'])
 
-@section('content')
-    @include('layouts.headers.guest')
+@section('auth')
+    <p class="login-box-msg">
+        <strong class="d-block mb-1">Esqueci minha senha</strong>
+        Informe seu e-mail e enviaremos um link para criar uma nova senha.
+    </p>
 
-    <div class="container mt--8 pb-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-7">
-                <div class="card bg-secondary shadow border-0">
-                    <div class="card-body px-lg-5 py-lg-5">
-                        <div class="text-center text-muted mb-4">
-                            <small>{{ __('Reset password') }}</small>
-                        </div>
+    @if (session('status'))
+        <div class="alert alert-success" role="alert">{{ session('status') }}</div>
+    @endif
 
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
+    <form method="POST" action="{{ route('password.email') }}" novalidate>
+        @csrf
 
-                        @if (session('info'))
-                            <div class="alert alert-info" role="alert">
-                                {{ session('info') }}
-                            </div>
-                        @endif
-
-                        <form role="form" method="POST" action="{{ route('password.email') }}">
-                            @csrf
-
-                            <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }} mb-3">
-                                <div class="input-group input-group-alternative">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                                    </div>
-                                    <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" type="email" name="email" value="{{ old('email') }}" required autofocus>
-                                </div>
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary my-4">{{ __('Send Password Reset Link') }}</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+        <div class="mb-3">
+            <div class="input-group has-validation">
+                <input type="email" name="email" id="email" value="{{ old('email') }}"
+                    class="form-control @error('email') is-invalid @enderror" placeholder="E-mail"
+                    autocomplete="email" required autofocus>
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
         </div>
-    </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Enviar link</button>
+        </div>
+    </form>
+
+    <p class="mt-3 mb-0">
+        <a href="{{ route('login') }}">Voltar para o login</a>
+    </p>
 @endsection

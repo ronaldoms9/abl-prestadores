@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\RedefinirSenha;
 use App\Permission;
 use App\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -104,6 +105,11 @@ class User extends Authenticatable
     public function esquecerPermissoes(): void
     {
         $this->permissionNamesCache = null;
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new RedefinirSenha($token));
     }
 
     public function roles()
