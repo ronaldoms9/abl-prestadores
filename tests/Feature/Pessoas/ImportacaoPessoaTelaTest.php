@@ -96,6 +96,7 @@ class ImportacaoPessoaTelaTest extends TestCase
 
     public function test_historico_mostra_o_resumo_curto(): void
     {
+        $this->usuario->update(['name' => "Joana D'Arc"]);
         ImportacaoPessoa::factory()->create([
             'status' => StatusImportacao::Concluida,
             'resumo' => ['linhas' => 4, 'pf' => ['importada' => 2, 'invalida' => 1], 'pj' => ['importada' => 1], 'vinculos' => 1, 'sem_documento' => 0, 'nao_processadas' => 0],
@@ -108,7 +109,8 @@ class ImportacaoPessoaTelaTest extends TestCase
             ->json('data');
 
         $this->assertSame('Importada: 3 · Inválida: 1', $dados[0]['resumo']);
-        $this->assertSame($this->usuario->name, $dados[0]['usuario']);
+        // O DataTables escapa o HTML das colunas: o apóstrofo vira &#039;.
+        $this->assertSame('Joana D&#039;Arc', $dados[0]['usuario']);
         $this->assertSame('Concluída', $dados[0]['status']);
     }
 
