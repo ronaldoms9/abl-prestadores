@@ -89,6 +89,12 @@ Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.
   execução em `sincronizacoes` e despacha a cadeia; só uma por vez (uma em andamento há
   mais de 1 h é dada como interrompida). `Conciliacao::cadeia()->dispatch()` continua
   rodando a cadeia sem registro, só para depuração.
+- **Agendamento:** `php artisan uau:sincronizar` dispara a conciliação completa e é o que o
+  scheduler roda todo dia às `UAU_SINCRONIZACAO_HORARIO` (05:00, fuso `APP_TIMEZONE`). No
+  Docker, o serviço `scheduler` roda `schedule:work`; no servidor, o cron chama
+  `schedule:run` a cada minuto (fatia 9). Para testar sem esperar:
+  `php artisan schedule:test --name=uau:sincronizar`. O botão "Sincronizar agora" fica em
+  Integrações (`integracao-sincronizar`); com uma em andamento, recusa com aviso.
 - **Carga por planilha** (`Pessoas › Carregar planilha`, permissão `pessoa-importar`):
   colunas `cpf` e `cnpj`, até `UAU_PLANILHA_MAX_LINHAS` linhas (2000). Cabeçalho errado
   recusa o arquivo; dígito verificador errado marca a linha sem consultar o UAU. As

@@ -52,4 +52,9 @@ return [
         'lote' => (int) env('UAU_PLANILHA_LOTE', 50),
         'disco' => env('UAU_PLANILHA_DISCO', 'local'),
     ],
+
+    // Conciliação diária completa (fatia 6), no fuso APP_TIMEZONE.
+    'sincronizacao' => [
+        'horario' => env('UAU_SINCRONIZACAO_HORARIO', '05:00'),
+    ],
 ];

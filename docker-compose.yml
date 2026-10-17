@@ -79,6 +79,25 @@ services:
         depends_on:
             - redis
             - mysql
+    # Scheduler do Laravel (conciliação diária com o UAU, fatia 6). No servidor é o cron da fatia 9.
+    scheduler:
+        build:
+            context: ./.docker
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        restart: unless-stopped
+        entrypoint: ['php', '/var/www/html/artisan', 'schedule:work']
+        environment:
+            LARAVEL_SAIL: 1
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
+        depends_on:
+            - redis
+            - mysql
 networks:
     sail:
         driver: bridge

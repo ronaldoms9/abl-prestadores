@@ -15,7 +15,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        // Conciliação diária com o UAU (fatia 6). No servidor, o cron roda schedule:run a cada minuto.
+        $schedule->command('uau:sincronizar')
+            ->dailyAt(config('uau.sincronizacao.horario'))
+            ->onOneServer()
+            ->withoutOverlapping();
     }
 
     /**

@@ -69,6 +69,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{id}', [App\Http\Controllers\Integracoes\IntegracaoController::class, 'show'])
             ->whereNumber('id')->name('integracao.show');
     });
+    Route::post('/integracoes/sincronizar', [App\Http\Controllers\Integracoes\IntegracaoController::class, 'sincronizar'])
+        ->name('integracao.sincronizar')->middleware('permission:integracao-sincronizar');
     Route::post('/integracoes/{id}/reprocessar', [App\Http\Controllers\Integracoes\IntegracaoController::class, 'reprocessar'])
         ->whereNumber('id')->name('integracao.reprocessar')->middleware('permission:integracao-reenviar');
 
