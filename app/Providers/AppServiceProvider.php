@@ -7,11 +7,14 @@ use App\Integrations\Uau\RegistroIntegracao;
 use App\Integrations\Uau\Sanitizador;
 use App\Integrations\Uau\UauClient;
 use App\Integrations\Uau\UauGateway;
+use App\Http\View\Composers\IndicadorIntegracao;
 use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
 use App\Models\PessoaFisica;
+use App\Models\IntegracaoLog;
 use App\Models\PessoaJuridica;
+use App\Models\Sincronizacao;
 use App\Models\User;
 use App\Role;
 use App\View\Menu;
@@ -76,6 +79,8 @@ class AppServiceProvider extends ServiceProvider
             'pessoa-fisica' => PessoaFisica::class,
             'pessoa-juridica' => PessoaJuridica::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
+            'sincronizacao' => Sincronizacao::class,
+            'integracao-log' => IntegracaoLog::class,
         ]);
 
         // Fora de produção, relação não carregada com with() quebra em vez de gerar N+1.
@@ -84,5 +89,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.partials._sidebar', function ($view) {
             $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));
         });
+
+        View::composer('layouts.partials._navbar', IndicadorIntegracao::class);
     }
 }

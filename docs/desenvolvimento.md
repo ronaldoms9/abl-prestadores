@@ -78,6 +78,17 @@ Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.
   (`config('uau.limite_inativacao') = 0.5`), a importação lança `ImportacaoSuspensa`
   e não altera nada. Para desativações legítimas em massa, ajuste `UAU_LIMITE_INATIVACAO=1.0`
   no `.env` temporariamente.
+- **Monitoramento** (`Integrações`, permissão `integracao-list`): cada linha de
+  `integracao_logs`, com filtros. Uma falha fica **resolvida** quando uma chamada
+  posterior da mesma operação e da mesma chave deu certo; só as sem solução contam
+  no sino do topo (últimas 24 h, cache de 60 s). **Reprocessar** (`integracao-reenviar`)
+  despacha de novo o job da importação (empresas, obras ou a pessoa). Falha de
+  autenticação não se reprocessa: a nova tentativa do job autentica de novo e a resolve.
+  No simulado não há autenticação; uma falha de `autenticar` criada à mão fica sem solução.
+- **Sincronizações:** `Conciliacao::disparar(OrigemSincronizacao::Manual)` registra a
+  execução em `sincronizacoes` e despacha a cadeia; só uma por vez (uma em andamento há
+  mais de 1 h é dada como interrompida). `Conciliacao::cadeia()->dispatch()` continua
+  rodando a cadeia sem registro, só para depuração.
 - **Carga por planilha** (`Pessoas › Carregar planilha`, permissão `pessoa-importar`):
   colunas `cpf` e `cnpj`, até `UAU_PLANILHA_MAX_LINHAS` linhas (2000). Cabeçalho errado
   recusa o arquivo; dígito verificador errado marca a linha sem consultar o UAU. As
