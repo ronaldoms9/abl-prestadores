@@ -37,7 +37,7 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 | 5b | Carga por planilha ([detalhe](entrega-1-fatia-5b-planilha.md)) | 5 | 2–3 |
 | 6 | Agendamento + "Sincronizar agora" | 5 | 3 |
 | 7 | Telas de consulta | 8 | 3 |
-| 8 | Monitoramento das integrações | 6 | 3 |
+| 8 | Monitoramento das integrações ([detalhe](entrega-1-fatia-8-monitoramento.md)) | 6 | 3 |
 | 9 | Homologação: VPS + `deploy.sh` | 10 | 3 (a VPS pode ser montada antes, assim que contratada) |
 | | Folga | 3 | |
 | | **Total** | **96** | 30 h + 32 h + 31 h |
