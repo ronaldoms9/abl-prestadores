@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\ImportacaoPessoa;
 use App\Models\IntegracaoLog;
 use App\Models\PessoaFisica;
+use App\Models\PessoaJuridica;
 use App\Models\User;
 use App\Role;
 use App\Support\Auditoria;
@@ -50,6 +51,8 @@ class PermissoesRotasTest extends TestCase
 
             'pessoa-fisica.index' => ['GET', 'pessoa-fisica.index', [], 'pessoa-list', 200],
             'pessoa-fisica.show' => ['GET', 'pessoa-fisica.show', [':pessoa-fisica'], 'pessoa-list', 200],
+            'pessoa-juridica.index' => ['GET', 'pessoa-juridica.index', [], 'pessoa-list', 200],
+            'pessoa-juridica.show' => ['GET', 'pessoa-juridica.show', [':pessoa-juridica'], 'pessoa-list', 200],
 
             'importacao-pessoa.index' => ['GET', 'importacao-pessoa.index', [], 'pessoa-importar', 200],
             'importacao-pessoa.modelo' => ['GET', 'importacao-pessoa.modelo', [], 'pessoa-importar', 200],
@@ -108,6 +111,7 @@ class PermissoesRotasTest extends TestCase
             ':importacao' => ImportacaoPessoa::factory()->create()->id,
             ':integracao' => IntegracaoLog::factory()->erro()->create()->id,
             ':pessoa-fisica' => PessoaFisica::factory()->create()->id,
+            ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
             default => $valor,
         }, $parametros);
 
