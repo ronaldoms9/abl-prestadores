@@ -68,7 +68,7 @@ nulas valem como iguais: empresas, obras e autenticação).
 - A tela mostra "Erro" ou "Erro resolvido". O filtro de situação tem as duas opções.
 - O indicador e o "Reprocessar" olham só as sem solução.
 
-**D8.4 — O que dá para reprocessar.** Só falhas sem solução, da direção saída:
+**D8.4 — O que dá para reprocessar.** Só falhas sem solução, da direção entrada (leitura do UAU; a saída, gravação no UAU, é da E5):
 
 | Operação | Despacha |
 | --- | --- |
