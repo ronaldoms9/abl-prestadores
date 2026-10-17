@@ -44,4 +44,12 @@ return [
     // que esta fração dos ativos (ou uma lista vazia) suspende a importação sem
     // gravar nada. Com aval da ABL PRIME, rodar uma vez com 1.0 para liberar.
     'limite_inativacao' => (float) env('UAU_LIMITE_INATIVACAO', 0.5),
+
+    // Carga de pessoas por planilha (fatia 5b): limite de linhas por arquivo,
+    // linhas consultadas por execução do job e disco onde o arquivo fica guardado.
+    'planilha' => [
+        'max_linhas' => (int) env('UAU_PLANILHA_MAX_LINHAS', 2000),
+        'lote' => (int) env('UAU_PLANILHA_LOTE', 50),
+        'disco' => env('UAU_PLANILHA_DISCO', 'local'),
+    ],
 ];
