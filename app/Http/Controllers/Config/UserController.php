@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -106,7 +107,7 @@ class UserController extends Controller
                 'nome'=> 'required',
                 'email'=> "required|email|unique:users,email,{$id}",
                 'cpf'=> "nullable|unique:users,cpf,{$id}",
-                'senha'=> $id == 0 ? 'required|min:8' : (!empty($request->password) ? 'min:8': ''),
+                'senha'=> [$id ? 'nullable' : 'required', Password::defaults()],
                 'telefone'=> 'nullable',
                 'grupo_acesso'=> 'required',
             ]);
@@ -149,7 +150,7 @@ class UserController extends Controller
         }catch (\Exception $e){
             report($e);
             DB::rollBack();
-            return response()->json(['success'=> true, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
+            return response()->json(['success'=> false, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
         }
     }
 

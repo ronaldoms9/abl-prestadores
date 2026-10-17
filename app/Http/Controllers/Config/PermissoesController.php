@@ -123,7 +123,7 @@ class PermissoesController extends Controller
         }catch (\Exception $e){
             report($e);
             DB::rollBack();
-            return response()->json(['success'=> true, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
+            return response()->json(['success'=> false, 'message' => $e->getCode() == -1 ? $e->getMessage() : 'Ocorreu um erro, informe à administração!', 'data' => null ], 400);
         }
     }
 

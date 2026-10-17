@@ -6,6 +6,7 @@ use App\View\Menu;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,9 @@ class AppServiceProvider extends ServiceProvider
             $this->timestamps();
             $this->softDeletes();
         });
+
+        // Política única de senha (Q21), usada em todo ponto em que uma senha é definida.
+        Password::defaults(fn () => Password::min(8)->letters()->numbers());
 
         View::composer('layouts.partials._sidebar', function ($view) {
             $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));

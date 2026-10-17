@@ -77,5 +77,6 @@
     "Log Out": "Deslogar",
     "Regards,": "Atenciosamente,",
     "Whoops!": "Ops!",
-    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "Se o botão \":actionText\" não funcionar, copie e cole o endereço abaixo\nno seu navegador:"
+    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "Se o botão \":actionText\" não funcionar, copie e cole o endereço abaixo\nno seu navegador:",
+    "The current password field does not match your password": "A senha atual está incorreta."
 }
