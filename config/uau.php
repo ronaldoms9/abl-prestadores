@@ -39,4 +39,9 @@ return [
 
     // Dados de exemplo do FakeUauClient (fictícios; ver o README da pasta).
     'fake_fixtures' => resource_path('fixtures/uau'),
+
+    // Trava da importação de empresas e obras: uma lista que desativaria mais
+    // que esta fração dos ativos (ou uma lista vazia) suspende a importação sem
+    // gravar nada. Com aval da ABL PRIME, rodar uma vez com 1.0 para liberar.
+    'limite_inativacao' => (float) env('UAU_LIMITE_INATIVACAO', 0.5),
 ];
