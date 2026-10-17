@@ -56,6 +56,14 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('grupo.delete')->middleware('permission:grupo-delete');
     });
 
+    Route::group(['prefix' => 'pessoas/planilhas', 'middleware' => 'permission:pessoa-importar'], function(){
+        Route::get('/', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'index'])->name('importacao-pessoa.index');
+        Route::get('/modelo', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'modelo'])->name('importacao-pessoa.modelo');
+        Route::post('/', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'store'])->name('importacao-pessoa.store');
+        Route::get('/{id}', [App\Http\Controllers\Pessoas\ImportacaoPessoaController::class, 'show'])
+            ->whereNumber('id')->name('importacao-pessoa.show');
+    });
+
     Route::group(['prefix' => 'auditoria', 'middleware' => 'permission:auditoria-list'], function(){
         Route::get('/', [App\Http\Controllers\Config\AuditoriaController::class, 'index'])->name('auditoria.index');
         Route::get('/{id}', [App\Http\Controllers\Config\AuditoriaController::class, 'show'])

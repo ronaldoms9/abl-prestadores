@@ -40,6 +40,43 @@ class ImportacaoPessoa extends Model
         ];
     }
 
+    public function emAndamento(): bool
+    {
+        return in_array($this->status, [StatusImportacao::Pendente, StatusImportacao::Processando], true);
+    }
+
+    /**
+     * Contagens da carga (D5b.10): resultados de PF e PJ, vínculos sugeridos por
+     * esta carga, linhas sem documento e linhas ainda não processadas.
+     *
+     * @return array{linhas: int, pf: array<string, int>, pj: array<string, int>, vinculos: int, sem_documento: int, nao_processadas: int}
+     */
+    public function calcularResumo(): array
+    {
+        $contar = fn (string $coluna) => $this->linhas()
+            ->whereNotNull($coluna)
+            ->groupBy($coluna)
+            ->selectRaw("{$coluna} as resultado, count(*) as total")
+            ->pluck('total', 'resultado')
+            ->map(fn ($total) => (int) $total)
+            ->all();
+
+        return [
+            'linhas' => $this->linhas()->count(),
+            'pf' => $contar('resultado_pf'),
+            'pj' => $contar('resultado_pj'),
+            'vinculos' => $this->vinculosSugeridos()->count(),
+            'sem_documento' => $this->linhas()->whereNull('cpf')->whereNull('cnpj')->count(),
+            'nao_processadas' => $this->linhas()->pendentes()->count(),
+        ];
+    }
+
+    /** O resumo gravado ao fim da carga; em andamento, calculado na hora. */
+    public function resumoAtual(): array
+    {
+        return $this->emAndamento() || $this->resumo === null ? $this->calcularResumo() : $this->resumo;
+    }
+
     public function linhas(): HasMany
     {
         return $this->hasMany(ImportacaoPessoaLinha::class, 'importacao_pessoa_id');
