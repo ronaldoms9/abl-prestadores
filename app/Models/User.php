@@ -9,6 +9,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -77,18 +78,26 @@ class User extends Authenticatable
 
 
     /**
-     * Sobrescreve o can() do Laravel para trabalhar com nomes de permissão.
+     * Aceita nomes de permissão além das abilities do Gate.
      *
-     * As permissões são memoizadas por instância: o comportamento antigo fazia
-     * uma consulta por chamada, inclusive dentro de laços em views.
+     * - can('x') / can(['a', 'b']): tem ao menos uma das permissões;
+     * - can(['a', 'b'], true): tem todas;
+     * - ability definida no Gate ou chamada com argumentos (Policy, como
+     *   can('update', $pessoa)): segue para o Gate do Laravel.
+     *
+     * As permissões são memoizadas por instância.
      */
-    public function can($permissions, $full = false)
+    public function can($abilities, $arguments = [])
     {
-        $permissions = is_array($permissions) ? $permissions : [$permissions];
+        if (! is_bool($arguments) && ($arguments !== [] || Gate::has($abilities))) {
+            return parent::can($abilities, $arguments);
+        }
+
+        $permissions = is_array($abilities) ? $abilities : [$abilities];
 
         $encontradas = array_unique(array_intersect($permissions, $this->permissionNames()));
 
-        return $full
+        return $arguments === true
             ? count($encontradas) === count(array_unique($permissions))
             : count($encontradas) > 0;
     }

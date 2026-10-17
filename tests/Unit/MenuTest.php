@@ -3,8 +3,6 @@
 namespace Tests\Unit;
 
 use App\Models\User;
-use App\Permission;
-use App\Role;
 use App\View\Menu;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -22,7 +20,7 @@ class MenuTest extends TestCase
 
     public function test_com_user_list_ve_usuarios_e_nao_perfis(): void
     {
-        $user = $this->usuarioCom(['user-list']);
+        $user = $this->usuarioCom('user-list');
 
         $menu = Menu::fromConfig()->itensVisiveis($user);
 
@@ -33,7 +31,7 @@ class MenuTest extends TestCase
 
     public function test_item_com_rota_inexistente_nao_aparece(): void
     {
-        $user = $this->usuarioCom(['user-list']);
+        $user = $this->usuarioCom('user-list');
 
         $menu = (new Menu([
             ['titulo' => 'Inexistente', 'rota' => 'rota.que.nao.existe', 'permissao' => 'user-list'],
@@ -48,7 +46,7 @@ class MenuTest extends TestCase
 
     public function test_marca_item_e_grupo_da_rota_atual_como_ativos(): void
     {
-        $user = $this->usuarioCom(['user-list', 'grupo-list']);
+        $user = $this->usuarioCom('user-list', 'grupo-list');
         $this->actingAs($user)->get(route('user.index'));
 
         $configuracoes = collect(Menu::fromConfig()->itensVisiveis($user))->firstWhere('titulo', 'Configurações');
@@ -57,22 +55,5 @@ class MenuTest extends TestCase
         $this->assertTrue($configuracoes['ativo']);
         $this->assertTrue($ativos['Usuários']);
         $this->assertFalse($ativos['Perfis']);
-    }
-
-    /**
-     * @param  array<int, string>  $permissoes
-     */
-    private function usuarioCom(array $permissoes): User
-    {
-        $perfil = Role::create(['name' => 'perfil-teste', 'display_name' => 'Perfil de teste']);
-
-        foreach ($permissoes as $nome) {
-            $perfil->permissions()->attach(Permission::forceCreate(['name' => $nome])->id);
-        }
-
-        $user = User::factory()->create();
-        $user->roles()->attach($perfil);
-
-        return $user;
     }
 }

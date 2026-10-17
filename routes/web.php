@@ -49,7 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', [App\Http\Controllers\Config\PermissoesController::class, 'index'])
             ->name('grupo.index')->middleware('permission:grupo-list');
         Route::get('/form/{id?}', [App\Http\Controllers\Config\PermissoesController::class, 'form'])
-            ->name('grupo.form')->middleware('permission:user-grupo|grupo-edit');
+            ->name('grupo.form')->middleware('permission:grupo-create|grupo-edit');
         Route::post('/store/{id?}', [App\Http\Controllers\Config\PermissoesController::class, 'store'])
             ->name('grupo.store')->middleware('permission:grupo-create|grupo-edit');
         Route::delete('/delete/{id}', [App\Http\Controllers\Config\PermissoesController::class, 'delete'])
