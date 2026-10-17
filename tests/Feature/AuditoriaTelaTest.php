@@ -97,7 +97,7 @@ class AuditoriaTelaTest extends TestCase
 
         $linhas = collect($this->listar()->json('data'))->keyBy('acao');
 
-        $this->assertSame($this->auditor->name, $linhas['Usuário alterado']['usuario']);
+        $this->assertSame(e($this->auditor->name), $linhas['Usuário alterado']['usuario']);
         $this->assertSame('Usuário · Maria', $linhas['Usuário alterado']['objeto']);
         $this->assertSame('e-mail, ativo', $linhas['Usuário alterado']['alteracoes']);
         $this->assertSame('quem@example.com', $linhas['Falha de login']['usuario']);

@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\Documento;
+
 if (!function_exists('validaCPF')) {
     function validaCPF($cpf)
     {
@@ -34,9 +36,10 @@ if (!function_exists('validaCPF')) {
 
 
 if (!function_exists('filtraNumeros')) {
+    /** Só os dígitos, como texto ('' quando não há nenhum). Ver Documento::digitos(). */
     function filtraNumeros($input)
     {
-        return preg_replace('/[^0-9]/', '', $input);
+        return Documento::digitos($input === null ? null : (string) $input) ?? '';
     }
 }
 

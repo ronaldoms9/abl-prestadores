@@ -31,7 +31,7 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 | --- | --- | --- | --- |
 | 1 | Setup, limpeza, e-mail e identidade visual ([detalhe](entrega-1-fatia-1-setup.md)) | 12 | 1 |
 | 2 | Perfis, permissões e auditoria ([detalhe](entrega-1-fatia-2-permissoes.md)) | 10 | 1 |
-| 3 | Migrations e models | 8 | 1 |
+| 3 | Migrations e models ([detalhe](entrega-1-fatia-3-models.md)) | 8 | 1 |
 | 4 | UauClient + fake | 16 | 2 |
 | 5 | Importação de empresas, obras e pessoas | 13 | 2 |
 | 5b | Carga por planilha | 5 | 2–3 |
@@ -41,6 +41,8 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 | 9 | Homologação: VPS + `deploy.sh` | 10 | 3 (a VPS pode ser montada antes, assim que contratada) |
 | | Folga | 3 | |
 | | **Total** | **96** | 30 h + 32 h + 31 h |
+
+Situação e sequência das fatias restantes: [próximos passos](entrega-1-proximos-passos.md).
 
 Ordem: 3 depende de 1; 4 depende de 3 (logs); 5 e 5b dependem de 4; 6–8
 dependem de 5. A fatia 9 é independente do código e deve começar assim que a

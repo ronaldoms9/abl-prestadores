@@ -27,7 +27,7 @@ class AuditoriaRegistroTest extends TestCase
 
         $this->assertSame(['login', 'logout', 'login-falhou'], Activity::orderBy('id')->pluck('event')->all());
 
-        [$login, $logout, $falha] = Activity::orderBy('id')->get();
+        [$login, $logout, $falha] = Activity::with('causer')->orderBy('id')->get();
         $this->assertTrue($login->causer->is($user));
         $this->assertTrue($logout->causer->is($user));
         $this->assertNull($falha->causer);
@@ -48,7 +48,7 @@ class AuditoriaRegistroTest extends TestCase
         $this->actingAs($admin)->postJson(route('user.store', $alvo->id), $dados)->assertOk();
         $this->actingAs($admin)->postJson(route('user.store', $alvo->id), $dados)->assertOk();
 
-        $registro = Activity::sole();
+        $registro = Activity::with(['causer', 'subject'])->sole();
         $this->assertSame('usuario-alterado', $registro->event);
         $this->assertTrue($registro->causer->is($admin));
         $this->assertTrue($registro->subject->is($alvo));
@@ -68,7 +68,7 @@ class AuditoriaRegistroTest extends TestCase
             'nome' => $alvo->name, 'email' => $alvo->email, 'grupo_acesso' => $perfil->id, 'senha' => 'novaSenha123',
         ])->assertOk();
 
-        $registro = Activity::sole();
+        $registro = Activity::with('subject')->sole();
         $this->assertSame('usuario-senha-alterada', $registro->event);
         $this->assertTrue($registro->subject->is($alvo));
         $json = $registro->properties->toJson();
@@ -122,7 +122,7 @@ class AuditoriaRegistroTest extends TestCase
             'nome_grupo' => 'RH', 'descricao' => 'Recursos humanos', 'permissoes' => [$manter->id, $incluir->id],
         ])->assertOk();
 
-        $registro = Activity::sole();
+        $registro = Activity::with('subject')->sole();
         $this->assertSame('perfil-permissoes-alteradas', $registro->event);
         $this->assertTrue($registro->subject->is($perfil));
         $this->assertSame(['Ver obras'], $registro->properties['incluidas']);
