@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Integrations\Uau\Sanitizador;
 use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(Sanitizador::class, fn () => new Sanitizador(config('uau.campos_ocultos', [])));
     }
 
     /**

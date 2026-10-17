@@ -18,4 +18,25 @@ return [
     'timeout' => (int) env('UAU_TIMEOUT', 30),
     'token_ttl' => (int) env('UAU_TOKEN_TTL', 1800),
     'fake' => (bool) env('UAU_FAKE', true),
+
+    // Prefixo do header Authorization antes do token. O UAU aceita o token puro
+    // (confirmado na integração do SGTR); "Bearer " fica disponível sem mudar código.
+    'authorization_prefixo' => env('UAU_AUTHORIZATION_PREFIXO', ''),
+
+    // Recusa URL http:// fora do ambiente local: login, senha e tokens trafegam nas chamadas.
+    'exigir_https' => (bool) env('UAU_EXIGIR_HTTPS', true),
+
+    // Mensagem de um 400 em Pessoas/ConsultarDadosPessoaPorCpfCnpjEStatus que
+    // significa "pessoa não encontrada". Provisório: confirmar com uau:ping --documento.
+    'padrao_nao_encontrada' => '/n[ãa]o (foi )?encontrad|nenhum/iu',
+
+    // Campos trocados por "[oculto]" em integracao_logs, em qualquer nível, sem
+    // diferenciar maiúsculas. Nunca gravar senha, token ou dado bancário.
+    'campos_ocultos' => [
+        'senha', 'senhauauweb', 'loguinuauweb', 'dadosbancarios',
+        'token', 'authorization', 'x-integration-authorization',
+    ],
+
+    // Dados de exemplo do FakeUauClient (fictícios; ver o README da pasta).
+    'fake_fixtures' => resource_path('fixtures/uau'),
 ];
