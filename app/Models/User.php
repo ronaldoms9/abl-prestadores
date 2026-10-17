@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditavel;
 use App\Notifications\RedefinirSenha;
 use App\Permission;
 use App\Role;
@@ -16,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use Auditavel, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /** @var array<int, string>|null */
     protected ?array $permissionNamesCache = null;
@@ -121,6 +122,16 @@ class User extends Authenticatable
     public function esquecerPermissoes(): void
     {
         $this->permissionNamesCache = null;
+    }
+
+    protected function prefixoAuditoria(): string
+    {
+        return 'usuario';
+    }
+
+    protected function camposAuditados(): array
+    {
+        return ['name', 'email', 'cpf', 'telefone', 'ativo'];
     }
 
     public function sendPasswordResetNotification($token): void

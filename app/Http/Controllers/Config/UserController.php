@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Config;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Role;
+use App\Support\Auditoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -140,7 +141,7 @@ class UserController extends Controller
             $array_store =[
                 'name'=> $request->nome,
                 'email'=> $request->email,
-                'cpf'=> filtraNumeros($request->cpf),
+                'cpf'=> filled($request->cpf) ? filtraNumeros($request->cpf) : null,
                 'telefone'=> $request->telefone,
                 'ativo'=> $ativo,
             ];
@@ -152,15 +153,22 @@ class UserController extends Controller
             if($id != 0) {
                 $user = User::findOrFail($id);
                 $user->update($array_store);
+
+                if (isset($array_store['password'])) {
+                    Auditoria::registrar('usuario-senha-alterada', $user);
+                }
             }else {
                 //INSERT
                 $user = User::create($array_store);
             }
 
+            $perfisAntes = $user->roles()->orderBy('display_name')->pluck('display_name')->all();
+            $user->roles()->sync([$request->grupo_acesso]);
+            $perfisDepois = $user->roles()->orderBy('display_name')->pluck('display_name')->all();
 
-            $user->roles()->detach();
-
-            $user->roles()->attach($request->grupo_acesso);
+            if ($perfisAntes !== $perfisDepois) {
+                Auditoria::registrar('usuario-perfil-alterado', $user, ['antes' => $perfisAntes, 'depois' => $perfisDepois]);
+            }
 
 
             DB::commit();
