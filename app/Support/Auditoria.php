@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Role;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use InvalidArgumentException;
 use Spatie\Activitylog\Models\Activity;
 
@@ -89,7 +90,9 @@ class Auditoria
     /** Rótulo de uma ação ou de um tipo de objeto; sem rótulo, o próprio valor. */
     public static function rotulo(?string $valor): string
     {
-        return self::ACOES[$valor] ?? self::OBJETOS[$valor][0] ?? (string) $valor;
+        $classe = Relation::getMorphedModel($valor) ?? $valor;
+
+        return self::ACOES[$valor] ?? self::OBJETOS[$classe][0] ?? (string) $valor;
     }
 
     /** "Usuário · Maria Souza", "Perfil · RH" ou null quando não há objeto. */
@@ -99,12 +102,13 @@ class Auditoria
             return null;
         }
 
-        $atributo = self::OBJETOS[$registro->subject_type][1] ?? null;
+        $classe = Relation::getMorphedModel($registro->subject_type) ?? $registro->subject_type;
+        $atributo = self::OBJETOS[$classe][1] ?? null;
         $identificacao = ($atributo ? $registro->subject?->{$atributo} : null)
             ?? $registro->properties['attributes'][$atributo ?? ''] ?? $registro->properties['old'][$atributo ?? ''] ?? null
             ?? '#'.$registro->subject_id;
 
-        return self::rotulo($registro->subject_type).' · '.$identificacao;
+        return self::rotulo($classe).' · '.$identificacao;
     }
 
     /** Quem fez: o usuário, o e-mail digitado (falha de login) ou "Sistema". */

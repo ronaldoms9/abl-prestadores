@@ -28,8 +28,9 @@ class UserController extends Controller
         if (request()->ajax()) {
 
             $query = User::query()
-                ->when(request('situacao') === 'ativos', fn ($q) => $q->where('ativo', true))
-                ->when(request('situacao') === 'inativos', fn ($q) => $q->where('ativo', false));
+                ->with('roles')
+                ->when(request('situacao') === 'ativos', fn ($q) => $q->ativos())
+                ->when(request('situacao') === 'inativos', fn ($q) => $q->inativos());
 
             return DataTables::of($query)
                 ->editColumn('ativo', function ($model) {

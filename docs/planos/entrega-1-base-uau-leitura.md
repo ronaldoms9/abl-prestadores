@@ -31,7 +31,7 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 | --- | --- | --- | --- |
 | 1 | Setup, limpeza, e-mail e identidade visual ([detalhe](entrega-1-fatia-1-setup.md)) | 12 | 1 |
 | 2 | Perfis, permissões e auditoria ([detalhe](entrega-1-fatia-2-permissoes.md)) | 10 | 1 |
-| 3 | Migrations e models | 8 | 1 |
+| 3 | Migrations e models ([detalhe](entrega-1-fatia-3-models.md)) | 8 | 1 |
 | 4 | UauClient + fake | 16 | 2 |
 | 5 | Importação de empresas, obras e pessoas | 13 | 2 |
 | 5b | Carga por planilha | 5 | 2–3 |

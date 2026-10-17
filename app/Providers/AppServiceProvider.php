@@ -43,6 +43,20 @@ class AppServiceProvider extends ServiceProvider
         // Política única de senha (Q21), usada em todo ponto em que uma senha é definida.
         Password::defaults(fn () => Password::min(8)->letters()->numbers());
 
+        // D3.6 Morph map explícito para tabelas polimórficas (integracao_logs, activity_log)
+        \Illuminate\Database\Eloquent\Relations\Relation::enforceMorphMap([
+            'usuario' => \App\Models\User::class,
+            'perfil' => \App\Role::class,
+            'empresa' => \App\Models\Empresa::class,
+            'obra' => \App\Models\Obra::class,
+            'pessoa-fisica' => \App\Models\PessoaFisica::class,
+            'pessoa-juridica' => \App\Models\PessoaJuridica::class,
+            'importacao-pessoa' => \App\Models\ImportacaoPessoa::class,
+        ]);
+
+        // D3.7 Carga preguiçosa barrada fora de produção
+        \Illuminate\Database\Eloquent\Model::preventLazyLoading(! app()->isProduction());
+
         View::composer('layouts.partials._sidebar', function ($view) {
             $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));
         });

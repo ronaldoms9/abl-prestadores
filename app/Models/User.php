@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Ativavel;
 use App\Models\Concerns\Auditavel;
 use App\Notifications\RedefinirSenha;
 use App\Permission;
@@ -17,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Auditavel, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use Ativavel, Auditavel, HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /** @var array<int, string>|null */
     protected ?array $permissionNamesCache = null;
@@ -37,6 +38,7 @@ class User extends Authenticatable
         'photo_url',
         'photo_url_expire',
         'ativo',
+        'pessoa_fisica_id',
     ];
 
     /** Valores padrão em memória, iguais aos da tabela. */
@@ -148,5 +150,10 @@ class User extends Authenticatable
     {
         $fName = explode(' ', $this->getAttribute('name'));
         return $fName[0] ?? '';
+    }
+
+    public function pessoaFisica(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(PessoaFisica::class, 'pessoa_fisica_id');
     }
 }
