@@ -5,18 +5,25 @@ namespace App\Http\Controllers\Integracoes;
 use App\Actions\Integracoes\NaoReprocessavel;
 use App\Actions\Integracoes\ReprocessarFalha;
 use App\Enums\DirecaoIntegracao;
+use App\Enums\OrigemSincronizacao;
+use App\Enums\StatusSincronizacao;
 use App\Enums\StatusIntegracao;
 use App\Http\Controllers\Controller;
+use App\Integrations\Uau\Conciliacao;
 use App\Integrations\Uau\OperacaoUau;
+use App\Integrations\Uau\SincronizacaoEmAndamento;
 use App\Models\IntegracaoLog;
+use App\Models\Sincronizacao;
+use App\Support\Auditoria;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 
 /**
- * Monitoramento das integrações (fatia 8): lista filtrável de integracao_logs
- * e detalhe em modal, só leitura.
+ * Monitoramento das integrações (fatia 8): lista filtrável de integracao_logs,
+ * detalhe em modal e reprocessamento de falhas; quadro das sincronizações e
+ * botão "Sincronizar agora" (fatia 6).
  */
 class IntegracaoController extends Controller
 {
@@ -53,8 +60,12 @@ class IntegracaoController extends Controller
             'pageLength' => 25,
         ]);
 
+        $sincronizacoes = Sincronizacao::with('criadoPor')->latest('iniciada_em')->limit(5)->get();
+
         return view('integracoes.index', [
             'html' => $html,
+            'sincronizacoes' => $sincronizacoes,
+            'emAndamento' => $sincronizacoes->contains(fn (Sincronizacao $s) => $s->status === StatusSincronizacao::EmAndamento),
             'situacoes' => self::SITUACOES,
             'operacoes' => OperacaoUau::cases(),
             'direcoes' => DirecaoIntegracao::cases(),
@@ -76,6 +87,23 @@ class IntegracaoController extends Controller
         return view('integracoes.show', [
             'registro' => $registro,
             'resolvidaPor' => $registro->resolvidaPor(),
+        ]);
+    }
+
+    /** "Sincronizar agora" (D6.3 da fatia 6): a mesma conciliação do agendamento, uma por vez. */
+    public function sincronizar()
+    {
+        try {
+            $sincronizacao = Conciliacao::disparar(OrigemSincronizacao::Manual);
+        } catch (SincronizacaoEmAndamento $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 409);
+        }
+
+        Auditoria::registrar('sincronizacao-solicitada', $sincronizacao);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sincronização enviada para a fila: empresas e obras primeiro, depois as consultas de pessoas.',
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
 use App\Models\IntegracaoLog;
+use App\Models\Sincronizacao;
 use App\Models\User;
 use App\Role;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -50,6 +51,7 @@ class Auditoria
         Role::class => ['Perfil', 'display_name'],
         ImportacaoPessoa::class => ['Carga de planilha', 'nome_original'],
         IntegracaoLog::class => ['Chamada ao UAU', 'operacao'],
+        Sincronizacao::class => ['Sincronização', 'id'],
     ];
 
     /** Campo auditado => rótulo. */

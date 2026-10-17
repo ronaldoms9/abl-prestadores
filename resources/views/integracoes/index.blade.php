@@ -4,6 +4,57 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col">
+                <div class="card shadow mb-3" id="sincronizacoes">
+                    <div class="card-header border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h3 class="card-title mb-0">Sincronizações com o UAU</h3>
+                            <span class="text-muted small">
+                                Todo dia às {{ config('uau.sincronizacao.horario') }}. "Concluída" quer dizer empresas e obras atualizadas
+                                e as consultas de pessoas enviadas para a fila; cada consulta aparece na lista abaixo.
+                            </span>
+                        </div>
+                        @permission('integracao-sincronizar')
+                            <button type="button" class="btn btn-primary btn-sm" id="sincronizar-agora" @disabled($emAndamento)
+                                    onclick="postAction('{{ route('integracao.sincronizar') }}', 'Disparar agora a sincronização completa com o UAU?').then(ok => ok && setTimeout(() => location.reload(), 1500))">
+                                <i class="bi bi-arrow-repeat"></i> {{ $emAndamento ? 'Sincronização em andamento' : 'Sincronizar agora' }}
+                            </button>
+                        @endpermission
+                    </div>
+                    <div class="card-body pt-0">
+                        @if ($sincronizacoes->isEmpty())
+                            <p class="text-muted mb-0">Nenhuma sincronização registrada ainda.</p>
+                        @else
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead>
+                                        <tr><th>Origem</th><th>Pedida por</th><th>Início</th><th>Fim</th><th>Situação</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($sincronizacoes as $sincronizacao)
+                                            <tr>
+                                                <td>{{ $sincronizacao->origem->rotulo() }}</td>
+                                                <td>{{ $sincronizacao->criadoPor?->name ?? '—' }}</td>
+                                                <td class="text-nowrap">{{ $sincronizacao->iniciada_em->format('d/m/Y H:i') }}</td>
+                                                <td class="text-nowrap">{{ $sincronizacao->concluida_em?->format('d/m/Y H:i') ?? '—' }}</td>
+                                                <td>
+                                                    <span class="badge text-bg-{{ match ($sincronizacao->status) {
+                                                        \App\Enums\StatusSincronizacao::Concluida => 'success',
+                                                        \App\Enums\StatusSincronizacao::Falhou => 'danger',
+                                                        default => 'info',
+                                                    } }}">{{ $sincronizacao->status->rotulo() }}</span>
+                                                    @if ($sincronizacao->erro)
+                                                        <span class="small text-danger ms-1">{{ $sincronizacao->erro }}</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="card shadow">
                     <div class="card-header border-0">
                         <form id="filtros-integracao" class="row g-2 align-items-end" onsubmit="return false">
