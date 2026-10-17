@@ -78,4 +78,14 @@ Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.
   (`config('uau.limite_inativacao') = 0.5`), a importação lança `ImportacaoSuspensa`
   e não altera nada. Para desativações legítimas em massa, ajuste `UAU_LIMITE_INATIVACAO=1.0`
   no `.env` temporariamente.
+- **Carga por planilha** (`Pessoas › Carregar planilha`, permissão `pessoa-importar`):
+  colunas `cpf` e `cnpj`, até `UAU_PLANILHA_MAX_LINHAS` linhas (2000). Cabeçalho errado
+  recusa o arquivo; dígito verificador errado marca a linha sem consultar o UAU. As
+  consultas rodam na fila `uau`, em lotes de `UAU_PLANILHA_LOTE` (50). O arquivo fica em
+  `storage/app/importacoes-pessoas/`. Com o simulado, `52998224725` + `27543198000106`
+  dão importada e vínculo sugerido; `74620153826` inativa; `11144477735` não encontrada.
+  Uma carga que ficou `falhou` retoma das linhas pendentes:
+  ```bash
+  php artisan tinker --execute="App\Models\ImportacaoPessoa::whereKey(<id>)->update(['status' => 'processando']); App\Integrations\Uau\Jobs\ProcessarImportacaoPessoasJob::dispatch(<id>);"
+  ```
 

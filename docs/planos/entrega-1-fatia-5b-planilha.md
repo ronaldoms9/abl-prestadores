@@ -256,6 +256,20 @@ Padrão da `AuditoriaController` (Yajra `Builder` + `ajaxWithForm`, Blade AdminL
 6. Uma queda do UAU no meio da carga é retomada sem refazer as linhas prontas.
 7. As rotas estão em `PermissoesRotasTest` e o item "Carregar planilha" aparece para quem tem `pessoa-importar`.
 
+## Notas da implementação (2026-10-17)
+
+- `maatwebsite/excel` entrou na versão 4.0 (PhpSpreadsheet 5), com a mesma API
+  de concerns da 3.1. O `composer.lock` está no `.gitignore`: a versão vale pelo `composer.json` (`^4.0`).
+- `TrataFalhaDoUau` deixou de chamar `release()` antes de relançar `UauIndisponivel`:
+  o worker já aplica o `$backoff` do job. Antes a espera era definida em dois lugares.
+- O CSV de dígitos sem máscara também é completado com zeros (D5b.3), não só a
+  célula numérica: um CSV salvo pelo Excel perde o zero do mesmo jeito.
+- Linha sem CPF nem CNPJ não ganha resultado. Ela é contada em `sem_documento` no resumo.
+- As listas da tela devolvem só as colunas mostradas (`only()`), sem `arquivo_path`.
+- Verificado no Docker (MySQL, Redis, Horizon, simulado): CPF sem o zero foi
+  importado; o inválido não chegou ao UAU; dois vínculos sugeridos foram criados. A segunda carga deu `ja_existia` e nenhum registro novo.
+- Não há migration nova nesta fatia.
+
 ## Riscos
 
 | Risco | Saída |

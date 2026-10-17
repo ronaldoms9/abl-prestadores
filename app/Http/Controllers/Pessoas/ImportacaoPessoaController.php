@@ -110,6 +110,7 @@ class ImportacaoPessoaController extends Controller
             ->addColumn('resumo', fn (ImportacaoPessoa $importacao) => self::resumoCurto($importacao->resumoAtual()))
             ->addColumn('action', fn (ImportacaoPessoa $importacao) => view('pessoas.importacoes.action', ['importacao' => $importacao]))
             ->rawColumns(['action'])
+            ->only(['created_at', 'nome_original', 'usuario', 'status', 'total_linhas', 'resumo', 'action'])
             ->make(true);
     }
 
@@ -129,6 +130,7 @@ class ImportacaoPessoaController extends Controller
             ->editColumn('resultado_pf', fn (ImportacaoPessoaLinha $linha) => $resultado($linha, 'resultado_pf', 'cpf'))
             ->editColumn('resultado_pj', fn (ImportacaoPessoaLinha $linha) => $resultado($linha, 'resultado_pj', 'cnpj'))
             ->editColumn('mensagem', fn (ImportacaoPessoaLinha $linha) => $linha->mensagem ?? '')
+            ->only(['linha', 'cpf', 'resultado_pf', 'cnpj', 'resultado_pj', 'mensagem'])
             ->make(true);
     }
 
