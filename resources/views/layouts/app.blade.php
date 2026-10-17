@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <!--begin::Head-->
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>{{ config('app.name') }}</title>
+    <title>{{ isset($title) ? $title.' · ' : '' }}{{ config('app.name') }}</title>
     <!--begin::Accessibility Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
     <meta name="color-scheme" content="light dark" />
@@ -12,8 +12,9 @@
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
     <!--end::Accessibility Meta Tags-->
     <!--begin::Primary Meta Tags-->
-    <meta name="title" content="AdminLTE v4 | Dashboard" />
-    <meta name="author" content="ColorlibHQ" />
+    <meta name="title" content="{{ config('app.name') }}" />
+    <meta name="author" content="ABL PRIME" />
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}" />
 
     <!--end::Primary Meta Tags-->
     <!--begin::Accessibility Features-->
@@ -37,14 +38,10 @@
     <!--begin::Required Plugin(AdminLTE)-->
     <link rel="stylesheet" href="{{ asset('adminlte/css/adminlte.css') }}" />
     <!--end::Required Plugin(AdminLTE)-->
-    <!-- apexcharts -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-        integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0=" crossorigin="anonymous" />
-    <!-- jsvectormap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
-        integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4=" crossorigin="anonymous" />
+    @if ($corPrimariaRgb = hex2rgb(config('app.cor_primaria')))
+        <style>:root{--bs-primary: {{ config('app.cor_primaria') }}; --bs-primary-rgb: {{ $corPrimariaRgb }};}</style>
+    @endif
     <!-- Icons -->
-    <link href="{{ asset('assets/vendor/nucleo/css/nucleo.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet"
@@ -61,21 +58,15 @@
 <!--end::Head-->
 <!--begin::Body-->
 
+@auth
 <body class="fixed-header fixed-footer fixed-sidebar sidebar-expand-lg sidebar-mini bg-body-tertiary">
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
-
-        @auth()
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-            @include('layouts.partials._navbar')
-            @include('layouts.partials._sidebar')
-        @endauth
-        <!--begin::Header-->
-
-
-        <!--end::Sidebar-->
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+        @include('layouts.partials._navbar')
+        @include('layouts.partials._sidebar')
         <!--begin::App Main-->
         <main class="app-main">
             <!--begin::App Content Header-->
@@ -112,6 +103,11 @@
 
         <!--end::Footer-->
     </div>
+    <!--end::App Wrapper-->
+@else
+<body class="login-page bg-body-secondary">
+    @yield('content')
+@endauth
 
     <script src="{{ mix('/js/app.js') }}"></script>
 
@@ -130,7 +126,6 @@
     <script src="{{ asset('assets/vendor/datatables.net-select/js/dataTables.select.min.js') }}"></script>
 
     <script src="{{ asset('js/requests.js') }}"></script>
-    <!--end::App Wrapper-->
     <!--begin::Script-->
     <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
@@ -143,18 +138,6 @@
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
     <script src="{{ asset('adminlte/js/adminlte.js') }}"></script>
     <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
-
-
-    <!-- apexcharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
-
-    <!-- jsvectormap -->
-    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
-        integrity="sha256-/t1nN2956BT869E6H4V1dnt0X5pAQHPytli+1nTZm2Y=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
-        integrity="sha256-XPpPaZlU8S/HWf7FZLAncLg2SAkP8ScUTII89x9D3lY=" crossorigin="anonymous"></script>
-    <!-- jsvectormap -->
 
     <!--end::Script-->
 

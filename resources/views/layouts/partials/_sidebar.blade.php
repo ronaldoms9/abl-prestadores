@@ -1,63 +1,54 @@
 <aside class="app-sidebar bg-body-tertiary shadow">
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
-        <!--begin::Brand Link-->
-        <a href="{{ url('') }}" class="brand-link">
-            <!--begin::Brand Image-->
-            <img src="{{ asset('images/brand.png') }}" alt="{{ config('app.name') }}"
-                class="brand-image opacity-75 shadow" />
-            <!--end::Brand Image-->
-            <!--begin::Brand Text-->
-            {{-- <span class="brand-text fw-light">AdminLTE 4</span> --}}
-            <!--end::Brand Text-->
+        <a href="{{ route('home') }}" class="brand-link">
+            @if (file_exists(public_path('images/brand.png')))
+                <img src="{{ asset('images/brand.png') }}" alt="{{ config('app.name') }}"
+                    class="brand-image opacity-75 shadow" />
+            @else
+                <span class="brand-text fw-semibold">{{ config('app.name') }}</span>
+            @endif
         </a>
-        <!--end::Brand Link-->
     </div>
     <!--end::Sidebar Brand-->
     <!--begin::Sidebar Wrapper-->
     <div class="sidebar-wrapper">
         <nav class="mt-2">
-            <!--begin::Sidebar Menu-->
+            {{-- Itens vêm de config/menu.php, filtrados por App\View\Menu. --}}
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
-                aria-label="Main navigation" data-accordion="false" id="navigation">
-
-                <li class="nav-item ">
-                    <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
-                        <i class="nav-icon bi bi-speedometer"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-                @permission(['grupo-list', 'user-list'])
-
-                    <li class="nav-item {{ request()->routeIs('user.index') || request()->routeIs('grupo.index') ? 'menu-open ' : '' }}">
-                        <a href="#" class="nav-link {{ request()->routeIs('user.index') || request()->routeIs('grupo.index') ? 'active' : '' }}">
-                            <i class="nav-icon fa fa-cogs"></i>
-                            <p>
-                                Configurações
-                                <i class="nav-arrow bi bi-chevron-right"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('grupo.index') }}" class="nav-link {{ request()->routeIs('grupo.index') ? 'active' : '' }}">
-                                    <i class="nav-icon fa fa-users"></i>
-                                    <p>Grupos de Acesso</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('user.index') }}" class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}">
-                                    <i class="nav-icon fa fa-user"></i>
-                                    <p>Usuários</p>
-                                </a>
-                            </li>
-
-                        </ul>
-                    </li>
-                    @endpermission
-
-                </ul>
-                <!--end::Sidebar Menu-->
-            </nav>
-        </div>
-        <!--end::Sidebar Wrapper-->
-    </aside>
+                aria-label="Menu principal" data-accordion="false" id="navigation">
+                @foreach ($menu as $entrada)
+                    @isset($entrada['itens'])
+                        <li class="nav-item {{ $entrada['ativo'] ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $entrada['ativo'] ? 'active' : '' }}">
+                                <i class="nav-icon {{ $entrada['icone'] }}"></i>
+                                <p>
+                                    {{ $entrada['titulo'] }}
+                                    <i class="nav-arrow bi bi-chevron-right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @foreach ($entrada['itens'] as $item)
+                                    <li class="nav-item">
+                                        <a href="{{ $item['url'] }}" class="nav-link {{ $item['ativo'] ? 'active' : '' }}">
+                                            <i class="nav-icon {{ $item['icone'] }}"></i>
+                                            <p>{{ $item['titulo'] }}</p>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a href="{{ $entrada['url'] }}" class="nav-link {{ $entrada['ativo'] ? 'active' : '' }}">
+                                <i class="nav-icon {{ $entrada['icone'] }}"></i>
+                                <p>{{ $entrada['titulo'] }}</p>
+                            </a>
+                        </li>
+                    @endisset
+                @endforeach
+            </ul>
+        </nav>
+    </div>
+    <!--end::Sidebar Wrapper-->
+</aside>

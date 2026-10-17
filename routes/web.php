@@ -12,27 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//
-Route::get('/', function () {
-    return view('welcome');
-});
-//
-//Route::middleware(['auth'])->group(function(){
-//    Route::get('/dashboard', function () {
-//        return view('dashboard');
-//    })->name('dashboard');
-//    Route::group(['prefix' => 'usuarios'], function(){
-//       Route::get('/', function (){
-//           return view('dashboard');
-//       })->name('users.view');
-//    });
-//});
-//
-//require __DIR__.'/auth.php';
 
 Auth::routes(['register' => false]);
-
-
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('main');
@@ -74,13 +55,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/delete/{id}', [App\Http\Controllers\Config\PermissoesController::class, 'delete'])
             ->name('grupo.delete')->middleware('permission:grupo-delete');
     });
-
-//    Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
-
-//	Route::get('upgrade', function () {return view('pages.upgrade');})->name('upgrade');
-//	 Route::get('map', function () {return view('pages.maps');})->name('map');
-//	 Route::get('icons', function () {return view('pages.icons');})->name('icons');
-//	 Route::get('table-list', function () {return view('pages.tables');})->name('table');
 
 });
 

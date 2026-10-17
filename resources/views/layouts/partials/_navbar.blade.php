@@ -18,34 +18,8 @@
 
              <!--end::Navbar Search-->
 
-             <!--begin::Notifications Dropdown Menu-->
-             <li class="nav-item dropdown">
-                 <a class="nav-link" data-bs-toggle="dropdown" href="#">
-                     <i class="bi bi-bell-fill"></i>
-                     <span class="navbar-badge badge text-bg-warning">15</span>
-                 </a>
-                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                     <span class="dropdown-item dropdown-header">15 Notifications</span>
-                     <div class="dropdown-divider"></div>
-                     <a href="#" class="dropdown-item">
-                         <i class="bi bi-envelope me-2"></i> 4 new messages
-                         <span class="float-end text-secondary fs-7">3 mins</span>
-                     </a>
-                     <div class="dropdown-divider"></div>
-                     <a href="#" class="dropdown-item">
-                         <i class="bi bi-people-fill me-2"></i> 8 friend requests
-                         <span class="float-end text-secondary fs-7">12 hours</span>
-                     </a>
-                     <div class="dropdown-divider"></div>
-                     <a href="#" class="dropdown-item">
-                         <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
-                         <span class="float-end text-secondary fs-7">2 days</span>
-                     </a>
-                     <div class="dropdown-divider"></div>
-                     <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
-                 </div>
-             </li>
-             <!--end::Notifications Dropdown Menu-->
+             {{-- Fatia 8: indicador de falhas de integração. --}}
+
              <!--begin::Fullscreen Toggle-->
              <li class="nav-item">
                  <a class="nav-link" href="#" data-lte-toggle="fullscreen">
@@ -58,14 +32,14 @@
              <li class="nav-item dropdown user-menu">
                  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                      <img src="{{ auth()->user()->photo_url }}"
-                         class="user-image rounded-circle shadow" alt="User Image" />
+                         class="user-image rounded-circle shadow" alt="{{ auth()->user()->name }}" />
                      <span class="d-none d-md-inline">{{ auth()->user()->firstName()}}</span>
                  </a>
                  <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                      <!--begin::User Image-->
                      <li class="user-header text-bg-primary">
                          <img src="{{ auth()->user()->photo_url }}" class="rounded-circle shadow"
-                             alt="User Image" />
+                             alt="{{ auth()->user()->name }}" />
                          <p>
                              {{  auth()->user()->name    }}
                              {{-- <small>Member since Nov. 2023</small> --}}
@@ -77,13 +51,12 @@
                      <!--end::Menu Body-->
                      <!--begin::Menu Footer-->
                      <li class="user-footer">
-                         <a href="{{ route('profile.edit') }}" class="btn btn-default btn-flat">Profile</a>
-                         <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-end" onclick="event.preventDefault();
-                    document.getElementById('logout-form').submit();">
-                        <i class="ni ni-user-run"></i>
-                        <span>{{ __('Logout') }}</span>
-                    </a>
-                         {{-- <a href="#" class="btn btn-default btn-flat float-end">Sign out</a> --}}
+                         <a href="{{ route('profile.edit') }}" class="btn btn-default btn-flat">{{ __('Meu perfil') }}</a>
+                         <a href="{{ route('logout') }}" class="btn btn-default btn-flat float-end"
+                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                             <i class="bi bi-box-arrow-right"></i>
+                             <span>{{ __('Sair') }}</span>
+                         </a>
                      </li>
                      <!--end::Menu Footer-->
                  </ul>

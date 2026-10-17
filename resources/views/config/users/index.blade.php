@@ -1,7 +1,6 @@
 @extends('layouts.app', ['title' => 'Usuários'])
 
 @section('content')
-    {{-- @include('layouts.partials.header',['title' => 'Usuários', 'pb'=> 'pb-8']) --}}
     <div class="container-fluid mt--7">
         <div class="row">
             <div class="col">

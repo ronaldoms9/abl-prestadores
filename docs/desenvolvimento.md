@@ -25,8 +25,3 @@ vendor/bin/phpunit
 ```
 
 Os testes usam **SQLite em memória**, então rodam sem Docker e sem MySQL.
-
-Falhas pré-existentes: `tests/Feature/Auth/*` e `tests/Feature/ExampleTest.php`
-são testes do Breeze que vieram no boilerplate e apontam para rotas que este
-projeto não carrega (`routes/auth.php` não é incluído, e `/` é do
-`HomeController`).

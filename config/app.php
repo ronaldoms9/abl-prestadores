@@ -13,7 +13,20 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Gestão de Prestadores'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cor principal
+    |--------------------------------------------------------------------------
+    |
+    | Cor da identidade visual (hexadecimal). Vira as variáveis --bs-primary
+    | e --bs-primary-rgb no layout. No .env o valor vai entre aspas: sem
+    | elas, o "#" inicia um comentário e a variável fica vazia.
+    |
+    */
+
+    'cor_primaria' => env('APP_COR_PRIMARIA') ?: '#0d6efd',
 
     /*
     |--------------------------------------------------------------------------
@@ -67,7 +80,7 @@ return [
     |
     */
 
-    'timezone' => 'America/Sao_Paulo',
+    'timezone' => env('APP_TIMEZONE', 'America/Sao_Paulo'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +93,7 @@ return [
     |
     */
 
-    'locale' => 'pt-BR',
+    'locale' => env('APP_LOCALE', 'pt-BR'),
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +106,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'pt-BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -106,7 +119,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------
