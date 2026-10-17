@@ -110,3 +110,11 @@ Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.
   php artisan tinker --execute="App\Models\ImportacaoPessoa::whereKey(<id>)->update(['status' => 'processando']); App\Integrations\Uau\Jobs\ProcessarImportacaoPessoasJob::dispatch(<id>);"
   ```
 
+## Servidor e homologação
+
+- Instalação do servidor do zero: [docs/infra/homologacao.md](infra/homologacao.md).
+  Arquivos de configuração em `infra/`; deploy com `./deploy.sh` (branch `develop` por padrão).
+- Roteiro de validação com a ABL PRIME: [docs/homologacao/roteiro-validacao.md](homologacao/roteiro-validacao.md).
+- Fora do ambiente local, os seeders não usam senha conhecida: `ADMIN_EMAIL` no `.env`, e o
+  `HomologacaoSeeder` (um usuário por perfil, `HOMOLOGACAO_USUARIOS`) mostra as senhas uma vez.
+

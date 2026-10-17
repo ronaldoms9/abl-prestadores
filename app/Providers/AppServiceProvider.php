@@ -19,8 +19,10 @@ use App\Models\User;
 use App\Role;
 use App\View\Menu;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\LazyLoadingViolationException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -83,8 +85,21 @@ class AppServiceProvider extends ServiceProvider
             'integracao-log' => IntegracaoLog::class,
         ]);
 
-        // Fora de produção, relação não carregada com with() quebra em vez de gerar N+1.
+        // Fora de produção, relação não carregada com with() é barrada: quebra no
+        // desenvolvimento e nos testes; na homologação só vai para o log (D9.1 da fatia 9).
         Model::preventLazyLoading(! app()->isProduction());
+        Model::handleLazyLoadingViolationUsing(function (Model $model, string $relacao) {
+            // Mesma exceção do Laravel: model ainda não gravado ou recém-criado não conta.
+            if (! $model->exists || $model->wasRecentlyCreated) {
+                return;
+            }
+
+            if (app()->environment('local', 'testing')) {
+                throw new LazyLoadingViolationException($model, $relacao);
+            }
+
+            Log::warning('Carregamento sob demanda de relação: '.$model::class."::{$relacao}");
+        });
 
         View::composer('layouts.partials._sidebar', function ($view) {
             $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));

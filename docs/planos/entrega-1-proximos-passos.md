@@ -26,7 +26,7 @@ fatias 1 a 3.
 | 6 · Agendamento + "Sincronizar agora" | 5 | Pronta ([detalhe](entrega-1-fatia-6-agendamento.md)); 1,5 h feitas na 8.1 voltam para a folga | `e1/fatia-6-agendamento` |
 | 7 · Telas de consulta | 8 | Pronta ([detalhe](entrega-1-fatia-7-consultas.md)); falta o significado de `Status_obr` | `e1/fatia-7-consultas` |
 | 8 · Monitoramento | 6 | Pronta ([detalhe](entrega-1-fatia-8-monitoramento.md)) | `e1/fatia-8-monitoramento` |
-| 9 · Homologação: VPS + `deploy.sh` | 10 | Independente; espera a VPS | — |
+| 9 · Homologação: VPS + `deploy.sh` | 10 | Parte A pronta ([detalhe](entrega-1-fatia-9-homologacao.md)); parte B (5 h) espera a VPS | `e1/fatia-9-homologacao` |
 | Folga | 3 | 1 h vai para o passo 0 | — |
 
 ## Ordem e dependências
@@ -230,6 +230,8 @@ produção. Toda relação mostrada na lista (empresa da obra, PJs sugeridas) pr
 - as rotas entram em `PermissoesRotasTest`.
 
 ## Fatia 9 — Homologação: VPS + `deploy.sh` · 10 h · em paralelo
+
+Plano detalhado: [entrega-1-fatia-9-homologacao.md](entrega-1-fatia-9-homologacao.md).
 
 **Entrega:**
 - servidor com instalação direta, conforme o plano da E1;
