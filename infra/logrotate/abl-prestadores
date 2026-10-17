@@ -1,0 +1,14 @@
+# Logs do Nginx da aplicação (fatia 9, D9.5). Os do Laravel giram sozinhos (LOG_CHANNEL=daily, 14 dias).
+# Copiar para /etc/logrotate.d/abl-prestadores.
+/var/log/nginx/abl-prestadores.*.log {
+    daily
+    rotate 14
+    missingok
+    notifempty
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        [ -s /run/nginx.pid ] && kill -USR1 `cat /run/nginx.pid`
+    endscript
+}
