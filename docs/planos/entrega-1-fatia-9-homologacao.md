@@ -186,6 +186,21 @@ O roteiro manda copiá-los. Assim a E6 repete em produção sem reescrever nada.
 
 **Parte B:** a ABL PRIME entra com um usuário por perfil e valida os 6 critérios do roteiro.
 
+## Notas da implementação da parte A (2026-10-17)
+
+- **Carregamento sob demanda:** a decisão (quebrar ou só registrar) é tomada no momento do
+  carregamento, e não no boot. Fica testável e mantém a regra do Laravel: model recém-criado não conta.
+- **Configuração:** `ADMIN_EMAIL` e `HOMOLOGACAO_USUARIOS` entram por `config/implantacao.php`,
+  porque `env()` fora de `config/` quebraria o `php artisan optimize`.
+- **Servidor:** uma pasta só (`/var/www/abl-prestadores`, `.env` ao lado), sem pastas de
+  release. Na homologação basta a janela de manutenção do `deploy.sh`.
+- **PHP-FPM como `deploy`:** o mesmo usuário do Horizon e do cron, para os três escreverem em `storage/` sem conflito.
+- **Verificado:**
+  - `bash -n deploy.sh`;
+  - `nginx -t` com o arquivo do site num container `nginx:1.27`;
+  - `php artisan optimize` no Docker (config, eventos, rotas e views cacheáveis), seguido de `optimize:clear`.
+- **Parte B:** pendente, aguarda a VPS, o domínio e as credenciais do UAU.
+
 ## Riscos
 
 | Risco | Saída |
