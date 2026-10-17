@@ -28,7 +28,7 @@ class JobsUauTest extends TestCase
 {
     use RefreshDatabase, UauSimulado;
 
-    public function test_uau_indisponivel_libera_o_job_para_nova_tentativa(): void
+    public function test_uau_indisponivel_sobe_para_o_worker_tentar_de_novo(): void
     {
         $this->simularUau()->falharEm(OperacaoUau::EmpresasAtivas, new UauIndisponivel('UAU fora do ar.', 503));
         $job = (new ImportarEmpresasJob())->withFakeQueueInteractions();
@@ -40,8 +40,11 @@ class JobsUauTest extends TestCase
             $this->assertSame('UAU fora do ar.', $e->getMessage());
         }
 
-        $job->assertReleased(60);
+        // Quem agenda a nova tentativa é o worker, com o $backoff do job.
+        $job->assertNotReleased();
         $job->assertNotFailed();
+        $this->assertSame([60, 300, 900, 3600], $job->backoff);
+        $this->assertSame(4, $job->tries);
     }
 
     public function test_uau_rejeitou_falha_sem_retentar(): void
