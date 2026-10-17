@@ -44,7 +44,6 @@ Branch `e1/fatia-6-agendamento`, a partir de `e1/fatia-8-monitoramento`. Um comm
   no fuso `APP_TIMEZONE` (`America/Sao_Paulo`). O horário fica no `.env` para a
   ABL PRIME mudar sem deploy de código.
 - `->onOneServer()` e `->withoutOverlapping()`: se a E6 tiver dois servidores, só um dispara.
-- `->environments(['production', 'homologacao', 'local'])`: os testes não disparam nada sozinhos.
 
 **D6.3 — Botão na tela de integrações.**
 - `POST /integracoes/sincronizar` (`integracao.sincronizar`, `integracao-sincronizar`), resposta JSON `{success, message}`, pelo `postAction()` da 8.3.
