@@ -205,6 +205,28 @@ gravados: o `Sanitizador` da fatia 4 já trocou senha, token e dados bancários 
 4. O indicador mostra as falhas sem solução das últimas 24 h e a última sincronização concluída.
 5. As rotas estão em `PermissoesRotasTest`.
 
+## Notas da implementação (2026-10-17)
+
+- **Falha de autenticação:** numa queda real do UAU, a primeira chamada a falhar é a
+  autenticação (`autenticar`), e não a importação. Ela não se reprocessa (D8.4). A nova
+  tentativa do job (fila, backoff) autentica de novo, o que a marca como resolvida
+  (critério 5 da E1). No simulado não há autenticação; uma falha dessas criada à mão fica sem solução.
+- **Rota de reprocessar:** ficou fora do grupo `integracao-list` e pede só
+  `integracao-reenviar`. Dentro do grupo, ela exigiria as duas permissões.
+- **Logs de leitura:** gravados como direção `entrada` (leitura do UAU). O D8.4 foi
+  corrigido: reprocessa entrada, não saída.
+- **Morph `integracao-log`:** entrou no mapeamento polimórfico, para a auditoria
+  `integracao-reprocessada` apontar para a chamada.
+- **Sincronização presa:** se o primeiro job da cadeia já estiver na fila
+  (`ShouldBeUnique`), a cadeia não é enfileirada e a sincronização fica em andamento até
+  ser dada como interrompida (1 h). Raro: só com um "Reprocessar" de empresas pendente na fila.
+- **Verificado no Docker (MySQL, Redis, Horizon):**
+  - ciclo `migrate:fresh --seed`, `rollback` e `migrate` num banco temporário;
+  - queda real (cliente HTTP apontado para uma porta fechada) gerou a falha;
+  - falha de empresas reprocessada e resolvida pelo Horizon;
+  - `disparar()` concluído;
+  - lista, filtros, detalhe e sino renderizados.
+
 ## Riscos
 
 | Risco | Saída |

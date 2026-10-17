@@ -25,7 +25,7 @@ fatias 1 a 3.
 | 5b · Carga por planilha | 5 | Pronta ([detalhe](entrega-1-fatia-5b-planilha.md)); falta validar com a planilha real | `e1/fatia-5b-planilha` |
 | 6 · Agendamento + "Sincronizar agora" | 5 | Depende da 5 e da 8 | — |
 | 7 · Telas de consulta | 8 | Depende da 5 | — |
-| 8 · Monitoramento | 6 | Plano pronto ([detalhe](entrega-1-fatia-8-monitoramento.md)) | `e1/fatia-8-monitoramento` |
+| 8 · Monitoramento | 6 | Pronta ([detalhe](entrega-1-fatia-8-monitoramento.md)) | `e1/fatia-8-monitoramento` |
 | 9 · Homologação: VPS + `deploy.sh` | 10 | Independente; espera a VPS | — |
 | Folga | 3 | 1 h vai para o passo 0 | — |
 
