@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ImportacaoPessoa;
+use App\Models\IntegracaoLog;
 use App\Models\User;
 use App\Role;
 use App\Support\Auditoria;
@@ -23,7 +24,7 @@ class PermissoesRotasTest extends TestCase
 
     /**
      * [método, rota (nome ou URI), parâmetros, permissão, status com a permissão].
-     * Parâmetros ':usuario', ':perfil', ':registro' e ':importacao' viram ids criados no teste.
+     * Parâmetros ':usuario', ':perfil', ':registro', ':importacao' e ':integracao' viram ids criados no teste.
      * Nas rotas de escrita sem dados válidos, basta não ser 403 (null).
      */
     public static function rotas(): array
@@ -51,6 +52,9 @@ class PermissoesRotasTest extends TestCase
             'importacao-pessoa.store' => ['POST', 'importacao-pessoa.store', [], 'pessoa-importar', null],
             'importacao-pessoa.show' => ['GET', 'importacao-pessoa.show', [':importacao'], 'pessoa-importar', 200],
 
+            'integracao.index' => ['GET', 'integracao.index', [], 'integracao-list', 200],
+            'integracao.show' => ['GET', 'integracao.show', [':integracao'], 'integracao-list', 200],
+
             'horizon' => ['GET', '/horizon', [], 'horizon-acessar', 200],
         ];
     }
@@ -59,7 +63,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -96,6 +100,7 @@ class PermissoesRotasTest extends TestCase
             ':perfil' => Role::create(['name' => 'alvo-'.uniqid(), 'display_name' => 'Alvo'])->id,
             ':registro' => $this->registroDeAuditoria(),
             ':importacao' => ImportacaoPessoa::factory()->create()->id,
+            ':integracao' => IntegracaoLog::factory()->erro()->create()->id,
             default => $valor,
         }, $parametros);
 
