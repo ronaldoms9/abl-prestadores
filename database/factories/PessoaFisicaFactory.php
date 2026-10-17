@@ -14,7 +14,7 @@ class PessoaFisicaFactory extends Factory
     {
         return [
             'uau_codigo' => fake()->unique()->numberBetween(1, 99999),
-            'cpf' => fake('pt_BR')->cpf(false),
+            'cpf' => fake('pt_BR')->unique()->cpf(false),
             'nome' => fake()->name(),
             'nascimento' => fake()->date('Y-m-d', '-18 years'),
             'email' => fake()->safeEmail(),

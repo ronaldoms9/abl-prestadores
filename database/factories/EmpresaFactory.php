@@ -14,7 +14,7 @@ class EmpresaFactory extends Factory
     {
         return [
             'uau_codigo' => fake()->unique()->numberBetween(1, 99999),
-            'cnpj' => fake('pt_BR')->cnpj(false),
+            'cnpj' => fake('pt_BR')->unique()->cnpj(false),
             'razao_social' => fake()->company(),
             'inscricao_estadual' => fake()->numerify('#########'),
             'inscricao_municipal' => fake()->numerify('########'),

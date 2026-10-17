@@ -58,11 +58,10 @@ class CadastrosUauTest extends TestCase
         $this->assertDatabaseHas('empresas', ['id' => $empresa->id, 'cnpj' => '01234567000189']);
     }
 
-    public function test_cpf_repetido_falha_inclusive_contra_pessoa_excluida(): void
+    public function test_cpf_repetido_falha_mesmo_com_outra_mascara(): void
     {
-        $pf = PessoaFisica::factory()->create(['cpf' => '12345678901']);
+        PessoaFisica::factory()->create(['cpf' => '12345678901']);
 
-        // Tentativa direta com o mesmo CPF
         $this->expectException(UniqueConstraintViolationException::class);
         PessoaFisica::factory()->create(['cpf' => '123.456.789-01']);
     }

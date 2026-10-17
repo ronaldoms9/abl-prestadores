@@ -2,7 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Empresa;
+use App\Models\ImportacaoPessoa;
+use App\Models\Obra;
+use App\Models\PessoaFisica;
+use App\Models\PessoaJuridica;
+use App\Models\User;
+use App\Role;
 use App\View\Menu;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -43,19 +52,21 @@ class AppServiceProvider extends ServiceProvider
         // Política única de senha (Q21), usada em todo ponto em que uma senha é definida.
         Password::defaults(fn () => Password::min(8)->letters()->numbers());
 
-        // D3.6 Morph map explícito para tabelas polimórficas (integracao_logs, activity_log)
-        \Illuminate\Database\Eloquent\Relations\Relation::enforceMorphMap([
-            'usuario' => \App\Models\User::class,
-            'perfil' => \App\Role::class,
-            'empresa' => \App\Models\Empresa::class,
-            'obra' => \App\Models\Obra::class,
-            'pessoa-fisica' => \App\Models\PessoaFisica::class,
-            'pessoa-juridica' => \App\Models\PessoaJuridica::class,
-            'importacao-pessoa' => \App\Models\ImportacaoPessoa::class,
+        // Apelidos fixos nas colunas polimórficas (integracao_logs, activity_log), em vez
+        // do nome da classe: mover um model de pasta não quebra o histórico. Todo model
+        // usado em relação polimórfica precisa estar aqui.
+        Relation::enforceMorphMap([
+            'usuario' => User::class,
+            'perfil' => Role::class,
+            'empresa' => Empresa::class,
+            'obra' => Obra::class,
+            'pessoa-fisica' => PessoaFisica::class,
+            'pessoa-juridica' => PessoaJuridica::class,
+            'importacao-pessoa' => ImportacaoPessoa::class,
         ]);
 
-        // D3.7 Carga preguiçosa barrada fora de produção
-        \Illuminate\Database\Eloquent\Model::preventLazyLoading(! app()->isProduction());
+        // Fora de produção, relação não carregada com with() quebra em vez de gerar N+1.
+        Model::preventLazyLoading(! app()->isProduction());
 
         View::composer('layouts.partials._sidebar', function ($view) {
             $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));

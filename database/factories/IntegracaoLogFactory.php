@@ -19,7 +19,7 @@ class IntegracaoLogFactory extends Factory
             'entidade_type' => null,
             'entidade_id' => null,
             'operacao' => 'ConsultarEmpresas',
-            'rota' => '/uauAPI/api/v1.0/Empresas/ObterEmpresasAtivas',
+            'rota' => 'Empresa/ObterEmpresasAtivas',
             'chave_idempotencia' => null,
             'payload' => ['pagina' => 1],
             'resposta' => ['itens' => []],

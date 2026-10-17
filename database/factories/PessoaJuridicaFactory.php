@@ -14,7 +14,7 @@ class PessoaJuridicaFactory extends Factory
     {
         return [
             'uau_codigo' => fake()->unique()->numberBetween(1, 99999),
-            'cnpj' => fake('pt_BR')->cnpj(false),
+            'cnpj' => fake('pt_BR')->unique()->cnpj(false),
             'razao_social' => fake()->company(),
             'nome_fantasia' => fake()->companySuffix(),
             'regime_tributario' => null,

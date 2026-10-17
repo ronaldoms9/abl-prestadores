@@ -9,6 +9,7 @@ use App\Permission;
 use App\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -152,7 +153,7 @@ class User extends Authenticatable
         return $fName[0] ?? '';
     }
 
-    public function pessoaFisica(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function pessoaFisica(): BelongsTo
     {
         return $this->belongsTo(PessoaFisica::class, 'pessoa_fisica_id');
     }

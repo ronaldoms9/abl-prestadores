@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Role;
 use App\Support\Auditoria;
+use App\Support\Documento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,7 +43,7 @@ class UserController extends Controller
                     return $model->created_at->format('d/m/Y H:i');
                 })
                 ->editColumn('permission', function($model){
-                    return $model->roles()->first()->display_name ?? 'Sem permissão';
+                    return $model->roles->first()?->display_name ?? 'Sem permissão';
                 })
                 ->addColumn('action', function ($model)  {
                     return view('config.users.action', [
@@ -142,7 +143,7 @@ class UserController extends Controller
             $array_store =[
                 'name'=> $request->nome,
                 'email'=> $request->email,
-                'cpf'=> filled($request->cpf) ? filtraNumeros($request->cpf) : null,
+                'cpf'=> Documento::digitos($request->cpf),
                 'telefone'=> $request->telefone,
                 'ativo'=> $ativo,
             ];
