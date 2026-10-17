@@ -11,7 +11,7 @@
     display: inline-flex;
 }
 .nav-link.active{
-    color: var(--primary) !important;
+    color: var(--bs-primary) !important;
 }
 div.dataTables_wrapper div.dataTables_processing{
     box-shadow: 1rem 1rem 10rem 100rem rgba(0, 0, 0, .15);
@@ -48,3 +48,50 @@ div.dataTables_wrapper div.dataTables_processing{
     }
 }
 
+/*
+ * COR PRINCIPAL (APP_COR_PRIMARIA)
+ * O Bootstrap 5 fixa a cor em hexadecimal nos componentes abaixo; aqui eles
+ * passam a ler --bs-primary, definido no layout.
+ */
+:root{
+    --bs-link-color-rgb: var(--bs-primary-rgb);
+    --bs-link-hover-color-rgb: var(--bs-primary-rgb);
+}
+.btn-primary{
+    --bs-btn-bg: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--bs-primary) 85%, #000);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--bs-primary) 80%, #000);
+    --bs-btn-active-bg: color-mix(in srgb, var(--bs-primary) 80%, #000);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--bs-primary) 75%, #000);
+    --bs-btn-disabled-bg: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+    --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+}
+.btn-outline-primary{
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-primary);
+    --bs-btn-hover-bg: var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-active-bg: var(--bs-primary);
+    --bs-btn-active-border-color: var(--bs-primary);
+    --bs-btn-disabled-color: var(--bs-primary);
+    --bs-btn-disabled-border-color: var(--bs-primary);
+    --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+}
+.form-check-input:checked{
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus{
+    border-color: rgba(var(--bs-primary-rgb), .5);
+    box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .25);
+}
+.pagination{
+    --bs-pagination-color: var(--bs-primary);
+    --bs-pagination-hover-color: var(--bs-primary);
+    --bs-pagination-active-bg: var(--bs-primary);
+    --bs-pagination-active-border-color: var(--bs-primary);
+}

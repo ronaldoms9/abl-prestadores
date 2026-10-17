@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\View\Menu;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
             $this->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $this->timestamps();
             $this->softDeletes();
+        });
+
+        View::composer('layouts.partials._sidebar', function ($view) {
+            $view->with('menu', Menu::fromConfig()->itensVisiveis(auth()->user()));
         });
     }
 }
