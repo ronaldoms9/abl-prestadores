@@ -33,7 +33,7 @@ Até o UAU real estar acessível, tudo roda contra o `FakeUauClient` (fatia 4).
 | 2 | Perfis, permissões e auditoria ([detalhe](entrega-1-fatia-2-permissoes.md)) | 10 | 1 |
 | 3 | Migrations e models ([detalhe](entrega-1-fatia-3-models.md)) | 8 | 1 |
 | 4 | UauClient + fake ([detalhe](entrega-1-fatia-4-uau-client.md)) | 16 | 2 |
-| 5 | Importação de empresas, obras e pessoas | 13 | 2 |
+| 5 | Importação de empresas, obras e pessoas ([detalhe](entrega-1-fatia-5-importacao.md)) | 13 | 2 |
 | 5b | Carga por planilha | 5 | 2–3 |
 | 6 | Agendamento + "Sincronizar agora" | 5 | 3 |
 | 7 | Telas de consulta | 8 | 3 |

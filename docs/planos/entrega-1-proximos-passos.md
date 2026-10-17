@@ -21,7 +21,7 @@ fatias 1 a 3.
 | 2 · Perfis, permissões, auditoria | 10 | Pronta, na `develop` | `e1/fatia-2-permissoes` |
 | 3 · Migrations e models | 8 | Pronta, na `develop` | `e1/fatia-3-models` |
 | 4 · UauClient + fake | 16 | Pronta ([detalhe](entrega-1-fatia-4-uau-client.md)); falta confirmar D4.5 e D4.8 no UAU real | `e1/fatia-4-uau-client` |
-| 5 · Importação | 13 | Depende da 4 | — |
+| 5 · Importação | 13 | Plano pronto ([detalhe](entrega-1-fatia-5-importacao.md)) | `e1/fatia-5-importacao` |
 | 5b · Carga por planilha | 5 | Depende da 5 | — |
 | 6 · Agendamento + "Sincronizar agora" | 5 | Depende da 5 e da 8 | — |
 | 7 · Telas de consulta | 8 | Depende da 5 | — |
@@ -114,6 +114,8 @@ Plano detalhado: [entrega-1-fatia-4-uau-client.md](entrega-1-fatia-4-uau-client.
 E `uau:ping` roda contra o fake.
 
 ## Fatia 5 — Importação de empresas, obras e pessoas · 13 h · semana 2
+
+Plano detalhado: [entrega-1-fatia-5-importacao.md](entrega-1-fatia-5-importacao.md).
 
 **Entrega:**
 - os jobs `ImportarEmpresas`, `ImportarObras`, `ImportarPessoa` e `ConciliarPessoas`;

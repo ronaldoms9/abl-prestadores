@@ -63,4 +63,19 @@ Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.
   de log da falha.
 - **Contexto:** num job, use `$uau->comContexto(entidade: $model, tentativa: $this->attempts())`
   para ligar a chamada à entidade no log. O cliente é singleton e não guarda contexto.
+- **Fila `uau`:** os jobs de importação rodam na fila `uau`, processados por um
+  supervisor dedicado no Horizon (`supervisor-uau`, 1 processo, timeout de 900 s).
+  A execução em série garante que o servidor do UAU não seja sobrecarregado e
+  elimina riscos de concorrência/corrida de token.
+- **Conciliação à mão:** para rodar a sincronização completa (empresas, obras e pessoas locais):
+  ```bash
+  php artisan tinker --execute="App\Integrations\Uau\Conciliacao::cadeia()->dispatch();"
+  ```
+  A cadeia executa `ImportarEmpresasJob`, `ImportarObrasJob` e `ConciliarPessoasJob`. Se
+  um elo falhar, os seguintes são interrompidos para evitar dados inconsistentes.
+- **Trava da lista vazia e suspeita:** se o UAU retornar uma lista vazia enquanto houver
+  registros ativos no banco, ou uma queda que desativaria mais da metade dos ativos
+  (`config('uau.limite_inativacao') = 0.5`), a importação lança `ImportacaoSuspensa`
+  e não altera nada. Para desativações legítimas em massa, ajuste `UAU_LIMITE_INATIVACAO=1.0`
+  no `.env` temporariamente.
 
