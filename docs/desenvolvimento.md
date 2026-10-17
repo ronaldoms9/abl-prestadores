@@ -95,6 +95,10 @@ Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.
   `schedule:run` a cada minuto (fatia 9). Para testar sem esperar:
   `php artisan schedule:test --name=uau:sincronizar`. O botão "Sincronizar agora" fica em
   Integrações (`integracao-sincronizar`); com uma em andamento, recusa com aviso.
+- **Telas de consulta** (Pessoas físicas, Pessoas jurídicas, Empresas, Obras): só leitura.
+  A busca entende documento com ou sem máscara pelo começo (`529.982` acha `52998224725`)
+  e, com letras, procura no nome. O rótulo do status da obra vem de
+  `config('uau.status_obra')`; enquanto a ABL PRIME não explicar os códigos, aparece "Código N".
 - **Carga por planilha** (`Pessoas › Carregar planilha`, permissão `pessoa-importar`):
   colunas `cpf` e `cnpj`, até `UAU_PLANILHA_MAX_LINHAS` linhas (2000). Cabeçalho errado
   recusa o arquivo; dígito verificador errado marca a linha sem consultar o UAU. As

@@ -24,7 +24,7 @@ fatias 1 a 3.
 | 5 · Importação | 13 | Pronta ([detalhe](entrega-1-fatia-5-importacao.md)) | `e1/fatia-5-importacao` |
 | 5b · Carga por planilha | 5 | Pronta ([detalhe](entrega-1-fatia-5b-planilha.md)); falta validar com a planilha real | `e1/fatia-5b-planilha` |
 | 6 · Agendamento + "Sincronizar agora" | 5 | Pronta ([detalhe](entrega-1-fatia-6-agendamento.md)); 1,5 h feitas na 8.1 voltam para a folga | `e1/fatia-6-agendamento` |
-| 7 · Telas de consulta | 8 | Depende da 5 | — |
+| 7 · Telas de consulta | 8 | Pronta ([detalhe](entrega-1-fatia-7-consultas.md)); falta o significado de `Status_obr` | `e1/fatia-7-consultas` |
 | 8 · Monitoramento | 6 | Pronta ([detalhe](entrega-1-fatia-8-monitoramento.md)) | `e1/fatia-8-monitoramento` |
 | 9 · Homologação: VPS + `deploy.sh` | 10 | Independente; espera a VPS | — |
 | Folga | 3 | 1 h vai para o passo 0 | — |
@@ -204,6 +204,8 @@ Plano detalhado: [entrega-1-fatia-6-agendamento.md](entrega-1-fatia-6-agendament
 - um segundo clique com a sincronização em andamento é recusado (`ShouldBeUnique`) com aviso na tela.
 
 ## Fatia 7 — Telas de consulta · 8 h · semana 3
+
+Plano detalhado: [entrega-1-fatia-7-consultas.md](entrega-1-fatia-7-consultas.md).
 
 **Entrega:** telas só de leitura de pessoas físicas, pessoas jurídicas, empresas
 (com as obras) e obras, com filtro ativos/inativos e busca por documento com ou

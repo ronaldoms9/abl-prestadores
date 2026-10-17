@@ -2,8 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\IntegracaoLog;
+use App\Models\Obra;
+use App\Models\PessoaFisica;
+use App\Models\PessoaJuridica;
 use App\Models\User;
 use App\Role;
 use App\Support\Auditoria;
@@ -24,7 +28,7 @@ class PermissoesRotasTest extends TestCase
 
     /**
      * [método, rota (nome ou URI), parâmetros, permissão, status com a permissão].
-     * Parâmetros ':usuario', ':perfil', ':registro', ':importacao' e ':integracao' viram ids criados no teste.
+     * Parâmetros com ":" (':usuario', ':perfil', ':registro', ':importacao', ':integracao', ':pessoa-fisica'...) viram ids criados no teste.
      * Nas rotas de escrita sem dados válidos, basta não ser 403 (null).
      */
     public static function rotas(): array
@@ -47,6 +51,15 @@ class PermissoesRotasTest extends TestCase
             'auditoria.index' => ['GET', 'auditoria.index', [], 'auditoria-list', 200],
             'auditoria.show' => ['GET', 'auditoria.show', [':registro'], 'auditoria-list', 200],
 
+            'pessoa-fisica.index' => ['GET', 'pessoa-fisica.index', [], 'pessoa-list', 200],
+            'pessoa-fisica.show' => ['GET', 'pessoa-fisica.show', [':pessoa-fisica'], 'pessoa-list', 200],
+            'pessoa-juridica.index' => ['GET', 'pessoa-juridica.index', [], 'pessoa-list', 200],
+            'pessoa-juridica.show' => ['GET', 'pessoa-juridica.show', [':pessoa-juridica'], 'pessoa-list', 200],
+            'empresa.index' => ['GET', 'empresa.index', [], 'empresa-list', 200],
+            'empresa.show' => ['GET', 'empresa.show', [':empresa'], 'empresa-list', 200],
+            'obra.index' => ['GET', 'obra.index', [], 'obra-list', 200],
+            'obra.show' => ['GET', 'obra.show', [':obra'], 'obra-list', 200],
+
             'importacao-pessoa.index' => ['GET', 'importacao-pessoa.index', [], 'pessoa-importar', 200],
             'importacao-pessoa.modelo' => ['GET', 'importacao-pessoa.modelo', [], 'pessoa-importar', 200],
             'importacao-pessoa.store' => ['POST', 'importacao-pessoa.store', [], 'pessoa-importar', null],
@@ -65,7 +78,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'empresa-list', 'obra-list'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -103,6 +116,10 @@ class PermissoesRotasTest extends TestCase
             ':registro' => $this->registroDeAuditoria(),
             ':importacao' => ImportacaoPessoa::factory()->create()->id,
             ':integracao' => IntegracaoLog::factory()->erro()->create()->id,
+            ':pessoa-fisica' => PessoaFisica::factory()->create()->id,
+            ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
+            ':empresa' => Empresa::factory()->create()->id,
+            ':obra' => Obra::factory()->create()->id,
             default => $valor,
         }, $parametros);
 

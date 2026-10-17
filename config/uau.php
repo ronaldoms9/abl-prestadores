@@ -57,4 +57,10 @@ return [
     'sincronizacao' => [
         'horario' => env('UAU_SINCRONIZACAO_HORARIO', '05:00'),
     ],
+
+    // Significado dos códigos de Status_obr (código => rótulo). Pendente da ABL PRIME:
+    // vazio, a tela de obras mostra "Código N". Preencher não exige mudar código.
+    'status_obra' => [
+        // 0 => 'Em andamento',
+    ],
 ];
