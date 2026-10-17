@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Integrations\Uau\FakeUauClient;
 use App\Integrations\Uau\RegistroIntegracao;
 use App\Integrations\Uau\Sanitizador;
 use App\Integrations\Uau\UauClient;
+use App\Integrations\Uau\UauGateway;
 use App\Models\Empresa;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
@@ -31,6 +33,13 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Sanitizador::class, fn () => new Sanitizador(config('uau.campos_ocultos', [])));
         $this->app->bind(UauClient::class, fn ($app) => new UauClient($app->make(RegistroIntegracao::class), config('uau')));
+        $this->app->bind(FakeUauClient::class, fn ($app) => new FakeUauClient($app->make(RegistroIntegracao::class), config('uau.fake_fixtures')));
+
+        // UAU_FAKE=true usa os dados de exemplo; false, a API real. Singleton:
+        // o contexto de cada job vai numa cópia (comContexto), nunca no singleton.
+        $this->app->singleton(UauGateway::class, fn ($app) => config('uau.fake')
+            ? $app->make(FakeUauClient::class)
+            : $app->make(UauClient::class));
     }
 
     /**
