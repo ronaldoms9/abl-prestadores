@@ -15,6 +15,12 @@ class IntegracaoLog extends Model
 
     protected $table = 'integracao_logs';
 
+    /**
+     * Com milissegundos: executado_em é timestamp(3) e ordena as chamadas de
+     * uma mesma cadeia. Sem isso, o Eloquent grava só até o segundo.
+     */
+    protected $dateFormat = 'Y-m-d H:i:s.v';
+
     protected $fillable = [
         'direcao',
         'entidade_type',

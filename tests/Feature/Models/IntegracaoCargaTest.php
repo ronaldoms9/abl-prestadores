@@ -16,6 +16,7 @@ use App\Models\UauMapeamento;
 use App\Models\VinculoSugerido;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class IntegracaoCargaTest extends TestCase
@@ -70,6 +71,13 @@ class IntegracaoCargaTest extends TestCase
             'entidade_id' => $empresa->id,
         ]);
         $this->assertTrue($log->entidade->is($empresa));
+    }
+
+    public function test_integracao_log_guarda_milissegundos_em_executado_em(): void
+    {
+        $log = IntegracaoLog::factory()->create(['executado_em' => Carbon::parse('2026-10-17 10:00:00.123')]);
+
+        $this->assertSame('10:00:00.123', $log->fresh()->executado_em->format('H:i:s.v'));
     }
 
     public function test_integracao_log_escopos_falhas_e_no_periodo(): void
