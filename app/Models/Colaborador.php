@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\StatusColaborador;
 use App\Models\Concerns\RegistraAutoria;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -78,5 +80,14 @@ class Colaborador extends Model
     public function qualificacoes(): HasMany
     {
         return $this->hasMany(ColaboradorQualificacao::class, 'colaborador_id');
+    }
+
+    /** Equipes em que o colaborador está no dia. */
+    public function equipesVigentesEm(CarbonInterface|string $data): Builder
+    {
+        return Equipe::query()->whereIn('equipes.id', ColaboradorEquipe::query()
+            ->where('colaborador_id', $this->id)
+            ->vigentesEm($data)
+            ->select('equipe_id'));
     }
 }

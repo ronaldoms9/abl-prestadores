@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
+use App\Models\Equipe;
 use App\Models\IntegracaoLog;
 use App\Models\PessoaFisica;
 use App\Models\PessoaJuridica;
@@ -47,6 +48,11 @@ class Auditoria
         'pessoa-juridica-excluido' => 'Pessoa jurídica excluída',
         'pessoa-juridica-responsavel-alterado' => 'Responsável da pessoa jurídica alterado',
         'pessoa-dados-bancarios-alterados' => 'Dados bancários alterados',
+        'equipe-criado' => 'Equipe criada',
+        'equipe-alterado' => 'Equipe alterada',
+        'equipe-excluido' => 'Equipe excluída',
+        'equipe-gestor-adicionado' => 'Gestor adicionado à equipe',
+        'equipe-gestor-encerrado' => 'Gestor retirado da equipe',
         'planilha-carregada' => 'Planilha carregada',
         'sincronizacao-solicitada' => 'Sincronização solicitada',
         'integracao-reprocessada' => 'Integração reprocessada',
@@ -58,6 +64,7 @@ class Auditoria
     /** Tipo de objeto => [rótulo, atributo que o identifica]. */
     public const OBJETOS = [
         User::class => ['Usuário', 'name'],
+        Equipe::class => ['Equipe', 'nome'],
         PessoaFisica::class => ['Pessoa física', 'nome'],
         PessoaJuridica::class => ['Pessoa jurídica', 'razao_social'],
         Role::class => ['Perfil', 'display_name'],

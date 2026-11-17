@@ -86,6 +86,17 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-juridica.store');
     });
 
+    Route::group(['prefix' => 'equipes'], function(){
+        $c = App\Http\Controllers\Cadastros\EquipeController::class;
+        Route::get('/', [$c, 'index'])->name('equipe.index')->middleware('permission:equipe-list');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('equipe.form')->middleware('permission:equipe-create|equipe-edit');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('equipe.store')->middleware('permission:equipe-create|equipe-edit');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('equipe.delete')->middleware('permission:equipe-edit');
+        Route::post('/gestores/{id}/encerrar', [$c, 'gestorEncerrar'])->whereNumber('id')->name('equipe.gestor.encerrar')->middleware('permission:equipe-edit');
+        Route::post('/{id}/gestores', [$c, 'gestorStore'])->whereNumber('id')->name('equipe.gestor.store')->middleware('permission:equipe-edit');
+        Route::get('/{id}', [$c, 'show'])->whereNumber('id')->name('equipe.show')->middleware('permission:equipe-list');
+    });
+
     Route::group(['prefix' => 'empresas', 'middleware' => 'permission:empresa-list'], function(){
         Route::get('/', [App\Http\Controllers\Cadastros\EmpresaController::class, 'index'])->name('empresa.index');
         Route::get('/{id}', [App\Http\Controllers\Cadastros\EmpresaController::class, 'show'])

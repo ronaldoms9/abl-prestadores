@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Empresa;
+use App\Models\Equipe;
+use App\Models\EquipeGestor;
 use App\Models\ImportacaoPessoa;
 use App\Models\IntegracaoLog;
 use App\Models\Obra;
@@ -64,6 +66,15 @@ class PermissoesRotasTest extends TestCase
             'pessoa-juridica.form (editar)' => ['GET', 'pessoa-juridica.form', [':pessoa-juridica'], 'pessoa-edit', 200],
             'pessoa-juridica.store (criar)' => ['POST', 'pessoa-juridica.store', [], 'pessoa-create', null],
             'pessoa-juridica.store (editar)' => ['POST', 'pessoa-juridica.store', [':pessoa-juridica'], 'pessoa-edit', null],
+            'equipe.index' => ['GET', 'equipe.index', [], 'equipe-list', 200],
+            'equipe.show' => ['GET', 'equipe.show', [':equipe'], 'equipe-list', 200],
+            'equipe.form (criar)' => ['GET', 'equipe.form', [], 'equipe-create', 200],
+            'equipe.form (editar)' => ['GET', 'equipe.form', [':equipe'], 'equipe-edit', 200],
+            'equipe.store (criar)' => ['POST', 'equipe.store', [], 'equipe-create', null],
+            'equipe.store (editar)' => ['POST', 'equipe.store', [':equipe'], 'equipe-edit', null],
+            'equipe.delete' => ['DELETE', 'equipe.delete', [':equipe'], 'equipe-edit', 201],
+            'equipe.gestor.store' => ['POST', 'equipe.gestor.store', [':equipe'], 'equipe-edit', null],
+            'equipe.gestor.encerrar' => ['POST', 'equipe.gestor.encerrar', [':gestor'], 'equipe-edit', null],
             'empresa.index' => ['GET', 'empresa.index', [], 'empresa-list', 200],
             'empresa.show' => ['GET', 'empresa.show', [':empresa'], 'empresa-list', 200],
             'obra.index' => ['GET', 'obra.index', [], 'obra-list', 200],
@@ -87,7 +98,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -115,6 +126,7 @@ class PermissoesRotasTest extends TestCase
             'grupo.form', 'grupo.store' => ['grupo-create', 'grupo-edit'],
             'pessoa-fisica.form', 'pessoa-fisica.store', 'pessoa-fisica.buscar',
             'pessoa-juridica.form', 'pessoa-juridica.store' => ['pessoa-create', 'pessoa-edit'],
+            'equipe.form', 'equipe.store' => ['equipe-create', 'equipe-edit'],
             default => [$permissao],
         };
     }
@@ -129,6 +141,8 @@ class PermissoesRotasTest extends TestCase
             ':integracao' => IntegracaoLog::factory()->erro()->create()->id,
             ':pessoa-fisica' => PessoaFisica::factory()->create()->id,
             ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
+            ':equipe' => Equipe::factory()->create()->id,
+            ':gestor' => EquipeGestor::factory()->create()->id,
             ':empresa' => Empresa::factory()->create()->id,
             ':obra' => Obra::factory()->create()->id,
             default => $valor,
