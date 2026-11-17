@@ -189,8 +189,17 @@ body.login-page{
 .login-page .login-box-msg{
     color: var(--abl-steel);
 }
-.app-sidebar .sidebar-brand .brand-image{
-    max-height: 34px;
-    width: auto;
-    margin-left: .25rem;
+.app-sidebar .sidebar-brand .brand-link .brand-image{
+    float: none;
+    height: 34px;
+    width: 132px;
+    max-height: none;
+    max-width: 100%;
+}
+.app-sidebar .sidebar-menu .nav-item > .nav-link.active,
+.app-sidebar .sidebar-menu .nav-item.menu-open > .nav-link,
+.app-sidebar .sidebar-menu .nav-item > .nav-link.active .nav-icon,
+.app-sidebar .sidebar-menu .nav-item.menu-open > .nav-link .nav-icon,
+.app-sidebar .sidebar-menu .nav-item.menu-open > .nav-link .nav-arrow{
+    color: #fff !important;
 }
