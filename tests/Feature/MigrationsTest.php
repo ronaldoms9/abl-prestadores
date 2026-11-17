@@ -17,6 +17,7 @@ class MigrationsTest extends TestCase
         $this->artisanSemFalha('migrate');
         $this->assertTrue(Schema::hasColumn('users', 'pessoa_fisica_id'));
         $this->assertTrue(Schema::hasTable('vinculos_sugeridos'));
+        $this->assertTrue(Schema::hasTable('pessoa_juridica_responsaveis'));
 
         $this->artisanSemFalha('migrate:reset');
         $this->assertFalse(Schema::hasTable('users'));

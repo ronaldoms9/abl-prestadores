@@ -38,7 +38,7 @@ class PessoaJuridicaController extends Controller
     public function show($id)
     {
         return view('cadastros.pessoas-juridicas.show', [
-            'pessoa' => PessoaJuridica::with('pessoasFisicasSugeridas')->findOrFail($id),
+            'pessoa' => PessoaJuridica::with(['pessoasFisicasSugeridas', 'responsavelAtual.pessoaFisica'])->findOrFail($id),
         ]);
     }
 

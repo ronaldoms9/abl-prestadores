@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PessoaJuridica extends Model
@@ -58,6 +59,18 @@ class PessoaJuridica extends Model
             ->withPivot('utilizado_em', 'importacao_pessoa_id')
             ->withTimestamps()
             ->wherePivotNull('deleted_at');
+    }
+
+    /** Histórico de responsáveis, do mais recente ao mais antigo. */
+    public function responsaveis(): HasMany
+    {
+        return $this->hasMany(ResponsavelPessoaJuridica::class, 'pessoa_juridica_id')->orderByDesc('inicio')->orderByDesc('id');
+    }
+
+    /** Responsável vigente (vínculo sem data de fim). */
+    public function responsavelAtual(): HasOne
+    {
+        return $this->hasOne(ResponsavelPessoaJuridica::class, 'pessoa_juridica_id')->whereNull('fim')->latestOfMany();
     }
 
     public function getCnpjFormatadoAttribute(): ?string

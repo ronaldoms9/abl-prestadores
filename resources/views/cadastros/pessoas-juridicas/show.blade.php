@@ -15,6 +15,17 @@
         <dt class="col-sm-3">Situação</dt>
         <dd class="col-sm-9">@include('cadastros._situacao', ['ativo' => $pessoa->ativo])</dd>
 
+        <dt class="col-sm-3">Responsável</dt>
+        <dd class="col-sm-9">
+            @if ($pessoa->responsavelAtual)
+                {{ $pessoa->responsavelAtual->pessoaFisica->nome }}
+                ({{ $pessoa->responsavelAtual->pessoaFisica->cpf_formatado }})
+                · desde {{ $pessoa->responsavelAtual->inicio->format('d/m/Y') }}
+            @else
+                —
+            @endif
+        </dd>
+
         <dt class="col-sm-3">Nome fantasia</dt>
         <dd class="col-sm-9">{{ $pessoa->nome_fantasia ?? '—' }}</dd>
 

@@ -51,6 +51,12 @@ class PessoaFisica extends Model
         return $this->hasOne(User::class, 'pessoa_fisica_id');
     }
 
+    /** Vínculos em que esta pessoa é a responsável por uma pessoa jurídica. */
+    public function responsabilidades(): HasMany
+    {
+        return $this->hasMany(ResponsavelPessoaJuridica::class, 'pessoa_fisica_id');
+    }
+
     public function vinculosSugeridos(): HasMany
     {
         return $this->hasMany(VinculoSugerido::class, 'pessoa_fisica_id');

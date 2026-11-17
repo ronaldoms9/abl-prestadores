@@ -47,6 +47,7 @@ Acréscimos à spec:
 - **Vínculos sugeridos:** ao criar o colaborador a partir de uma PF, pré-preencher a PJ pelo `vinculos_sugeridos` da carga da E1 e marcar `utilizado_em`.
 - Formulário de PF: dados pessoais, endereço (json com CEP preenchendo via ViaCEP), contatos.
 - Formulário de PJ: CNPJ, razão social, nome fantasia, regime tributário, inscrição municipal, endereço.
+- **Responsável da PJ (decidido em 2026-11-17):** o formulário de PJ exige a pessoa física responsável (busca por CPF/nome) e, ao salvar, chama `App\Actions\Cadastros\DefinirResponsavel`. O vínculo fica só no banco local (`pessoa_juridica_responsaveis`, com vigência); o UAU não o recebe. Um responsável aberto por PJ; trocar encerra o anterior e guarda o histórico; uma PF pode responder por várias PJs. Camada de dados, ação e exibição no detalhe da PJ já existem (E1); falta o campo no formulário.
 - Dados bancários (morph) em PF e PJ: vários por pessoa, um `principal`; chave PIX validada por tipo.
 - Colaborador: liga PF + PJ + cargo + empresa + obra (a obra faz o papel de centro de custo, README D8); status `pre_admissao` ao criar. Uma PF pode ter histórico com mais de uma PJ (um colaborador ativo por vez).
 - Histórico de alterações na aba "Histórico" (activitylog com os campos alterados).
