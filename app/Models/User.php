@@ -157,4 +157,18 @@ class User extends Authenticatable
     {
         return $this->belongsTo(PessoaFisica::class, 'pessoa_fisica_id');
     }
+
+    /**
+     * Colaboradores com vínculo vigente no dia em equipes que este usuário gere
+     * no mesmo dia (README D7: visibilidade do gestor).
+     */
+    public function colaboradoresGeridosEm(\Carbon\CarbonInterface|string $data): \Illuminate\Database\Eloquent\Builder
+    {
+        $equipes = EquipeGestor::query()->where('user_id', $this->getKey())->vigentesEm($data)->select('equipe_id');
+
+        return Colaborador::query()->whereIn('colaboradores.id', ColaboradorEquipe::query()
+            ->whereIn('equipe_id', $equipes)
+            ->vigentesEm($data)
+            ->select('colaborador_id'));
+    }
 }

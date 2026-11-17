@@ -58,6 +58,11 @@ class PermissionSeeder extends Seeder
             ['name' => 'pessoa-edit', 'display_name' => 'Editar pessoas', 'description' => 'Edita pessoas físicas e jurídicas, dados bancários e responsável da PJ', 'module' => 'Pessoas'],
             ['name' => 'pessoa-importar', 'display_name' => 'Carregar planilha de pessoas', 'description' => 'Carrega a planilha e vê os relatórios de carga', 'module' => 'Pessoas'],
 
+            ['name' => 'equipe-list', 'display_name' => 'Ver equipes', 'description' => 'Quem também tem equipe-gerir e não tem equipe-edit vê só as equipes que gere', 'module' => 'Equipes'],
+            ['name' => 'equipe-create', 'display_name' => 'Cadastrar equipes', 'module' => 'Equipes'],
+            ['name' => 'equipe-edit', 'display_name' => 'Editar equipes', 'description' => 'Edita equipes, seus gestores e os colaboradores de cada equipe', 'module' => 'Equipes'],
+            ['name' => 'equipe-gerir', 'display_name' => 'Gerir equipes', 'description' => 'Pode ser gestor de equipe; só quem tem esta permissão entra na lista de gestores', 'module' => 'Equipes'],
+
             ['name' => 'integracao-list', 'display_name' => 'Ver monitoramento das integrações', 'module' => 'Integrações'],
             ['name' => 'integracao-sincronizar', 'display_name' => 'Sincronizar agora', 'module' => 'Integrações'],
             ['name' => 'integracao-reenviar', 'display_name' => 'Reprocessar falha de integração', 'module' => 'Integrações'],

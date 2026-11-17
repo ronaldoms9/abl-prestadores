@@ -22,6 +22,7 @@ return [
         ['titulo' => 'Pessoas jurídicas', 'rota' => 'pessoa-juridica.index', 'permissao' => 'pessoa-list'],
         ['titulo' => 'Carregar planilha', 'rota' => 'importacao-pessoa.index', 'permissao' => 'pessoa-importar'],
     ]],
+    ['titulo' => 'Equipes', 'icone' => 'bi bi-diagram-3', 'rota' => 'equipe.index', 'permissao' => 'equipe-list'],
     ['titulo' => 'Empresas', 'icone' => 'bi bi-building', 'rota' => 'empresa.index', 'permissao' => 'empresa-list'],
     ['titulo' => 'Obras', 'icone' => 'bi bi-cone-striped', 'rota' => 'obra.index', 'permissao' => 'obra-list'],
     ['titulo' => 'Integrações', 'icone' => 'bi bi-arrow-left-right', 'rota' => 'integracao.index', 'permissao' => 'integracao-list'],
