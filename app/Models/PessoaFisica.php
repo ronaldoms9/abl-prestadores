@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\AsEndereco;
 use App\Casts\SomenteDigitos;
 use App\Models\Concerns\Ativavel;
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\RegistraAutoria;
 use App\Support\Documento;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PessoaFisica extends Model
 {
-    use Ativavel, HasFactory, RegistraAutoria, SoftDeletes;
+    use Ativavel, Auditavel, HasFactory, RegistraAutoria, SoftDeletes;
 
     protected $table = 'pessoas_fisicas';
 
@@ -91,5 +92,16 @@ class PessoaFisica extends Model
     public function getCpfFormatadoAttribute(): ?string
     {
         return Documento::formatar($this->cpf);
+    }
+
+    protected function prefixoAuditoria(): string
+    {
+        return 'pessoa-fisica';
+    }
+
+    /** Fora daqui ficam os campos da sincronização, para a importação do UAU não encher a auditoria. */
+    protected function camposAuditados(): array
+    {
+        return ['cpf', 'nome', 'nascimento', 'email', 'telefone', 'endereco', 'ativo'];
     }
 }

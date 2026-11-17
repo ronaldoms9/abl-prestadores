@@ -60,8 +60,8 @@ class PerfilSeeder extends Seeder
             ],
             'rh' => [
                 'display_name' => 'RH',
-                'description' => 'Cadastro de pessoas e carga de planilha',
-                'permissoes' => ['pessoa-list', 'pessoa-importar', 'empresa-list', 'obra-list'],
+                'description' => 'Cadastro de pessoas, carga de planilha e consulta de empresas e obras',
+                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list'],
             ],
             'gestor' => [
                 'display_name' => 'Gestor',

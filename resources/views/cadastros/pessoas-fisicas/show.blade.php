@@ -36,4 +36,21 @@
         'documento' => fn ($pj) => $pj->cnpj_formatado,
         'nome' => fn ($pj) => $pj->razao_social,
     ])
+
+    <h6 class="text-semibold mt-3">Responsável pelas pessoas jurídicas</h6>
+    @if ($pessoa->responsabilidades->isEmpty())
+        <p class="text-muted mb-0">Não é responsável por nenhuma pessoa jurídica.</p>
+    @else
+        <ul class="mb-0">
+            @foreach ($pessoa->responsabilidades as $vinculo)
+                <li>{{ $vinculo->pessoaJuridica->razao_social }} ({{ $vinculo->pessoaJuridica->cnpj_formatado }}) · desde {{ $vinculo->inicio->format('d/m/Y') }}</li>
+            @endforeach
+        </ul>
+    @endif
+
+    <h6 class="text-semibold mt-3">Dados bancários</h6>
+    @include('cadastros._bancos')
+
+    <h6 class="text-semibold mt-3">Histórico</h6>
+    @include('cadastros._historico')
 @endsection

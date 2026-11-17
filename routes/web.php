@@ -65,10 +65,25 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-fisica.show');
     });
 
+    Route::group(['prefix' => 'pessoas/fisicas', 'middleware' => 'permission:pessoa-create|pessoa-edit'], function(){
+        Route::get('/form/{id?}', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'form'])
+            ->whereNumber('id')->name('pessoa-fisica.form');
+        Route::post('/store/{id?}', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'store'])
+            ->whereNumber('id')->name('pessoa-fisica.store');
+        Route::get('/buscar', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'buscar'])->name('pessoa-fisica.buscar');
+    });
+
     Route::group(['prefix' => 'pessoas/juridicas', 'middleware' => 'permission:pessoa-list'], function(){
         Route::get('/', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'index'])->name('pessoa-juridica.index');
         Route::get('/{id}', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'show'])
             ->whereNumber('id')->name('pessoa-juridica.show');
+    });
+
+    Route::group(['prefix' => 'pessoas/juridicas', 'middleware' => 'permission:pessoa-create|pessoa-edit'], function(){
+        Route::get('/form/{id?}', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'form'])
+            ->whereNumber('id')->name('pessoa-juridica.form');
+        Route::post('/store/{id?}', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'store'])
+            ->whereNumber('id')->name('pessoa-juridica.store');
     });
 
     Route::group(['prefix' => 'empresas', 'middleware' => 'permission:empresa-list'], function(){

@@ -55,4 +55,10 @@
         'documento' => fn ($pf) => $pf->cpf_formatado,
         'nome' => fn ($pf) => $pf->nome,
     ])
+
+    <h6 class="text-semibold mt-3">Dados bancários</h6>
+    @include('cadastros._bancos')
+
+    <h6 class="text-semibold mt-3">Histórico</h6>
+    @include('cadastros._historico')
 @endsection
