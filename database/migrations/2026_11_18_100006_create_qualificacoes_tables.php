@@ -36,7 +36,8 @@ return new class extends Migration
             $table->string('certificado_path')->nullable();
             $table->string('instituicao')->nullable();
             $table->auditoria();
-            $table->index(['colaborador_id', 'qualificacao_tipo_id']);
+            // Nome explícito: o gerado passa de 64 caracteres, o limite do MySQL.
+            $table->index(['colaborador_id', 'qualificacao_tipo_id'], 'colab_qualif_colab_tipo_index');
             $table->index('data_validade');
         });
     }
