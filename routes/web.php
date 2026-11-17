@@ -87,6 +87,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'pessoas/juridicas', 'middleware' => 'permission:pessoa-create|pessoa-edit'], function(){
+        Route::get('/consultar-cnpj', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'consultarCnpj'])->name('pessoa-juridica.consultar-cnpj');
         Route::get('/form/{id?}', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'form'])
             ->whereNumber('id')->name('pessoa-juridica.form');
         Route::post('/store/{id?}', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'store'])

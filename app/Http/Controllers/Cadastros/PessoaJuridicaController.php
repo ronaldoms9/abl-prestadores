@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Cadastros;
 
 use App\Actions\Cadastros\SalvarPessoaJuridica;
 use App\Http\Controllers\Controller;
+use App\Integrations\ConsultaCnpj\ConsultaCnpj;
+use App\Integrations\ConsultaCnpj\ConsultaCnpjIndisponivel;
 use App\Models\PessoaJuridica;
 use App\Rules\Cnpj;
 use App\Support\Documento;
@@ -89,6 +91,30 @@ class PessoaJuridicaController extends Controller
         $salvar->executar($pessoa, $validos);
 
         return response()->json(['success' => true, 'message' => 'Pessoa jurídica salva.', 'data' => []]);
+    }
+
+    /** Consulta o CNPJ na BrasilAPI para preencher o formulário. Falha não impede o cadastro manual. */
+    public function consultarCnpj(Request $request, ConsultaCnpj $consulta)
+    {
+        $cnpj = Documento::digitos((string) $request->query('cnpj'));
+
+        if (! Cnpj::valido($cnpj)) {
+            return response()->json(['encontrado' => false, 'message' => 'Informe um CNPJ válido para consultar.'], 422);
+        }
+
+        try {
+            $dados = $consulta->consultar($cnpj);
+        } catch (ConsultaCnpjIndisponivel $e) {
+            report($e);
+
+            return response()->json(['encontrado' => false, 'message' => 'A consulta de CNPJ está indisponível agora. Preencha os dados à mão.']);
+        }
+
+        if ($dados === null) {
+            return response()->json(['encontrado' => false, 'message' => 'CNPJ não encontrado na consulta. Preencha os dados à mão.']);
+        }
+
+        return response()->json(['encontrado' => true, 'dados' => $dados->toArray()]);
     }
 
     /** Busca por razão social, nome fantasia ou CNPJ, para escolher a PJ de um colaborador. */
