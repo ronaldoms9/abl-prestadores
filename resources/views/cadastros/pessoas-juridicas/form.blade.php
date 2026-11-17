@@ -20,7 +20,11 @@
     <div class="row">
         <div class="col-sm-4 form-group">
             <label for="cnpj" class="text-semibold small">CNPJ</label>
-            <input id="cnpj" type="text" name="cnpj" class="form-control" value="{{ $pessoa->cnpj_formatado }}" inputmode="numeric" required>
+            <div class="input-group">
+                <input id="cnpj" type="text" name="cnpj" class="form-control" value="{{ $pessoa->cnpj_formatado }}" inputmode="numeric" required>
+                <button type="button" id="cnpj-buscar" class="btn btn-outline-primary" title="Preenche razão social, endereço e situação a partir do CNPJ">Buscar CNPJ</button>
+            </div>
+            <div id="cnpj-aviso" class="small mt-1"></div>
         </div>
         <div class="col-sm-8 form-group">
             <label for="razao_social" class="text-semibold small">Razão social</label>
@@ -90,6 +94,32 @@
 
     @push('scripts')
     <script>
+        (() => {
+            const botao = document.getElementById('cnpj-buscar');
+            const aviso = document.getElementById('cnpj-aviso');
+            const campo = (id) => document.getElementById(id);
+            const dizer = (texto, classe) => { aviso.className = 'small mt-1 ' + classe; aviso.textContent = texto; };
+            botao.addEventListener('click', async () => {
+                dizer('Consultando...', 'text-muted');
+                botao.disabled = true;
+                try {
+                    const r = await fetch(@json(route('pessoa-juridica.consultar-cnpj')) + '?cnpj=' + encodeURIComponent(campo('cnpj').value), {headers: {'Accept': 'application/json'}});
+                    const d = await r.json();
+                    if (!d.encontrado) { dizer(d.message, 'text-warning'); return; }
+                    const x = d.dados;
+                    const poe = (id, v) => { if (v !== null && v !== undefined && v !== '') campo(id).value = v; };
+                    poe('razao_social', x.razao_social); poe('nome_fantasia', x.nome_fantasia); poe('email', x.email);
+                    poe('telefone', x.telefone); poe('regime_tributario', x.regime_tributario);
+                    poe('end-cep', x.endereco.cep); poe('end-logradouro', x.endereco.logradouro); poe('end-numero', x.endereco.numero);
+                    poe('end-complemento', x.endereco.complemento); poe('end-bairro', x.endereco.bairro); poe('end-cidade', x.endereco.cidade); poe('end-uf', x.endereco.uf);
+                    dizer(x.ativa ? 'Dados preenchidos. Situação cadastral: ' + x.situacao + '.' : 'Atenção: a situação cadastral é ' + x.situacao + ', não ATIVA.', x.ativa ? 'text-success' : 'text-danger');
+                } catch (e) {
+                    dizer('Não foi possível consultar agora. Preencha os dados à mão.', 'text-warning');
+                } finally {
+                    botao.disabled = false;
+                }
+            });
+        })();
         (() => {
             const busca = document.getElementById('responsavel-busca');
             const opcoes = document.getElementById('responsavel-opcoes');
