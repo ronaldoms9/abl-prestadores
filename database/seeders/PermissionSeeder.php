@@ -64,6 +64,11 @@ class PermissionSeeder extends Seeder
             ['name' => 'remuneracao-list', 'display_name' => 'Ver remuneração', 'description' => 'Vê a remuneração atual e o histórico de cada colaborador', 'module' => 'Cargos e remuneração'],
             ['name' => 'remuneracao-reajustar', 'display_name' => 'Definir e reajustar remuneração', 'description' => 'Define a remuneração inicial e faz reajustes individuais e em lote', 'module' => 'Cargos e remuneração'],
 
+            ['name' => 'documento-list', 'display_name' => 'Ver e baixar documentos', 'description' => 'Vê e baixa os documentos anexados a pessoas e colaboradores', 'module' => 'Documentos'],
+            ['name' => 'documento-edit', 'display_name' => 'Anexar e excluir documentos', 'module' => 'Documentos'],
+            ['name' => 'documento-tipo-gerir', 'display_name' => 'Gerir tipos de documento', 'description' => 'Cria e edita os tipos de documento e se exigem validade', 'module' => 'Documentos'],
+            ['name' => 'alerta-documentos', 'display_name' => 'Receber alerta de documentos', 'description' => 'Recebe o resumo diário por e-mail de documentos vencidos e a vencer', 'module' => 'Documentos'],
+
             ['name' => 'colaborador-list', 'display_name' => 'Ver colaboradores', 'description' => 'Quem tem equipe-gerir e não tem colaborador-edit vê só os colaboradores das equipes que gere hoje', 'module' => 'Colaboradores'],
             ['name' => 'colaborador-create', 'display_name' => 'Cadastrar colaboradores', 'description' => 'Liga uma pessoa física a uma pessoa jurídica, cargo, empresa e obra', 'module' => 'Colaboradores'],
             ['name' => 'colaborador-edit', 'display_name' => 'Editar colaboradores', 'description' => 'Edita colaboradores e os vínculos com equipes', 'module' => 'Colaboradores'],

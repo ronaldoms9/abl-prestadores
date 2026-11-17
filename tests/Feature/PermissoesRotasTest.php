@@ -89,6 +89,14 @@ class PermissoesRotasTest extends TestCase
             'reajuste.lote' => ['GET', 'reajuste.lote', [], 'remuneracao-reajustar', 200],
             'reajuste.lote.previa' => ['POST', 'reajuste.lote.previa', [], 'remuneracao-reajustar', null],
             'reajuste.lote.aplicar' => ['POST', 'reajuste.lote.aplicar', [], 'remuneracao-reajustar', null],
+            'documento.store' => ['POST', 'documento.store', ['pessoa-fisica', ':pessoa-fisica'], 'documento-edit', null],
+            'documento.baixar' => ['GET', 'documento.baixar', [':documento'], 'documento-list', 404],
+            'documento.excluir' => ['DELETE', 'documento.excluir', [':documento'], 'documento-edit', 201],
+            'documento-tipo.index' => ['GET', 'documento-tipo.index', [], 'documento-tipo-gerir', 200],
+            'documento-tipo.form (criar)' => ['GET', 'documento-tipo.form', [], 'documento-tipo-gerir', 200],
+            'documento-tipo.form (editar)' => ['GET', 'documento-tipo.form', [':documento-tipo'], 'documento-tipo-gerir', 200],
+            'documento-tipo.store' => ['POST', 'documento-tipo.store', [], 'documento-tipo-gerir', null],
+            'documento-tipo.delete' => ['DELETE', 'documento-tipo.delete', [':documento-tipo'], 'documento-tipo-gerir', 201],
             'equipe.index' => ['GET', 'equipe.index', [], 'equipe-list', 200],
             'equipe.show' => ['GET', 'equipe.show', [':equipe'], 'equipe-list', 200],
             'equipe.form (criar)' => ['GET', 'equipe.form', [], 'equipe-create', 200],
@@ -122,7 +130,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -171,6 +179,8 @@ class PermissoesRotasTest extends TestCase
             ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
             ':colaborador' => Colaborador::factory()->create()->id,
             ':vinculo-equipe' => ColaboradorEquipe::factory()->create()->id,
+            ':documento' => \App\Models\Documento::factory()->create()->id,
+            ':documento-tipo' => \App\Models\DocumentoTipo::factory()->create()->id,
             ':cargo' => \App\Models\Cargo::factory()->create()->id,
             ':equipe' => Equipe::factory()->create()->id,
             ':gestor' => EquipeGestor::factory()->create()->id,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cadastros;
 
 use App\Actions\Cadastros\SalvarPessoaFisica;
 use App\Http\Controllers\Controller;
+use App\Models\DocumentoTipo;
 use App\Models\PessoaFisica;
 use App\Rules\Cpf;
 use App\Support\Documento;
@@ -113,8 +114,14 @@ class PessoaFisicaController extends Controller
 
     public function show($id)
     {
+        $usuario = auth()->user();
+
         return view('cadastros.pessoas-fisicas.show', [
-            'pessoa' => PessoaFisica::with(['pessoasJuridicasSugeridas', 'responsabilidades' => fn ($q) => $q->vigentes(), 'responsabilidades.pessoaJuridica', 'dadosBancarios', 'activities' => fn ($q) => $q->latest('id')->limit(15), 'activities.causer'])->findOrFail($id),
+            'pessoa' => PessoaFisica::query()
+                ->when($usuario->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
+                ->with(['pessoasJuridicasSugeridas', 'responsabilidades' => fn ($q) => $q->vigentes(), 'responsabilidades.pessoaJuridica', 'dadosBancarios', 'activities' => fn ($q) => $q->latest('id')->limit(15), 'activities.causer'])
+                ->findOrFail($id),
+            'tiposDocumento' => $usuario->can('documento-edit') ? DocumentoTipo::paraDono('pessoa-fisica')->orderBy('nome')->get() : null,
         ]);
     }
 

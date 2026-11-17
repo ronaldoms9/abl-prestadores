@@ -88,6 +88,7 @@ class AppServiceProvider extends ServiceProvider
             'colaborador' => Colaborador::class,
             'equipe' => Equipe::class,
             'cargo' => Cargo::class,
+            'documento-tipo' => \App\Models\DocumentoTipo::class,
             'reajuste' => \App\Models\Reajuste::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
             'sincronizacao' => Sincronizacao::class,

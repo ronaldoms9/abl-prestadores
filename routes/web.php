@@ -94,6 +94,21 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-juridica.store');
     });
 
+    Route::group(['prefix' => 'documentos'], function(){
+        $c = App\Http\Controllers\Cadastros\DocumentoController::class;
+        Route::get('/{id}/baixar', [$c, 'baixar'])->whereNumber('id')->name('documento.baixar')->middleware('permission:documento-list');
+        Route::delete('/{id}', [$c, 'excluir'])->whereNumber('id')->name('documento.excluir')->middleware('permission:documento-edit');
+        Route::post('/{apelido}/{id}', [$c, 'store'])->whereIn('apelido', ['pessoa-fisica', 'pessoa-juridica', 'colaborador'])->whereNumber('id')->name('documento.store')->middleware('permission:documento-edit');
+    });
+
+    Route::group(['prefix' => 'tipos-de-documento', 'middleware' => 'permission:documento-tipo-gerir'], function(){
+        $c = App\Http\Controllers\Cadastros\DocumentoTipoController::class;
+        Route::get('/', [$c, 'index'])->name('documento-tipo.index');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('documento-tipo.form');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('documento-tipo.store');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('documento-tipo.delete');
+    });
+
     Route::group(['prefix' => 'cargos'], function(){
         $c = App\Http\Controllers\Cadastros\CargoController::class;
         Route::get('/', [$c, 'index'])->name('cargo.index')->middleware('permission:cargo-list');

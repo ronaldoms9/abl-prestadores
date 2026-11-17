@@ -61,7 +61,7 @@ class PerfilSeeder extends Seeder
             'rh' => [
                 'display_name' => 'RH',
                 'description' => 'Cadastro de pessoas, carga de planilha e consulta de empresas e obras',
-                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar'],
+                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir', 'alerta-documentos'],
             ],
             'gestor' => [
                 'display_name' => 'Gestor',
@@ -71,7 +71,7 @@ class PerfilSeeder extends Seeder
             'financeiro' => [
                 'display_name' => 'Financeiro',
                 'description' => 'Consulta de cadastros e acompanhamento das integrações',
-                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'colaborador-list', 'cargo-list', 'remuneracao-list', 'integracao-list', 'integracao-sincronizar', 'integracao-reenviar'],
+                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'colaborador-list', 'cargo-list', 'remuneracao-list', 'documento-list', 'integracao-list', 'integracao-sincronizar', 'integracao-reenviar'],
             ],
             'colaborador' => [
                 'display_name' => 'Colaborador',

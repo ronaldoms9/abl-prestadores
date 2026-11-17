@@ -20,6 +20,12 @@ class Kernel extends ConsoleKernel
             ->dailyAt(config('uau.sincronizacao.horario'))
             ->onOneServer()
             ->withoutOverlapping();
+
+        // Alertas por e-mail (E2, fatias 5 e 7): um resumo por dia, depois da conciliação.
+        $schedule->command('alertas:documentos')
+            ->dailyAt('06:30')
+            ->onOneServer()
+            ->withoutOverlapping();
     }
 
     /**

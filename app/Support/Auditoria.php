@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\ImportacaoPessoa;
 use App\Models\Cargo;
 use App\Models\Colaborador;
+use App\Models\DocumentoTipo;
 use App\Models\Equipe;
 use App\Models\IntegracaoLog;
 use App\Models\PessoaFisica;
@@ -61,6 +62,11 @@ class Auditoria
         'cargo-excluido' => 'Cargo excluído',
         'remuneracao-definida' => 'Remuneração definida',
         'reajuste-aplicado' => 'Reajuste aplicado',
+        'documento-anexado' => 'Documento anexado',
+        'documento-excluido' => 'Documento excluído',
+        'documento-tipo-criado' => 'Tipo de documento criado',
+        'documento-tipo-alterado' => 'Tipo de documento alterado',
+        'documento-tipo-excluido' => 'Tipo de documento excluído',
         'equipe-criado' => 'Equipe criada',
         'equipe-alterado' => 'Equipe alterada',
         'equipe-excluido' => 'Equipe excluída',
@@ -79,6 +85,7 @@ class Auditoria
         User::class => ['Usuário', 'name'],
         Equipe::class => ['Equipe', 'nome'],
         Cargo::class => ['Cargo', 'nome'],
+        DocumentoTipo::class => ['Tipo de documento', 'nome'],
         Reajuste::class => ['Reajuste', 'id'],
         Colaborador::class => ['Colaborador', 'id'],
         PessoaFisica::class => ['Pessoa física', 'nome'],
@@ -107,6 +114,8 @@ class Auditoria
         'inscricao_municipal' => 'inscrição municipal',
         'inscricao_estadual' => 'inscrição estadual',
         'cnpj' => 'CNPJ',
+        'aplica_a' => 'vale para',
+        'exige_validade' => 'exige validade',
         'faixa_min' => 'faixa mínima',
         'faixa_max' => 'faixa máxima',
         'pessoa_fisica_id' => 'pessoa física',

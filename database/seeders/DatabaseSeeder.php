@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             PerfilSeeder::class,
             UserCreateSeeder::class,
+            DocumentoTipoSeeder::class,
         ]);
     }
 }

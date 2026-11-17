@@ -6,6 +6,7 @@ use App\Actions\Cadastros\SalvarPessoaJuridica;
 use App\Http\Controllers\Controller;
 use App\Integrations\ConsultaCnpj\ConsultaCnpj;
 use App\Integrations\ConsultaCnpj\ConsultaCnpjIndisponivel;
+use App\Models\DocumentoTipo;
 use App\Models\PessoaJuridica;
 use App\Rules\Cnpj;
 use App\Support\Documento;
@@ -149,8 +150,14 @@ class PessoaJuridicaController extends Controller
 
     public function show($id)
     {
+        $usuario = auth()->user();
+
         return view('cadastros.pessoas-juridicas.show', [
-            'pessoa' => PessoaJuridica::with(['pessoasFisicasSugeridas', 'responsavelAtual.pessoaFisica', 'dadosBancarios', 'activities' => fn ($q) => $q->latest('id')->limit(15), 'activities.causer'])->findOrFail($id),
+            'pessoa' => PessoaJuridica::query()
+                ->when($usuario->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
+                ->with(['pessoasFisicasSugeridas', 'responsavelAtual.pessoaFisica', 'dadosBancarios', 'activities' => fn ($q) => $q->latest('id')->limit(15), 'activities.causer'])
+                ->findOrFail($id),
+            'tiposDocumento' => $usuario->can('documento-edit') ? DocumentoTipo::paraDono('pessoa-juridica')->orderBy('nome')->get() : null,
         ]);
     }
 

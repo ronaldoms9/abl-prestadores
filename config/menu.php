@@ -34,6 +34,7 @@ return [
     ['titulo' => 'Configurações', 'icone' => 'bi bi-gear', 'itens' => [
         ['titulo' => 'Usuários', 'rota' => 'user.index', 'permissao' => 'user-list'],
         ['titulo' => 'Perfis', 'rota' => 'grupo.index', 'permissao' => 'grupo-list'],
+        ['titulo' => 'Tipos de documento', 'rota' => 'documento-tipo.index', 'permissao' => 'documento-tipo-gerir'],
         ['titulo' => 'Auditoria', 'rota' => 'auditoria.index', 'permissao' => 'auditoria-list'],
     ]],
 ];

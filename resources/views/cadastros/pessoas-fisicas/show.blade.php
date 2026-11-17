@@ -51,6 +51,15 @@
     <h6 class="text-semibold mt-3">Dados bancários</h6>
     @include('cadastros._bancos')
 
+    @permission('documento-list')
+        @include('cadastros._documentos', [
+            'donoApelido' => 'pessoa-fisica',
+            'donoId' => $pessoa->id,
+            'documentos' => $pessoa->documentos,
+            'recarregarUrl' => route('pessoa-fisica.show', $pessoa->id),
+        ])
+    @endpermission
+
     <h6 class="text-semibold mt-3">Histórico</h6>
     @include('cadastros._historico')
 @endsection

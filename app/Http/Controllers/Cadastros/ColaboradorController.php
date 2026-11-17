@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cadastros;
 
 use App\Actions\Cadastros\SalvarColaborador;
+use App\Actions\Documentos\DocumentosAVencer;
 use App\Actions\Equipes\EncerrarVinculo;
 use App\Actions\Equipes\VincularColaborador;
 use App\Enums\StatusColaborador;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cargo;
 use App\Models\Colaborador;
 use App\Models\ColaboradorEquipe;
+use App\Models\DocumentoTipo;
 use App\Models\Empresa;
 use App\Models\Equipe;
 use App\Models\Obra;
@@ -67,6 +69,7 @@ class ColaboradorController extends Controller
         $veRemuneracao = auth()->user()->can('remuneracao-list');
 
         $colaborador = Colaborador::visiveisPara(auth()->user())
+            ->when(auth()->user()->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
             ->when($veRemuneracao, fn ($q) => $q->with(['remuneracoes' => fn ($r) => $r->orderByDesc('vigencia_inicio')->orderByDesc('id')]))
             ->with([
                 'pessoaFisica', 'pessoaJuridica', 'cargo', 'empresa', 'obra',
@@ -82,7 +85,14 @@ class ColaboradorController extends Controller
             ? Equipe::ativos()->whereNotIn('id', $colaborador->vinculosEquipe->whereNull('fim')->pluck('equipe_id'))->orderBy('nome')->get()
             : collect();
 
-        return view('colaboradores.show', ['colaborador' => $colaborador, 'equipesLivres' => $equipesLivres]);
+        $verDocumentos = auth()->user()->can('documento-list');
+
+        return view('colaboradores.show', [
+            'colaborador' => $colaborador,
+            'equipesLivres' => $equipesLivres,
+            'tiposDocumento' => auth()->user()->can('documento-edit') ? DocumentoTipo::paraDono('colaborador')->orderBy('nome')->get() : null,
+            'vencidos' => $verDocumentos ? app(DocumentosAVencer::class)->vencidosDoColaborador($colaborador, now()) : collect(),
+        ]);
     }
 
     public function form($id = 0)

@@ -137,6 +137,15 @@
         @endif
     @endpermission
 
+    @permission('documento-list')
+        @include('cadastros._documentos', [
+            'donoApelido' => 'colaborador',
+            'donoId' => $colaborador->id,
+            'documentos' => $colaborador->documentos,
+            'recarregarUrl' => route('colaborador.show', $colaborador->id),
+        ])
+    @endpermission
+
     <h6 class="text-semibold mt-3">Histórico</h6>
     @php $pessoa = $colaborador; @endphp
     @include('cadastros._historico')
