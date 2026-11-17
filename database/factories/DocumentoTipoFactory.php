@@ -16,8 +16,14 @@ class DocumentoTipoFactory extends Factory
             'nome' => 'Documento '.fake()->unique()->word(),
             'aplica_a' => AplicaDocumento::Todos,
             'exige_validade' => false,
+            'obrigatorio_na_admissao' => false,
             'ativo' => true,
         ];
+    }
+
+    public function obrigatorioNaAdmissao(): static
+    {
+        return $this->state(fn () => ['obrigatorio_na_admissao' => true]);
     }
 
     public function comValidade(): static

@@ -26,6 +26,11 @@
         <input id="exige_validade" type="checkbox" role="switch" class="form-check-input" name="exige_validade" value="1" @checked($tipo->exige_validade)>
         <label for="exige_validade" class="form-check-label">Exige data de validade (alimenta os alertas)</label>
     </div>
+    <div class="form-check form-switch mt-2">
+        <input type="hidden" name="obrigatorio_na_admissao" value="0">
+        <input id="obrigatorio_na_admissao" type="checkbox" role="switch" class="form-check-input" name="obrigatorio_na_admissao" value="1" @checked($tipo->obrigatorio_na_admissao)>
+        <label for="obrigatorio_na_admissao" class="form-check-label">Exigido na admissão (o checklist confere se foi enviado)</label>
+    </div>
     @if ($tipo->exists)
         <div class="form-check form-switch mt-2">
             <input type="hidden" name="ativo" value="0">

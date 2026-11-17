@@ -3,8 +3,11 @@
 namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
+use App\Models\Beneficio;
 use App\Models\Cargo;
 use App\Models\Colaborador;
+use App\Models\Contrato;
+use App\Models\ContratoModelo;
 use App\Models\DocumentoTipo;
 use App\Models\Equipe;
 use App\Models\IntegracaoLog;
@@ -79,6 +82,26 @@ class Auditoria
         'equipe-excluido' => 'Equipe excluída',
         'equipe-gestor-adicionado' => 'Gestor adicionado à equipe',
         'equipe-gestor-encerrado' => 'Gestor retirado da equipe',
+        'contrato-modelo-criado' => 'Modelo de contrato criado',
+        'contrato-modelo-alterado' => 'Modelo de contrato alterado',
+        'contrato-modelo-excluido' => 'Modelo de contrato excluído',
+        'contrato-modelo-versionado' => 'Nova versão do modelo de contrato',
+        'contrato-criado' => 'Contrato criado',
+        'contrato-alterado' => 'Contrato alterado',
+        'contrato-excluido' => 'Contrato excluído',
+        'contrato-gerado' => 'Contrato gerado',
+        'contrato-assinado' => 'Contrato assinado anexado',
+        'beneficio-criado' => 'Benefício criado',
+        'beneficio-alterado' => 'Benefício alterado',
+        'beneficio-excluido' => 'Benefício excluído',
+        'beneficio-valor-definido' => 'Valor de benefício definido',
+        'beneficio-reajuste-aplicado' => 'Reajuste de benefício aplicado',
+        'colaborador-beneficio-vinculado' => 'Benefício vinculado ao colaborador',
+        'colaborador-beneficio-encerrado' => 'Benefício do colaborador encerrado',
+        'admissao-iniciada' => 'Admissão iniciada',
+        'admissao-item-concluido' => 'Item da admissão concluído',
+        'admissao-concluida' => 'Admissão concluída',
+        'desligamento-registrado' => 'Colaborador desligado',
         'planilha-carregada' => 'Planilha carregada',
         'sincronizacao-solicitada' => 'Sincronização solicitada',
         'integracao-reprocessada' => 'Integração reprocessada',
@@ -95,6 +118,9 @@ class Auditoria
         QualificacaoTipo::class => ['Tipo de qualificação', 'nome'],
         DocumentoTipo::class => ['Tipo de documento', 'nome'],
         Reajuste::class => ['Reajuste', 'id'],
+        ContratoModelo::class => ['Modelo de contrato', 'nome'],
+        Contrato::class => ['Contrato', 'numero'],
+        Beneficio::class => ['Benefício', 'nome'],
         Colaborador::class => ['Colaborador', 'id'],
         PessoaFisica::class => ['Pessoa física', 'nome'],
         PessoaJuridica::class => ['Pessoa jurídica', 'razao_social'],
@@ -124,6 +150,7 @@ class Auditoria
         'cnpj' => 'CNPJ',
         'aplica_a' => 'vale para',
         'exige_validade' => 'exige validade',
+        'obrigatorio_na_admissao' => 'obrigatório na admissão',
         'categoria' => 'categoria',
         'validade_meses' => 'validade (meses)',
         'faixa_min' => 'faixa mínima',

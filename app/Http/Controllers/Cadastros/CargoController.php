@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Cadastros;
 
 use App\Http\Controllers\Controller;
+use App\Actions\Beneficios\SalvarBeneficiosPadraoCargo;
+use App\Models\Beneficio;
 use App\Models\Cargo;
 use App\Support\Dinheiro;
 use Illuminate\Http\Request;
@@ -42,10 +44,16 @@ class CargoController extends Controller
     {
         abort_unless(auth()->user()->can($id ? 'cargo-edit' : 'cargo-create'), 403);
 
-        return view('cargos.form', ['cargo' => $id ? Cargo::findOrFail($id) : new Cargo]);
+        $cargo = $id ? Cargo::findOrFail($id) : new Cargo;
+
+        return view('cargos.form', [
+            'cargo' => $cargo,
+            'beneficios' => auth()->user()->can('beneficio-gerir') ? Beneficio::ativos()->orderBy('nome')->get() : collect(),
+            'beneficiosPadrao' => $cargo->exists ? $cargo->beneficiosPadrao()->pluck('beneficio_id')->all() : [],
+        ]);
     }
 
-    public function store(Request $request, $id = 0)
+    public function store(Request $request, SalvarBeneficiosPadraoCargo $salvarBeneficios, $id = 0)
     {
         abort_unless(auth()->user()->can($id ? 'cargo-edit' : 'cargo-create'), 403);
         $cargo = $id ? Cargo::findOrFail($id) : new Cargo;
@@ -61,6 +69,8 @@ class CargoController extends Controller
             'faixa_min' => ['nullable', 'numeric', 'min:0', 'max:9999999999.99'],
             'faixa_max' => ['nullable', 'numeric', 'min:0', 'max:9999999999.99', 'gte:faixa_min'],
             'ativo' => ['nullable', 'boolean'],
+            'beneficios_padrao' => ['nullable', 'array'],
+            'beneficios_padrao.*' => ['integer'],
         ], ['nome' => 'nome do cargo', 'descricao' => 'descrição', 'faixa_min' => 'faixa mínima', 'faixa_max' => 'faixa máxima']);
 
         $cargo->fill([
@@ -70,6 +80,11 @@ class CargoController extends Controller
             'faixa_max' => $validos['faixa_max'] ?? null,
             'ativo' => $validos['ativo'] ?? $cargo->ativo ?? true,
         ])->save();
+
+        // Só quem gere benefícios mexe nos padrões: o campo nem vem para os demais.
+        if (auth()->user()->can('beneficio-gerir') && $request->has('beneficios_padrao_enviado')) {
+            $salvarBeneficios->executar($cargo, $validos['beneficios_padrao'] ?? []);
+        }
 
         return response()->json(['success' => true, 'message' => 'Cargo salvo.', 'data' => []]);
     }

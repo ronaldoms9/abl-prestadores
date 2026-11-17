@@ -39,6 +39,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // PDF dos contratos: dompdf quando instalado; sem ele, falha clara na geração (E3, fatia 3).
+        $this->app->bind(
+            \App\Support\Contratos\GeradorPdf::class,
+            class_exists(\Dompdf\Dompdf::class) ? \App\Support\Contratos\DompdfGerador::class : \App\Support\Contratos\PdfIndisponivel::class,
+        );
+
         // A Entrega 4 troca esta implementação pela que consulta as competências aprovadas.
         $this->app->bind(\App\Support\Competencias\CompetenciaFechada::class, \App\Support\Competencias\NenhumaCompetenciaFechada::class);
         $this->app->singleton(Sanitizador::class, fn () => new Sanitizador(config('uau.campos_ocultos', [])));
@@ -91,6 +97,9 @@ class AppServiceProvider extends ServiceProvider
             'qualificacao-tipo' => \App\Models\QualificacaoTipo::class,
             'documento-tipo' => \App\Models\DocumentoTipo::class,
             'reajuste' => \App\Models\Reajuste::class,
+            'contrato-modelo' => \App\Models\ContratoModelo::class,
+            'contrato' => \App\Models\Contrato::class,
+            'beneficio' => \App\Models\Beneficio::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
             'sincronizacao' => Sincronizacao::class,
             'integracao-log' => IntegracaoLog::class,

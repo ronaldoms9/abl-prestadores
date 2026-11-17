@@ -84,6 +84,21 @@ class Colaborador extends Model
         return $this->hasMany(ColaboradorQualificacao::class, 'colaborador_id');
     }
 
+    public function contratos(): HasMany
+    {
+        return $this->hasMany(Contrato::class, 'colaborador_id');
+    }
+
+    public function beneficios(): HasMany
+    {
+        return $this->hasMany(ColaboradorBeneficio::class, 'colaborador_id');
+    }
+
+    public function checklistAdmissao(): HasMany
+    {
+        return $this->hasMany(AdmissaoChecklist::class, 'colaborador_id');
+    }
+
     /** Equipes em que o colaborador está no dia. */
     public function equipesVigentesEm(CarbonInterface|string $data): Builder
     {

@@ -28,6 +28,18 @@
         </div>
     </div>
     <p class="text-muted small mb-0">A remuneração fora da faixa gera um aviso, não bloqueia.</p>
+    @if ($beneficios->isNotEmpty())
+        <div class="form-group mt-3">
+            <label for="beneficios_padrao" class="text-semibold small">Benefícios padrão do cargo</label>
+            <input type="hidden" name="beneficios_padrao_enviado" value="1">
+            <select id="beneficios_padrao" name="beneficios_padrao[]" class="form-select" multiple size="4">
+                @foreach ($beneficios as $beneficio)
+                    <option value="{{ $beneficio->id }}" @selected(in_array($beneficio->id, $beneficiosPadrao, true))>{{ $beneficio->nome }}</option>
+                @endforeach
+            </select>
+            <p class="text-muted small mb-0 mt-1">Aplicados ao colaborador na conclusão da admissão (Ctrl ou Cmd para vários).</p>
+        </div>
+    @endif
     @if ($cargo->exists)
         <div class="form-check form-switch mt-2">
             <input type="hidden" name="ativo" value="0">

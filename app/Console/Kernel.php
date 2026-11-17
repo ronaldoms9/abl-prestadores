@@ -31,6 +31,12 @@ class Kernel extends ConsoleKernel
             ->dailyAt('06:45')
             ->onOneServer()
             ->withoutOverlapping();
+
+        // E3, fatia 4: contratos vencidos e nos marcos de 30, 15 e 5 dias.
+        $schedule->command('alertas:contratos')
+            ->dailyAt('07:00')
+            ->onOneServer()
+            ->withoutOverlapping();
     }
 
     /**

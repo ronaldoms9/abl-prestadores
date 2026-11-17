@@ -2,7 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Beneficios\DefinirValorBeneficio;
+use App\Actions\Beneficios\SalvarBeneficiosPadraoCargo;
+use App\Actions\Beneficios\VincularBeneficio;
 use App\Actions\Cadastros\SalvarColaborador;
+use App\Actions\Contratos\CriarContrato;
+use App\Actions\Contratos\GerarContrato;
+use App\Actions\Contratos\SalvarContratoModelo;
 use App\Actions\Cadastros\SalvarPessoaFisica;
 use App\Actions\Cadastros\SalvarPessoaJuridica;
 use App\Actions\Documentos\AnexarDocumento;
@@ -14,7 +20,10 @@ use App\Actions\Remuneracoes\DefinirRemuneracaoInicial;
 use App\Actions\Remuneracoes\ReajustarRemuneracao;
 use App\Enums\CategoriaQualificacao;
 use App\Enums\FormaReajuste;
+use App\Enums\MotivoAditivo;
+use App\Enums\TipoCalculoBeneficio;
 use App\Enums\StatusColaborador;
+use App\Models\Beneficio;
 use App\Models\Cargo;
 use App\Models\Colaborador;
 use App\Models\DocumentoTipo;
@@ -58,7 +67,7 @@ class DemoSeeder extends Seeder
             return;
         }
 
-        $this->call([PermissionSeeder::class, PerfilSeeder::class, UserCreateSeeder::class, DocumentoTipoSeeder::class]);
+        $this->call([PermissionSeeder::class, PerfilSeeder::class, UserCreateSeeder::class, DocumentoTipoSeeder::class, AdmissaoChecklistItemSeeder::class]);
 
         $admin = User::where('email', 'ronaldo@rmsti.com.br')->first() ?? User::query()->orderBy('id')->firstOrFail();
         Auth::login($admin);
@@ -69,6 +78,7 @@ class DemoSeeder extends Seeder
         $qualificacoes = $this->qualificacoesEMatriz($cargos);
         $equipes = $this->equipes($usuarios);
         $this->prestadores($admin, $empresas, $cargos, $equipes, $qualificacoes);
+        $this->contratosEBeneficios($cargos);
 
         Auth::logout();
 
@@ -387,5 +397,68 @@ class DemoSeeder extends Seeder
         file_put_contents($caminho, $conteudo);
 
         return new UploadedFile($caminho, $nome, 'application/pdf', null, true);
+    }
+
+    /**
+     * Benefícios com valor, benefícios padrão por cargo, modelos de exemplo e um
+     * contrato gerado para cada colaborador ativo (E3). Os textos dos modelos são
+     * de exemplo: o jurídico da ABL PRIME entrega os reais na homologação.
+     *
+     * @param  array<string, Cargo>  $cargos
+     */
+    private function contratosEBeneficios(array $cargos): void
+    {
+        $definir = app(DefinirValorBeneficio::class);
+        $inicio = now()->subMonths(18)->startOfDay();
+
+        $beneficios = [];
+        foreach ([
+            'vt' => ['Vale transporte', TipoCalculoBeneficio::FixoMensal, 300],
+            'va' => ['Vale alimentação', TipoCalculoBeneficio::PorDiaTrabalhado, 35],
+            'saude' => ['Plano de saúde', TipoCalculoBeneficio::FixoMensal, 180],
+        ] as $chave => [$nome, $tipo, $valor]) {
+            $beneficios[$chave] = Beneficio::create(['nome' => $nome, 'tipo_calculo' => $tipo, 'ativo' => true]);
+            $definir->executar($beneficios[$chave], $valor, $inicio);
+        }
+
+        $padrao = app(SalvarBeneficiosPadraoCargo::class);
+        foreach ($cargos as $cargo) {
+            $padrao->executar($cargo, [$beneficios['vt']->id, $beneficios['va']->id]);
+        }
+
+        $salvarModelo = app(SalvarContratoModelo::class);
+        $aviso = '<p><em>MODELO DE EXEMPLO — substituir pelo texto do jurídico da ABL PRIME.</em></p>';
+        $modelo = fn (string $nome, string $tipo, ?string $motivo, string $corpo) => $salvarModelo->executar(null, ['nome' => $nome, 'tipo' => $tipo, 'motivo' => $motivo, 'corpo_html' => $aviso.$corpo]);
+
+        $contrato = $modelo('Contrato de prestação de serviços (exemplo)', 'contrato', null, '<h3>CONTRATO DE PRESTAÇÃO DE SERVIÇOS Nº {{contrato.numero}}</h3>'
+            .'<p>Pelo presente instrumento, {{empresa.razao_social}}, CNPJ {{empresa.cnpj}}, contrata {{pj.razao_social}}, CNPJ {{pj.cnpj}}, representada por {{pj.responsavel_nome}}, CPF {{pj.responsavel_cpf}}, para a prestação de serviços de {{cargo.nome}}.</p>'
+            .'<p><strong>Remuneração.</strong> {{remuneracao.valor}} ({{remuneracao.valor_extenso}}) mensais, a partir de {{remuneracao.vigencia_inicio}}.</p>'
+            .'<p><strong>Benefícios.</strong></p>{{beneficios.lista}}'
+            .'<p><strong>Vigência.</strong> A partir de {{contrato.vigencia_inicio}}.</p><p>Goiânia, {{contrato.data}}.</p>');
+        $modelo('Aditivo de reajuste (exemplo)', 'aditivo', MotivoAditivo::Reajuste->value, '<h3>ADITIVO {{contrato.numero}}</h3>'
+            .'<p>Ao contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}}: a remuneração passa de {{aditivo.valor_anterior}} para {{aditivo.valor_novo}} ({{aditivo.valor_novo_extenso}}) a partir de {{contrato.vigencia_inicio}}.</p><p>Goiânia, {{contrato.data}}.</p>');
+        $modelo('Aditivo de prorrogação (exemplo)', 'aditivo', MotivoAditivo::Prorrogacao->value, '<h3>ADITIVO {{contrato.numero}}</h3>'
+            .'<p>Fica prorrogado o contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}} até {{aditivo.nova_vigencia_fim}}.</p><p>Goiânia, {{contrato.data}}.</p>');
+        $modelo('Aditivo genérico (exemplo)', 'aditivo', null, '<h3>ADITIVO {{contrato.numero}}</h3>'
+            .'<p>Ao contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}}, a partir de {{contrato.vigencia_inicio}}: {{aditivo.motivo}}. {{aditivo.cargo_anterior}} {{aditivo.cargo_novo}} {{aditivo.beneficios_alteracao}}</p>');
+        $modelo('Distrato (exemplo)', 'distrato', null, '<h3>DISTRATO {{contrato.numero}}</h3>'
+            .'<p>As partes distratam o contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}}, com efeitos a partir de {{desligamento.data}}. Motivo: {{desligamento.motivo}}.</p><p>Goiânia, {{contrato.data}}.</p>');
+
+        $vincular = app(VincularBeneficio::class);
+        $criar = app(CriarContrato::class);
+        $gerar = app(GerarContrato::class);
+
+        foreach (Colaborador::query()->where('status', StatusColaborador::Ativo)->orderBy('id')->get() as $i => $colaborador) {
+            $admissao = $colaborador->data_admissao->copy()->startOfDay();
+            $vincular->executar($colaborador, $beneficios['vt'], $admissao);
+            $vincular->executar($colaborador, $beneficios['va'], $admissao);
+            if ($i % 2 === 0) {
+                $vincular->executar($colaborador, $beneficios['saude'], $admissao, $i === 0 ? 150 : null);
+            }
+
+            // Um contrato com prazo curto, para mostrar o alerta de vencimento.
+            $fim = $i === 1 ? now()->addDays(15)->startOfDay() : ($i === 2 ? now()->subDays(3)->startOfDay() : null);
+            $gerar->executar($criar->executar($colaborador, $contrato, $admissao, $fim), $admissao);
+        }
     }
 }

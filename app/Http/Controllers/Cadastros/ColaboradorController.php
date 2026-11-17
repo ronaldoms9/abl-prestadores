@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Cadastros;
 
+use App\Actions\Beneficios\BeneficioVigente;
 use App\Actions\Cadastros\SalvarColaborador;
+use App\Models\Beneficio;
+use App\Support\Admissao\ItensAutomaticos;
+use App\Models\ContratoModelo;
 use App\Actions\Documentos\DocumentosAVencer;
 use App\Actions\Qualificacoes\SituacaoQualificacoes;
 use App\Actions\Equipes\EncerrarVinculo;
@@ -69,10 +73,16 @@ class ColaboradorController extends Controller
     public function show($id)
     {
         $veRemuneracao = auth()->user()->can('remuneracao-list');
+        $veBeneficios = auth()->user()->can('beneficio-list');
+        $veContratos = auth()->user()->can('contrato-list');
+        $gereAdmissao = auth()->user()->can('admissao-gerir');
 
         $colaborador = Colaborador::visiveisPara(auth()->user())
             ->when(auth()->user()->can('qualificacao-list'), fn ($q) => $q->with(['qualificacoes.tipo', 'cargo.exigencias' => fn ($e) => $e->where('obrigatoria', true), 'cargo.exigencias.tipo']))
             ->when(auth()->user()->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
+            ->when($gereAdmissao, fn ($q) => $q->with(['checklistAdmissao' => fn ($l) => $l->orderBy('ordem')->orderBy('id'), 'checklistAdmissao.concluidoPor']))
+            ->when($veContratos, fn ($q) => $q->with(['contratos' => fn ($c) => $c->orderBy('id'), 'contratos.modelo']))
+            ->when($veBeneficios, fn ($q) => $q->with(['beneficios' => fn ($b) => $b->orderByRaw('fim is not null')->orderByDesc('inicio'), 'beneficios.beneficio']))
             ->when($veRemuneracao, fn ($q) => $q->with(['remuneracoes' => fn ($r) => $r->orderByDesc('vigencia_inicio')->orderByDesc('id')]))
             ->with([
                 'pessoaFisica', 'pessoaJuridica', 'cargo', 'empresa', 'obra',
@@ -96,6 +106,10 @@ class ColaboradorController extends Controller
             'tiposDocumento' => auth()->user()->can('documento-edit') ? DocumentoTipo::paraDono('colaborador')->orderBy('nome')->get() : null,
             'tiposQualificacao' => auth()->user()->can('qualificacao-edit') ? QualificacaoTipo::ativos()->orderBy('nome')->get() : null,
             'situacaoQualificacoes' => auth()->user()->can('qualificacao-list') ? app(SituacaoQualificacoes::class)->situacao($colaborador, now(), (int) config('cadastros.alertas.qualificacoes_dias')) : null,
+            'admissaoAutomaticos' => $gereAdmissao && $colaborador->status === StatusColaborador::PreAdmissao && $colaborador->checklistAdmissao->isNotEmpty() ? app(ItensAutomaticos::class)->avaliar($colaborador, now()) : [],
+            'modelosContrato' => auth()->user()->can('contrato-gerar') ? ContratoModelo::ativos()->orderBy('tipo')->orderBy('nome')->get() : collect(),
+            'beneficiosAtuais' => $veBeneficios ? app(BeneficioVigente::class)->listaEm($colaborador, now())->keyBy(fn ($i) => $i['vinculo']->id) : collect(),
+            'beneficiosDisponiveis' => auth()->user()->can('colaborador-beneficio-edit') ? Beneficio::ativos()->orderBy('nome')->get() : collect(),
             'vencidos' => $verDocumentos ? app(DocumentosAVencer::class)->vencidosDoColaborador($colaborador, now()) : collect(),
         ]);
     }

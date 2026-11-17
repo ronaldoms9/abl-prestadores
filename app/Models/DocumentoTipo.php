@@ -18,7 +18,7 @@ class DocumentoTipo extends Model
 
     protected $table = 'documento_tipos';
 
-    protected $fillable = ['nome', 'aplica_a', 'exige_validade', 'ativo'];
+    protected $fillable = ['nome', 'aplica_a', 'exige_validade', 'obrigatorio_na_admissao', 'ativo'];
 
     /**
      * @return array<string, string|class-string>
@@ -28,6 +28,7 @@ class DocumentoTipo extends Model
         return [
             'aplica_a' => AplicaDocumento::class,
             'exige_validade' => 'boolean',
+            'obrigatorio_na_admissao' => 'boolean',
             'ativo' => 'boolean',
         ];
     }
@@ -52,6 +53,6 @@ class DocumentoTipo extends Model
 
     protected function camposAuditados(): array
     {
-        return ['nome', 'aplica_a', 'exige_validade', 'ativo'];
+        return ['nome', 'aplica_a', 'exige_validade', 'obrigatorio_na_admissao', 'ativo'];
     }
 }

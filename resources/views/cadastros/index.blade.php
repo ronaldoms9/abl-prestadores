@@ -27,7 +27,7 @@
                         </form>
                         @if (! empty($novo))
                             <div class="mt-2">
-                                <a href="javascript:requestIntoModal('{{ $novo['rota'] }}')" class="btn btn-primary btn-sm">
+                                <a href="{{ ! empty($novo['pagina']) ? $novo['rota'] : "javascript:requestIntoModal('".$novo['rota']."')" }}" class="btn btn-primary btn-sm">
                                     <i class="fa fa-plus"></i> {{ $novo['rotulo'] }}
                                 </a>
                             </div>

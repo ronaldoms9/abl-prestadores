@@ -4,6 +4,14 @@ Ao fim da E3, o RH gera contrato, aditivo e distrato em PDF a partir do
 cadastro, admite colaboradores por checklist, desliga com distrato e bloqueio,
 e mantém a tabela de benefícios com vigência ligada a cada colaborador.
 
+## Situação
+
+Fatias 1 a 9 implementadas na branch `e3/fatia-1-models` (106 de 112 h), cada uma detalhada em `entrega-3-fatia-N-*.md`. Falta a fatia 10 (deploy, modelos reais da ABL PRIME e roteiro de validação). Pendências de fora do código:
+
+- **Instalar o dompdf** (`composer require dompdf/dompdf`): sem ele nenhum PDF é gerado (fatia 3).
+- Os cinco itens da tabela abaixo continuam com a ABL PRIME. Até lá valem os padrões do código: proporcional por **dias corridos** e benefício fixo **proporcional** na admissão e no desligamento.
+- A gravação da PJ no UAU (fatia 4 da E2) destrava o item "PJ gravada no UAU" do checklist para PJ criada só no sistema.
+
 ## Antes de começar
 
 | Item | Responsável | Bloqueia |

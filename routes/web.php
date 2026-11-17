@@ -148,6 +148,68 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/lote/aplicar', [$l, 'aplicar'])->name('reajuste.lote.aplicar');
     });
 
+    Route::group(['prefix' => 'desligamento', 'middleware' => 'permission:colaborador-desligar'], function(){
+        $c = App\Http\Controllers\Cadastros\DesligamentoController::class;
+        Route::get('/colaboradores/{id}', [$c, 'form'])->whereNumber('id')->name('desligamento.form');
+        Route::get('/colaboradores/{id}/previa', [$c, 'previa'])->whereNumber('id')->name('desligamento.previa');
+        Route::post('/colaboradores/{id}', [$c, 'store'])->whereNumber('id')->name('desligamento.store');
+    });
+
+    Route::group(['prefix' => 'admissao', 'middleware' => 'permission:admissao-gerir'], function(){
+        $a = App\Http\Controllers\Cadastros\AdmissaoController::class;
+        $i = App\Http\Controllers\Cadastros\AdmissaoChecklistItemController::class;
+        Route::post('/colaboradores/{id}/iniciar', [$a, 'iniciar'])->whereNumber('id')->name('admissao.iniciar');
+        Route::post('/colaboradores/{id}/concluir', [$a, 'concluir'])->whereNumber('id')->name('admissao.concluir');
+        Route::post('/itens-do-colaborador/{id}', [$a, 'marcar'])->whereNumber('id')->name('admissao.marcar');
+
+        Route::get('/itens', [$i, 'index'])->name('admissao-item.index');
+        Route::get('/itens/form/{id?}', [$i, 'form'])->whereNumber('id')->name('admissao-item.form');
+        Route::post('/itens/store/{id?}', [$i, 'store'])->whereNumber('id')->name('admissao-item.store');
+        Route::delete('/itens/delete/{id}', [$i, 'delete'])->whereNumber('id')->name('admissao-item.delete');
+    });
+
+    Route::group(['prefix' => 'contratos'], function(){
+        $c = App\Http\Controllers\Contratos\ContratoController::class;
+        $a = App\Http\Controllers\Contratos\AditivoPendenteController::class;
+        Route::get('/aditivos-pendentes', [$a, 'index'])->name('aditivo.pendentes')->middleware('permission:contrato-gerar');
+        Route::post('/aditivos-pendentes/gerar', [$a, 'gerar'])->name('aditivo.pendentes.gerar')->middleware('permission:contrato-gerar');
+        Route::post('/colaboradores/{id}', [$c, 'store'])->whereNumber('id')->name('contrato.store')->middleware('permission:contrato-gerar');
+        Route::get('/{id}/previa', [$c, 'previa'])->whereNumber('id')->name('contrato.previa')->middleware('permission:contrato-list');
+        Route::post('/{id}/gerar', [$c, 'gerar'])->whereNumber('id')->name('contrato.gerar')->middleware('permission:contrato-gerar');
+        Route::delete('/{id}', [$c, 'cancelar'])->whereNumber('id')->name('contrato.cancelar')->middleware('permission:contrato-gerar');
+        Route::post('/{id}/renovar', [$c, 'renovar'])->whereNumber('id')->name('contrato.renovar')->middleware('permission:contrato-gerar');
+        Route::post('/{id}/pdf', [$c, 'regerarPdf'])->whereNumber('id')->name('contrato.pdf.regerar')->middleware('permission:contrato-gerar');
+        Route::get('/{id}/pdf', [$c, 'pdf'])->whereNumber('id')->name('contrato.pdf')->middleware('permission:contrato-list');
+        Route::post('/{id}/assinado', [$c, 'assinado'])->whereNumber('id')->name('contrato.assinado')->middleware('permission:contrato-assinar');
+        Route::get('/{id}/assinado', [$c, 'baixarAssinado'])->whereNumber('id')->name('contrato.assinado.baixar')->middleware('permission:contrato-list');
+    });
+
+    Route::group(['prefix' => 'contratos/modelos', 'middleware' => 'permission:contrato-modelo-gerir'], function(){
+        $c = App\Http\Controllers\Contratos\ModeloController::class;
+        Route::get('/', [$c, 'index'])->name('contrato-modelo.index');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('contrato-modelo.form');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('contrato-modelo.store');
+        Route::post('/previa', [$c, 'previa'])->name('contrato-modelo.previa');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('contrato-modelo.delete');
+    });
+
+    Route::group(['prefix' => 'beneficios'], function(){
+        $c = App\Http\Controllers\Cadastros\BeneficioController::class;
+        $r = App\Http\Controllers\Cadastros\ReajusteBeneficioController::class;
+        Route::get('/', [$c, 'index'])->name('beneficio.index')->middleware('permission:beneficio-list');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('beneficio.form')->middleware('permission:beneficio-gerir');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('beneficio.store')->middleware('permission:beneficio-gerir');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('beneficio.delete')->middleware('permission:beneficio-gerir');
+        Route::get('/{id}/valores', [$c, 'valores'])->whereNumber('id')->name('beneficio.valores')->middleware('permission:beneficio-list');
+        Route::post('/{id}/valores', [$c, 'valorStore'])->whereNumber('id')->name('beneficio.valor.store')->middleware('permission:beneficio-gerir');
+
+        Route::group(['prefix' => 'reajuste', 'middleware' => 'permission:beneficio-gerir'], function() use ($r){
+            Route::get('/', [$r, 'index'])->name('reajuste.beneficios');
+            Route::post('/previa', [$r, 'previa'])->name('reajuste.beneficios.previa');
+            Route::post('/aplicar', [$r, 'aplicar'])->name('reajuste.beneficios.aplicar');
+        });
+    });
+
     Route::group(['prefix' => 'colaboradores'], function(){
         $c = App\Http\Controllers\Cadastros\ColaboradorController::class;
         Route::get('/', [$c, 'index'])->name('colaborador.index')->middleware('permission:colaborador-list');
@@ -155,6 +217,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('colaborador.form')->middleware('permission:colaborador-create|colaborador-edit');
         Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('colaborador.store')->middleware('permission:colaborador-create|colaborador-edit');
         Route::post('/equipes/{id}/encerrar', [$c, 'equipeEncerrar'])->whereNumber('id')->name('colaborador.equipe.encerrar')->middleware('permission:colaborador-edit');
+        $b = App\Http\Controllers\Cadastros\ColaboradorBeneficioController::class;
+        Route::post('/{id}/beneficios', [$b, 'store'])->whereNumber('id')->name('colaborador.beneficio.store')->middleware('permission:colaborador-beneficio-edit');
+        Route::post('/beneficios/{id}/encerrar', [$b, 'encerrar'])->whereNumber('id')->name('colaborador.beneficio.encerrar')->middleware('permission:colaborador-beneficio-edit');
         Route::post('/{id}/equipes', [$c, 'equipeStore'])->whereNumber('id')->name('colaborador.equipe.store')->middleware('permission:colaborador-edit');
         Route::get('/{id}', [$c, 'show'])->whereNumber('id')->name('colaborador.show')->middleware('permission:colaborador-list');
     });

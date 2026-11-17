@@ -83,6 +83,19 @@ class PermissionSeeder extends Seeder
             ['name' => 'equipe-edit', 'display_name' => 'Editar equipes', 'description' => 'Edita equipes, seus gestores e os colaboradores de cada equipe', 'module' => 'Equipes'],
             ['name' => 'equipe-gerir', 'display_name' => 'Gerir equipes', 'description' => 'Pode ser gestor de equipe; só quem tem esta permissão entra na lista de gestores', 'module' => 'Equipes'],
 
+            ['name' => 'beneficio-list', 'display_name' => 'Ver benefícios', 'description' => 'Vê a tabela de benefícios, os valores e os benefícios de cada colaborador', 'module' => 'Benefícios'],
+            ['name' => 'beneficio-gerir', 'display_name' => 'Gerir benefícios', 'description' => 'Cria benefícios, define e reajusta valores (inclusive em lote) e define os benefícios padrão de cada cargo', 'module' => 'Benefícios'],
+            ['name' => 'colaborador-beneficio-edit', 'display_name' => 'Vincular benefícios ao colaborador', 'description' => 'Vincula e encerra benefícios do colaborador, com valor personalizado opcional', 'module' => 'Benefícios'],
+
+            ['name' => 'contrato-list', 'display_name' => 'Ver e baixar contratos', 'description' => 'Vê a linha do tempo de contratos, aditivos e distratos do colaborador e baixa os PDFs', 'module' => 'Contratos'],
+            ['name' => 'contrato-gerar', 'display_name' => 'Gerar contratos', 'description' => 'Gera contrato, aditivo e distrato em PDF, renova e cancela rascunhos', 'module' => 'Contratos'],
+            ['name' => 'contrato-assinar', 'display_name' => 'Anexar contrato assinado', 'module' => 'Contratos'],
+            ['name' => 'contrato-modelo-gerir', 'display_name' => 'Gerir modelos de contrato', 'description' => 'Cria e edita os modelos de contrato, aditivo e distrato e suas versões', 'module' => 'Contratos'],
+            ['name' => 'alerta-contratos', 'display_name' => 'Receber alerta de contratos', 'description' => 'Recebe o resumo diário por e-mail de contratos vencidos e a vencer', 'module' => 'Contratos'],
+
+            ['name' => 'admissao-gerir', 'display_name' => 'Gerir admissões', 'description' => 'Inicia a admissão, marca os itens do checklist e conclui a admissão; configura os itens do checklist', 'module' => 'Admissão e desligamento'],
+            ['name' => 'colaborador-desligar', 'display_name' => 'Desligar colaboradores', 'description' => 'Registra o desligamento, gera o distrato e vê a prévia dos valores finais', 'module' => 'Admissão e desligamento'],
+
             ['name' => 'integracao-list', 'display_name' => 'Ver monitoramento das integrações', 'module' => 'Integrações'],
             ['name' => 'integracao-sincronizar', 'display_name' => 'Sincronizar agora', 'module' => 'Integrações'],
             ['name' => 'integracao-reenviar', 'display_name' => 'Reprocessar falha de integração', 'module' => 'Integrações'],

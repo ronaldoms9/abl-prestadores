@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\BeneficiosDoColaboradorAlterados;
+use App\Events\CargoDoColaboradorAlterado;
+use App\Events\ReajusteAplicado;
+use App\Listeners\GerarAditivoDeAlteracao;
+use App\Listeners\GerarAditivosDeReajuste;
 use App\Listeners\RegistrarAcesso;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
@@ -20,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         Login::class => [[RegistrarAcesso::class, 'login']],
         Logout::class => [[RegistrarAcesso::class, 'logout']],
         Failed::class => [[RegistrarAcesso::class, 'falha']],
+        ReajusteAplicado::class => [GerarAditivosDeReajuste::class],
+        CargoDoColaboradorAlterado::class => [GerarAditivoDeAlteracao::class],
+        BeneficiosDoColaboradorAlterados::class => [GerarAditivoDeAlteracao::class],
     ];
 
     /**

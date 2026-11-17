@@ -22,6 +22,20 @@ return [
     ],
 
     /*
+    | Contratos (E3, fatia 3). PDFs gerados e contratos assinados ficam em disco
+    | privado e só saem por rota autorizada. Numeração AAAA/NNNN; o prefixo e o
+    | reinício anual podem ser mudados em `configuracoes` (chave contratos.numeracao,
+    | campos prefixo e reinicia_anualmente). Padrão: sem prefixo, reinicia todo ano.
+    */
+    'contratos' => [
+        'disco' => env('CONTRATOS_DISCO', 'local'),
+        'tamanho_maximo_kb' => 20480,
+        'extensoes_assinado' => ['pdf', 'jpg', 'jpeg', 'png'],
+        'numeracao' => ['prefixo' => '', 'reinicia_anualmente' => true],
+        'alerta_dias' => [30, 15, 5],
+    ],
+
+    /*
     | Alertas por e-mail. A antecedência pode ser mudada em `configuracoes`
     | (chave alertas.documentos, campo dias); este é o padrão.
     */

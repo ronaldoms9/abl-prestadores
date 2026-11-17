@@ -3,6 +3,7 @@
 namespace App\Actions\Cadastros;
 
 use App\Enums\StatusColaborador;
+use App\Events\CargoDoColaboradorAlterado;
 use App\Models\Colaborador;
 use App\Models\Obra;
 use App\Models\PessoaFisica;
@@ -42,6 +43,8 @@ class SalvarColaborador
 
             $this->conferirObra($dados['empresa_id'] ?? null, $dados['obra_id'] ?? null);
 
+            $cargoAnterior = $colaborador->cargo_id;
+
             $colaborador->fill([
                 'pessoa_fisica_id' => $pessoaFisicaId,
                 'pessoa_juridica_id' => $dados['pessoa_juridica_id'],
@@ -49,6 +52,12 @@ class SalvarColaborador
                 'empresa_id' => $dados['empresa_id'] ?? null,
                 'obra_id' => $dados['obra_id'] ?? null,
             ])->save();
+
+            // Quem já foi admitido e muda de cargo ganha um rascunho de aditivo (E3, fatia 9).
+            $cargoNovo = $colaborador->cargo_id;
+            if (! $novo && $colaborador->status === StatusColaborador::Ativo && $cargoAnterior !== $cargoNovo) {
+                DB::afterCommit(fn () => CargoDoColaboradorAlterado::dispatch($colaborador, $cargoAnterior, $cargoNovo));
+            }
 
             VinculoSugerido::query()
                 ->where('pessoa_fisica_id', $pessoaFisicaId)

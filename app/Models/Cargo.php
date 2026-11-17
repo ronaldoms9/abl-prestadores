@@ -47,6 +47,11 @@ class Cargo extends Model
         return $this->hasMany(CargoQualificacao::class, 'cargo_id');
     }
 
+    public function beneficiosPadrao(): HasMany
+    {
+        return $this->hasMany(CargoBeneficio::class, 'cargo_id');
+    }
+
     protected function prefixoAuditoria(): string
     {
         return 'cargo';

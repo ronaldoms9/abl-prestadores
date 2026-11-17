@@ -40,6 +40,25 @@ Os testes usam **SQLite em memória**, então rodam sem Docker e sem MySQL.
   - `deleted_at` (auditoria): reservado para exclusão lógica de cadastros feitos por engano na interface.
   - Os índices únicos (`cpf`, `cnpj`, `uau_codigo`) abrangem também registros excluídos logicamente; a busca na importação usa `withTrashed()` para restaurar e atualizar registros excluídos em vez de violar unicidade.
 
+## Contratos, admissão e desligamento (E3)
+
+- **PDF dos contratos:** exige o dompdf (`composer require dompdf/dompdf`). Sem ele o contrato é gerado
+  normalmente e o PDF fica "pendente" (a fila registra a falha). A ligação é automática quando a biblioteca existe.
+  Arquivos em `storage/app/contratos/` (disco privado, `CONTRATOS_DISCO`), baixados só por rota autorizada.
+- **Fila:** o PDF e os aditivos automáticos (reajuste, cargo, benefícios) rodam na fila `default`; precisam do Horizon.
+- **Agendador:** `alertas:contratos` às 07:00, junto de `alertas:documentos` (06:30) e `alertas:qualificacoes` (06:45).
+- **Parâmetros em `configuracoes`** (todos opcionais, com padrão no código):
+
+| Chave | Efeito | Padrão |
+| --- | --- | --- |
+| `contratos.numeracao` | `prefixo` e `reinicia_anualmente` da numeração | sem prefixo, reinicia todo ano |
+| `alertas.contratos` | `dias`: marcos do alerta de vencimento | `[30, 15, 5]` |
+| `calculo.base_proporcional` | `corridos` ou `dias_uteis` | `corridos` |
+| `calculo.beneficio_fixo_proporcional` | benefício fixo proporcional no mês de admissão e desligamento | `true` |
+
+- **Demonstração:** `php artisan db:seed --class=DemoSeeder` cria benefícios, cinco modelos de exemplo e um contrato por colaborador ativo.
+- **Planos:** `docs/planos/entrega-3-fatia-N-*.md`; roteiro de homologação em `docs/homologacao/roteiro-validacao-e3.md`.
+
 ## Integração UAU
 
 Código em `app/Integrations/Uau/`. Tudo passa pela interface `UauGateway`.

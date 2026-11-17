@@ -52,6 +52,7 @@ class DocumentoTipoController extends Controller
             'nome' => ['required', 'string', 'max:255', Rule::unique('documento_tipos', 'nome')->ignore($tipo->id)],
             'aplica_a' => ['required', Rule::enum(AplicaDocumento::class)],
             'exige_validade' => ['nullable', 'boolean'],
+            'obrigatorio_na_admissao' => ['nullable', 'boolean'],
             'ativo' => ['nullable', 'boolean'],
         ], ['nome' => 'nome do tipo', 'aplica_a' => 'vale para']);
 
@@ -59,6 +60,7 @@ class DocumentoTipoController extends Controller
             'nome' => trim($validos['nome']),
             'aplica_a' => $validos['aplica_a'],
             'exige_validade' => $validos['exige_validade'] ?? false,
+            'obrigatorio_na_admissao' => $validos['obrigatorio_na_admissao'] ?? false,
             'ativo' => $validos['ativo'] ?? $tipo->ativo ?? true,
         ])->save();
 

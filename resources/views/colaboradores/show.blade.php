@@ -30,7 +30,18 @@
 
         <dt class="col-sm-3">Admissão</dt>
         <dd class="col-sm-9">{{ $colaborador->data_admissao?->format('d/m/Y') ?? '—' }}</dd>
+
+        @if ($colaborador->status === \App\Enums\StatusColaborador::Desligado)
+            <dt class="col-sm-3">Desligamento</dt>
+            <dd class="col-sm-9">Último dia de trabalho: {{ $colaborador->data_desligamento?->format('d/m/Y') ?? '—' }}. Motivo: {{ $colaborador->motivo_desligamento ?? '—' }}</dd>
+        @endif
     </dl>
+
+    @permission('colaborador-desligar')
+        @if ($colaborador->status !== \App\Enums\StatusColaborador::Desligado)
+            <p><a href="javascript:requestIntoModal('{{ route('desligamento.form', $colaborador->id) }}')" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Desligar colaborador</a></p>
+        @endif
+    @endpermission
 
     @permission('remuneracao-list')
         @php
@@ -88,7 +99,19 @@
         @endpermission
     @endpermission
 
-    <h6 class="text-semibold">Equipes</h6>
+    @permission('admissao-gerir')
+        @include('colaboradores._admissao', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
+    @endpermission
+
+    @permission('contrato-list')
+        @include('colaboradores._contratos', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
+    @endpermission
+
+    @permission('beneficio-list')
+        @include('colaboradores._beneficios', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
+    @endpermission
+
+    <h6 class="text-semibold mt-3">Equipes</h6>
     @if ($colaborador->vinculosEquipe->isEmpty())
         <p class="text-muted">Não está em nenhuma equipe.</p>
     @else

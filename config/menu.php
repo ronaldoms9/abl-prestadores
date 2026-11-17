@@ -25,7 +25,18 @@ return [
     ['titulo' => 'Colaboradores', 'icone' => 'bi bi-person-badge', 'rota' => 'colaborador.index', 'permissao' => 'colaborador-list'],
     ['titulo' => 'Cargos e salários', 'icone' => 'bi bi-cash-coin', 'itens' => [
         ['titulo' => 'Cargos', 'rota' => 'cargo.index', 'permissao' => 'cargo-list'],
-        ['titulo' => 'Reajuste em lote', 'rota' => 'reajuste.lote', 'permissao' => 'remuneracao-reajustar'],
+        ['titulo' => 'Reajuste em lote', 'rota' => 'reajuste.lote', 'permissao' => 'remuneracao-reajustar', 'ativo' => ['reajuste.lote', 'reajuste.lote.*']],
+    ]],
+    ['titulo' => 'Contratos', 'icone' => 'bi bi-file-earmark-text', 'itens' => [
+        ['titulo' => 'Aditivos pendentes', 'rota' => 'aditivo.pendentes', 'permissao' => 'contrato-gerar', 'ativo' => ['aditivo.pendentes', 'aditivo.pendentes.*']],
+        ['titulo' => 'Modelos', 'rota' => 'contrato-modelo.index', 'permissao' => 'contrato-modelo-gerir', 'ativo' => ['contrato-modelo.*']],
+    ]],
+    ['titulo' => 'Benefícios', 'icone' => 'bi bi-gift', 'itens' => [
+        ['titulo' => 'Tabela de benefícios', 'rota' => 'beneficio.index', 'permissao' => 'beneficio-list', 'ativo' => ['beneficio.*']],
+        ['titulo' => 'Reajuste de benefícios', 'rota' => 'reajuste.beneficios', 'permissao' => 'beneficio-gerir', 'ativo' => ['reajuste.beneficios', 'reajuste.beneficios.*']],
+    ]],
+    ['titulo' => 'Admissão', 'icone' => 'bi bi-person-check', 'itens' => [
+        ['titulo' => 'Checklist de admissão', 'rota' => 'admissao-item.index', 'permissao' => 'admissao-gerir', 'ativo' => ['admissao-item.*']],
     ]],
     ['titulo' => 'Qualificações', 'icone' => 'bi bi-award', 'itens' => [
         ['titulo' => 'Pendências', 'rota' => 'qualificacao.pendentes', 'permissao' => 'qualificacao-list'],
