@@ -94,6 +94,25 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-juridica.store');
     });
 
+    Route::group(['prefix' => 'cargos'], function(){
+        $c = App\Http\Controllers\Cadastros\CargoController::class;
+        Route::get('/', [$c, 'index'])->name('cargo.index')->middleware('permission:cargo-list');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('cargo.form')->middleware('permission:cargo-create|cargo-edit');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('cargo.store')->middleware('permission:cargo-create|cargo-edit');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('cargo.delete')->middleware('permission:cargo-edit');
+    });
+
+    Route::group(['prefix' => 'remuneracao', 'middleware' => 'permission:remuneracao-reajustar'], function(){
+        $c = App\Http\Controllers\Cadastros\RemuneracaoController::class;
+        Route::post('/colaboradores/{id}/definir', [$c, 'definir'])->whereNumber('id')->name('remuneracao.definir');
+        Route::post('/colaboradores/{id}/reajustar', [$c, 'reajustar'])->whereNumber('id')->name('remuneracao.reajustar');
+
+        $l = App\Http\Controllers\Cadastros\ReajusteLoteController::class;
+        Route::get('/lote', [$l, 'index'])->name('reajuste.lote');
+        Route::post('/lote/previa', [$l, 'previa'])->name('reajuste.lote.previa');
+        Route::post('/lote/aplicar', [$l, 'aplicar'])->name('reajuste.lote.aplicar');
+    });
+
     Route::group(['prefix' => 'colaboradores'], function(){
         $c = App\Http\Controllers\Cadastros\ColaboradorController::class;
         Route::get('/', [$c, 'index'])->name('colaborador.index')->middleware('permission:colaborador-list');

@@ -78,6 +78,17 @@ class PermissoesRotasTest extends TestCase
             'colaborador.equipe.store' => ['POST', 'colaborador.equipe.store', [':colaborador'], 'colaborador-edit', null],
             'colaborador.equipe.encerrar' => ['POST', 'colaborador.equipe.encerrar', [':vinculo-equipe'], 'colaborador-edit', null],
             'pessoa-juridica.buscar' => ['GET', 'pessoa-juridica.buscar', [], 'colaborador-create', 200],
+            'cargo.index' => ['GET', 'cargo.index', [], 'cargo-list', 200],
+            'cargo.form (criar)' => ['GET', 'cargo.form', [], 'cargo-create', 200],
+            'cargo.form (editar)' => ['GET', 'cargo.form', [':cargo'], 'cargo-edit', 200],
+            'cargo.store (criar)' => ['POST', 'cargo.store', [], 'cargo-create', null],
+            'cargo.store (editar)' => ['POST', 'cargo.store', [':cargo'], 'cargo-edit', null],
+            'cargo.delete' => ['DELETE', 'cargo.delete', [':cargo'], 'cargo-edit', 201],
+            'remuneracao.definir' => ['POST', 'remuneracao.definir', [':colaborador'], 'remuneracao-reajustar', null],
+            'remuneracao.reajustar' => ['POST', 'remuneracao.reajustar', [':colaborador'], 'remuneracao-reajustar', null],
+            'reajuste.lote' => ['GET', 'reajuste.lote', [], 'remuneracao-reajustar', 200],
+            'reajuste.lote.previa' => ['POST', 'reajuste.lote.previa', [], 'remuneracao-reajustar', null],
+            'reajuste.lote.aplicar' => ['POST', 'reajuste.lote.aplicar', [], 'remuneracao-reajustar', null],
             'equipe.index' => ['GET', 'equipe.index', [], 'equipe-list', 200],
             'equipe.show' => ['GET', 'equipe.show', [':equipe'], 'equipe-list', 200],
             'equipe.form (criar)' => ['GET', 'equipe.form', [], 'equipe-create', 200],
@@ -111,7 +122,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -141,6 +152,7 @@ class PermissoesRotasTest extends TestCase
             'pessoa-fisica.form', 'pessoa-fisica.store',
             'pessoa-juridica.form', 'pessoa-juridica.store', 'pessoa-juridica.consultar-cnpj' => ['pessoa-create', 'pessoa-edit'],
             'equipe.form', 'equipe.store' => ['equipe-create', 'equipe-edit'],
+            'cargo.form', 'cargo.store' => ['cargo-create', 'cargo-edit'],
             'colaborador.form', 'colaborador.store', 'colaborador.sugestoes' => ['colaborador-create', 'colaborador-edit'],
             'pessoa-juridica.buscar' => ['colaborador-create', 'colaborador-edit', 'pessoa-create', 'pessoa-edit'],
             default => [$permissao],
@@ -159,6 +171,7 @@ class PermissoesRotasTest extends TestCase
             ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
             ':colaborador' => Colaborador::factory()->create()->id,
             ':vinculo-equipe' => ColaboradorEquipe::factory()->create()->id,
+            ':cargo' => \App\Models\Cargo::factory()->create()->id,
             ':equipe' => Equipe::factory()->create()->id,
             ':gestor' => EquipeGestor::factory()->create()->id,
             ':empresa' => Empresa::factory()->create()->id,

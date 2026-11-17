@@ -3,11 +3,13 @@
 namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
+use App\Models\Cargo;
 use App\Models\Colaborador;
 use App\Models\Equipe;
 use App\Models\IntegracaoLog;
 use App\Models\PessoaFisica;
 use App\Models\PessoaJuridica;
+use App\Models\Reajuste;
 use App\Models\Sincronizacao;
 use App\Models\User;
 use App\Role;
@@ -54,6 +56,11 @@ class Auditoria
         'colaborador-excluido' => 'Colaborador excluído',
         'colaborador-equipe-vinculado' => 'Colaborador incluído em equipe',
         'colaborador-equipe-encerrado' => 'Colaborador retirado de equipe',
+        'cargo-criado' => 'Cargo criado',
+        'cargo-alterado' => 'Cargo alterado',
+        'cargo-excluido' => 'Cargo excluído',
+        'remuneracao-definida' => 'Remuneração definida',
+        'reajuste-aplicado' => 'Reajuste aplicado',
         'equipe-criado' => 'Equipe criada',
         'equipe-alterado' => 'Equipe alterada',
         'equipe-excluido' => 'Equipe excluída',
@@ -71,6 +78,8 @@ class Auditoria
     public const OBJETOS = [
         User::class => ['Usuário', 'name'],
         Equipe::class => ['Equipe', 'nome'],
+        Cargo::class => ['Cargo', 'nome'],
+        Reajuste::class => ['Reajuste', 'id'],
         Colaborador::class => ['Colaborador', 'id'],
         PessoaFisica::class => ['Pessoa física', 'nome'],
         PessoaJuridica::class => ['Pessoa jurídica', 'razao_social'],
@@ -98,6 +107,8 @@ class Auditoria
         'inscricao_municipal' => 'inscrição municipal',
         'inscricao_estadual' => 'inscrição estadual',
         'cnpj' => 'CNPJ',
+        'faixa_min' => 'faixa mínima',
+        'faixa_max' => 'faixa máxima',
         'pessoa_fisica_id' => 'pessoa física',
         'pessoa_juridica_id' => 'pessoa jurídica',
         'cargo_id' => 'cargo',

@@ -23,6 +23,10 @@ return [
         ['titulo' => 'Carregar planilha', 'rota' => 'importacao-pessoa.index', 'permissao' => 'pessoa-importar'],
     ]],
     ['titulo' => 'Colaboradores', 'icone' => 'bi bi-person-badge', 'rota' => 'colaborador.index', 'permissao' => 'colaborador-list'],
+    ['titulo' => 'Cargos e salários', 'icone' => 'bi bi-cash-coin', 'itens' => [
+        ['titulo' => 'Cargos', 'rota' => 'cargo.index', 'permissao' => 'cargo-list'],
+        ['titulo' => 'Reajuste em lote', 'rota' => 'reajuste.lote', 'permissao' => 'remuneracao-reajustar'],
+    ]],
     ['titulo' => 'Equipes', 'icone' => 'bi bi-diagram-3', 'rota' => 'equipe.index', 'permissao' => 'equipe-list'],
     ['titulo' => 'Empresas', 'icone' => 'bi bi-building', 'rota' => 'empresa.index', 'permissao' => 'empresa-list'],
     ['titulo' => 'Obras', 'icone' => 'bi bi-cone-striped', 'rota' => 'obra.index', 'permissao' => 'obra-list'],

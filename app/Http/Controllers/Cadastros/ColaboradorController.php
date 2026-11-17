@@ -64,12 +64,16 @@ class ColaboradorController extends Controller
 
     public function show($id)
     {
+        $veRemuneracao = auth()->user()->can('remuneracao-list');
+
         $colaborador = Colaborador::visiveisPara(auth()->user())
+            ->when($veRemuneracao, fn ($q) => $q->with(['remuneracoes' => fn ($r) => $r->orderByDesc('vigencia_inicio')->orderByDesc('id')]))
             ->with([
                 'pessoaFisica', 'pessoaJuridica', 'cargo', 'empresa', 'obra',
                 'vinculosEquipe' => fn ($q) => $q->orderByRaw('fim is not null')->orderByDesc('inicio'),
                 'vinculosEquipe.equipe',
-                'activities' => fn ($q) => $q->latest('id')->limit(15),
+                // Quem não vê remuneração também não vê, no histórico, que ela foi definida.
+                'activities' => fn ($q) => $q->when(! $veRemuneracao, fn ($w) => $w->where('event', '!=', 'remuneracao-definida'))->latest('id')->limit(15),
                 'activities.causer',
             ])
             ->findOrFail($id);

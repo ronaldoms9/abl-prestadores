@@ -39,6 +39,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // A Entrega 4 troca esta implementação pela que consulta as competências aprovadas.
+        $this->app->bind(\App\Support\Competencias\CompetenciaFechada::class, \App\Support\Competencias\NenhumaCompetenciaFechada::class);
         $this->app->singleton(Sanitizador::class, fn () => new Sanitizador(config('uau.campos_ocultos', [])));
         $this->app->bind(UauClient::class, fn ($app) => new UauClient($app->make(RegistroIntegracao::class), config('uau')));
         $this->app->bind(FakeUauClient::class, fn ($app) => new FakeUauClient($app->make(RegistroIntegracao::class), config('uau.fake_fixtures')));
@@ -86,6 +88,7 @@ class AppServiceProvider extends ServiceProvider
             'colaborador' => Colaborador::class,
             'equipe' => Equipe::class,
             'cargo' => Cargo::class,
+            'reajuste' => \App\Models\Reajuste::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
             'sincronizacao' => Sincronizacao::class,
             'integracao-log' => IntegracaoLog::class,

@@ -58,6 +58,12 @@ class PermissionSeeder extends Seeder
             ['name' => 'pessoa-edit', 'display_name' => 'Editar pessoas', 'description' => 'Edita pessoas físicas e jurídicas, dados bancários e responsável da PJ', 'module' => 'Pessoas'],
             ['name' => 'pessoa-importar', 'display_name' => 'Carregar planilha de pessoas', 'description' => 'Carrega a planilha e vê os relatórios de carga', 'module' => 'Pessoas'],
 
+            ['name' => 'cargo-list', 'display_name' => 'Ver cargos', 'module' => 'Cargos e remuneração'],
+            ['name' => 'cargo-create', 'display_name' => 'Cadastrar cargos', 'module' => 'Cargos e remuneração'],
+            ['name' => 'cargo-edit', 'display_name' => 'Editar cargos', 'module' => 'Cargos e remuneração'],
+            ['name' => 'remuneracao-list', 'display_name' => 'Ver remuneração', 'description' => 'Vê a remuneração atual e o histórico de cada colaborador', 'module' => 'Cargos e remuneração'],
+            ['name' => 'remuneracao-reajustar', 'display_name' => 'Definir e reajustar remuneração', 'description' => 'Define a remuneração inicial e faz reajustes individuais e em lote', 'module' => 'Cargos e remuneração'],
+
             ['name' => 'colaborador-list', 'display_name' => 'Ver colaboradores', 'description' => 'Quem tem equipe-gerir e não tem colaborador-edit vê só os colaboradores das equipes que gere hoje', 'module' => 'Colaboradores'],
             ['name' => 'colaborador-create', 'display_name' => 'Cadastrar colaboradores', 'description' => 'Liga uma pessoa física a uma pessoa jurídica, cargo, empresa e obra', 'module' => 'Colaboradores'],
             ['name' => 'colaborador-edit', 'display_name' => 'Editar colaboradores', 'description' => 'Edita colaboradores e os vínculos com equipes', 'module' => 'Colaboradores'],
