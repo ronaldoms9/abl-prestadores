@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
+use App\Models\Colaborador;
 use App\Models\Equipe;
 use App\Models\IntegracaoLog;
 use App\Models\PessoaFisica;
@@ -48,6 +49,11 @@ class Auditoria
         'pessoa-juridica-excluido' => 'Pessoa jurídica excluída',
         'pessoa-juridica-responsavel-alterado' => 'Responsável da pessoa jurídica alterado',
         'pessoa-dados-bancarios-alterados' => 'Dados bancários alterados',
+        'colaborador-criado' => 'Colaborador criado',
+        'colaborador-alterado' => 'Colaborador alterado',
+        'colaborador-excluido' => 'Colaborador excluído',
+        'colaborador-equipe-vinculado' => 'Colaborador incluído em equipe',
+        'colaborador-equipe-encerrado' => 'Colaborador retirado de equipe',
         'equipe-criado' => 'Equipe criada',
         'equipe-alterado' => 'Equipe alterada',
         'equipe-excluido' => 'Equipe excluída',
@@ -65,6 +71,7 @@ class Auditoria
     public const OBJETOS = [
         User::class => ['Usuário', 'name'],
         Equipe::class => ['Equipe', 'nome'],
+        Colaborador::class => ['Colaborador', 'id'],
         PessoaFisica::class => ['Pessoa física', 'nome'],
         PessoaJuridica::class => ['Pessoa jurídica', 'razao_social'],
         Role::class => ['Perfil', 'display_name'],
@@ -91,6 +98,12 @@ class Auditoria
         'inscricao_municipal' => 'inscrição municipal',
         'inscricao_estadual' => 'inscrição estadual',
         'cnpj' => 'CNPJ',
+        'pessoa_fisica_id' => 'pessoa física',
+        'pessoa_juridica_id' => 'pessoa jurídica',
+        'cargo_id' => 'cargo',
+        'empresa_id' => 'empresa',
+        'obra_id' => 'obra',
+        'status' => 'situação',
     ];
 
     /**

@@ -91,6 +91,31 @@ class PessoaJuridicaController extends Controller
         return response()->json(['success' => true, 'message' => 'Pessoa jurídica salva.', 'data' => []]);
     }
 
+    /** Busca por razão social, nome fantasia ou CNPJ, para escolher a PJ de um colaborador. */
+    public function buscar(Request $request)
+    {
+        $q = trim((string) $request->query('q'));
+        $digitos = Documento::digitos($q);
+        $escapado = '%'.str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $q).'%';
+
+        $pessoas = PessoaJuridica::query()
+            ->ativos()
+            ->when($q !== '', fn ($query) => $query->where(function ($w) use ($escapado, $digitos, $q) {
+                $w->whereRaw("razao_social like ? escape '!'", [$escapado])->orWhereRaw("nome_fantasia like ? escape '!'", [$escapado]);
+                if ($digitos !== null && strlen($digitos) >= 3 && preg_match('#^[\d.\-/\s]+$#', $q)) {
+                    $w->orWhere('cnpj', 'like', $digitos.'%');
+                }
+            }))
+            ->orderBy('razao_social')
+            ->limit(15)
+            ->get(['id', 'razao_social', 'cnpj']);
+
+        return response()->json($pessoas->map(fn (PessoaJuridica $p) => [
+            'id' => $p->id,
+            'texto' => $p->razao_social.' · '.$p->cnpj_formatado,
+        ])->values());
+    }
+
     private function autorizarEscrita(bool $edicao): void
     {
         abort_unless(auth()->user()->can($edicao ? 'pessoa-edit' : 'pessoa-create'), 403);
