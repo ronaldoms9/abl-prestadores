@@ -55,6 +55,15 @@ class PermissoesRotasTest extends TestCase
             'pessoa-fisica.show' => ['GET', 'pessoa-fisica.show', [':pessoa-fisica'], 'pessoa-list', 200],
             'pessoa-juridica.index' => ['GET', 'pessoa-juridica.index', [], 'pessoa-list', 200],
             'pessoa-juridica.show' => ['GET', 'pessoa-juridica.show', [':pessoa-juridica'], 'pessoa-list', 200],
+            'pessoa-fisica.form (criar)' => ['GET', 'pessoa-fisica.form', [], 'pessoa-create', 200],
+            'pessoa-fisica.form (editar)' => ['GET', 'pessoa-fisica.form', [':pessoa-fisica'], 'pessoa-edit', 200],
+            'pessoa-fisica.store (criar)' => ['POST', 'pessoa-fisica.store', [], 'pessoa-create', null],
+            'pessoa-fisica.store (editar)' => ['POST', 'pessoa-fisica.store', [':pessoa-fisica'], 'pessoa-edit', null],
+            'pessoa-fisica.buscar' => ['GET', 'pessoa-fisica.buscar', [], 'pessoa-edit', 200],
+            'pessoa-juridica.form (criar)' => ['GET', 'pessoa-juridica.form', [], 'pessoa-create', 200],
+            'pessoa-juridica.form (editar)' => ['GET', 'pessoa-juridica.form', [':pessoa-juridica'], 'pessoa-edit', 200],
+            'pessoa-juridica.store (criar)' => ['POST', 'pessoa-juridica.store', [], 'pessoa-create', null],
+            'pessoa-juridica.store (editar)' => ['POST', 'pessoa-juridica.store', [':pessoa-juridica'], 'pessoa-edit', null],
             'empresa.index' => ['GET', 'empresa.index', [], 'empresa-list', 200],
             'empresa.show' => ['GET', 'empresa.show', [':empresa'], 'empresa-list', 200],
             'obra.index' => ['GET', 'obra.index', [], 'obra-list', 200],
@@ -78,7 +87,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'empresa-list', 'obra-list'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -104,6 +113,8 @@ class PermissoesRotasTest extends TestCase
         return match ($rota) {
             'user.form', 'user.store' => ['user-create', 'user-edit'],
             'grupo.form', 'grupo.store' => ['grupo-create', 'grupo-edit'],
+            'pessoa-fisica.form', 'pessoa-fisica.store', 'pessoa-fisica.buscar',
+            'pessoa-juridica.form', 'pessoa-juridica.store' => ['pessoa-create', 'pessoa-edit'],
             default => [$permissao],
         };
     }

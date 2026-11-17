@@ -23,7 +23,7 @@ class SeedersTest extends TestCase
         $this->seed();
 
         $this->assertSame($contagem, $this->contagem());
-        $this->assertSame(17, $contagem['permissoes']);
+        $this->assertSame(19, $contagem['permissoes']);
         $this->assertSame(5, $contagem['perfis']);
         $this->assertSame(1, $contagem['usuarios']);
     }

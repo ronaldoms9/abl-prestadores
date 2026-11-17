@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\AsEndereco;
 use App\Casts\SomenteDigitos;
 use App\Models\Concerns\Ativavel;
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\RegistraAutoria;
 use App\Support\Documento;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PessoaJuridica extends Model
 {
-    use Ativavel, HasFactory, RegistraAutoria, SoftDeletes;
+    use Ativavel, Auditavel, HasFactory, RegistraAutoria, SoftDeletes;
 
     protected $table = 'pessoas_juridicas';
 
@@ -94,5 +95,16 @@ class PessoaJuridica extends Model
     public function getCnpjFormatadoAttribute(): ?string
     {
         return Documento::formatar($this->cnpj);
+    }
+
+    protected function prefixoAuditoria(): string
+    {
+        return 'pessoa-juridica';
+    }
+
+    /** Fora daqui ficam os campos da sincronização, para a importação do UAU não encher a auditoria. */
+    protected function camposAuditados(): array
+    {
+        return ['cnpj', 'razao_social', 'nome_fantasia', 'regime_tributario', 'inscricao_municipal', 'inscricao_estadual', 'email', 'telefone', 'endereco', 'ativo'];
     }
 }

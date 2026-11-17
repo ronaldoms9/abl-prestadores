@@ -54,6 +54,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'obra-list', 'display_name' => 'Ver obras', 'module' => 'Cadastros UAU'],
 
             ['name' => 'pessoa-list', 'display_name' => 'Ver pessoas', 'module' => 'Pessoas'],
+            ['name' => 'pessoa-create', 'display_name' => 'Cadastrar pessoas', 'description' => 'Cadastra pessoas físicas e jurídicas', 'module' => 'Pessoas'],
+            ['name' => 'pessoa-edit', 'display_name' => 'Editar pessoas', 'description' => 'Edita pessoas físicas e jurídicas, dados bancários e responsável da PJ', 'module' => 'Pessoas'],
             ['name' => 'pessoa-importar', 'display_name' => 'Carregar planilha de pessoas', 'description' => 'Carrega a planilha e vê os relatórios de carga', 'module' => 'Pessoas'],
 
             ['name' => 'integracao-list', 'display_name' => 'Ver monitoramento das integrações', 'module' => 'Integrações'],

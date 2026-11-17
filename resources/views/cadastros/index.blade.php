@@ -25,8 +25,15 @@
                                 @include($filtrosExtras)
                             @endisset
                         </form>
+                        @if (! empty($novo))
+                            <div class="mt-2">
+                                <a href="javascript:requestIntoModal('{{ $novo['rota'] }}')" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-plus"></i> {{ $novo['rotulo'] }}
+                                </a>
+                            </div>
+                        @endif
                         <p class="text-muted small mb-0 mt-2">
-                            Somente consulta: estes cadastros vêm do UAU e se atualizam na sincronização diária.
+                            {{ $aviso ?? 'Somente consulta: estes cadastros vêm do UAU e se atualizam na sincronização diária.' }}
                         </p>
                     </div>
 

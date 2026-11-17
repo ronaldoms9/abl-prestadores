@@ -4,6 +4,8 @@ namespace App\Support;
 
 use App\Models\ImportacaoPessoa;
 use App\Models\IntegracaoLog;
+use App\Models\PessoaFisica;
+use App\Models\PessoaJuridica;
 use App\Models\Sincronizacao;
 use App\Models\User;
 use App\Role;
@@ -37,6 +39,14 @@ class Auditoria
         'perfil-alterado' => 'Perfil alterado',
         'perfil-excluido' => 'Perfil excluído',
         'perfil-permissoes-alteradas' => 'Permissões do perfil alteradas',
+        'pessoa-fisica-criado' => 'Pessoa física criada',
+        'pessoa-fisica-alterado' => 'Pessoa física alterada',
+        'pessoa-fisica-excluido' => 'Pessoa física excluída',
+        'pessoa-juridica-criado' => 'Pessoa jurídica criada',
+        'pessoa-juridica-alterado' => 'Pessoa jurídica alterada',
+        'pessoa-juridica-excluido' => 'Pessoa jurídica excluída',
+        'pessoa-juridica-responsavel-alterado' => 'Responsável da pessoa jurídica alterado',
+        'pessoa-dados-bancarios-alterados' => 'Dados bancários alterados',
         'planilha-carregada' => 'Planilha carregada',
         'sincronizacao-solicitada' => 'Sincronização solicitada',
         'integracao-reprocessada' => 'Integração reprocessada',
@@ -48,6 +58,8 @@ class Auditoria
     /** Tipo de objeto => [rótulo, atributo que o identifica]. */
     public const OBJETOS = [
         User::class => ['Usuário', 'name'],
+        PessoaFisica::class => ['Pessoa física', 'nome'],
+        PessoaJuridica::class => ['Pessoa jurídica', 'razao_social'],
         Role::class => ['Perfil', 'display_name'],
         ImportacaoPessoa::class => ['Carga de planilha', 'nome_original'],
         IntegracaoLog::class => ['Chamada ao UAU', 'operacao'],
@@ -63,6 +75,15 @@ class Auditoria
         'ativo' => 'ativo',
         'display_name' => 'nome',
         'description' => 'descrição',
+        'nome' => 'nome',
+        'nascimento' => 'nascimento',
+        'endereco' => 'endereço',
+        'razao_social' => 'razão social',
+        'nome_fantasia' => 'nome fantasia',
+        'regime_tributario' => 'regime tributário',
+        'inscricao_municipal' => 'inscrição municipal',
+        'inscricao_estadual' => 'inscrição estadual',
+        'cnpj' => 'CNPJ',
     ];
 
     /**
