@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\StatusColaborador;
+use App\Models\Concerns\Auditavel;
 use App\Models\Concerns\RegistraAutoria;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Colaborador extends Model
 {
-    use HasFactory, RegistraAutoria, SoftDeletes;
+    use Auditavel, HasFactory, RegistraAutoria, SoftDeletes;
 
     protected $table = 'colaboradores';
 
@@ -89,5 +90,28 @@ class Colaborador extends Model
             ->where('colaborador_id', $this->id)
             ->vigentesEm($data)
             ->select('equipe_id'));
+    }
+
+    protected function prefixoAuditoria(): string
+    {
+        return 'colaborador';
+    }
+
+    protected function camposAuditados(): array
+    {
+        return ['pessoa_juridica_id', 'cargo_id', 'empresa_id', 'obra_id', 'status', 'data_admissao', 'data_desligamento', 'motivo_desligamento'];
+    }
+
+    /**
+     * Colaboradores que o usuário enxerga: todos, para quem edita ou não gere
+     * equipes; só os das equipes que gere hoje, para o gestor (README D7).
+     */
+    public function scopeVisiveisPara(Builder $query, User $usuario): Builder
+    {
+        if ($usuario->can('colaborador-edit') || $usuario->can('colaborador-create') || ! $usuario->can('equipe-gerir')) {
+            return $query;
+        }
+
+        return $query->whereIn('colaboradores.id', $usuario->colaboradoresGeridosEm(now())->select('colaboradores.id'));
     }
 }

@@ -65,12 +65,19 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-fisica.show');
     });
 
+    Route::group(['prefix' => 'pessoas/fisicas', 'middleware' => 'permission:pessoa-create|pessoa-edit|colaborador-create|colaborador-edit'], function(){
+        Route::get('/buscar', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'buscar'])->name('pessoa-fisica.buscar');
+    });
+
+    Route::group(['prefix' => 'pessoas/juridicas', 'middleware' => 'permission:colaborador-create|colaborador-edit|pessoa-create|pessoa-edit'], function(){
+        Route::get('/buscar', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'buscar'])->name('pessoa-juridica.buscar');
+    });
+
     Route::group(['prefix' => 'pessoas/fisicas', 'middleware' => 'permission:pessoa-create|pessoa-edit'], function(){
         Route::get('/form/{id?}', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'form'])
             ->whereNumber('id')->name('pessoa-fisica.form');
         Route::post('/store/{id?}', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'store'])
             ->whereNumber('id')->name('pessoa-fisica.store');
-        Route::get('/buscar', [App\Http\Controllers\Cadastros\PessoaFisicaController::class, 'buscar'])->name('pessoa-fisica.buscar');
     });
 
     Route::group(['prefix' => 'pessoas/juridicas', 'middleware' => 'permission:pessoa-list'], function(){
@@ -84,6 +91,17 @@ Route::group(['middleware' => 'auth'], function () {
             ->whereNumber('id')->name('pessoa-juridica.form');
         Route::post('/store/{id?}', [App\Http\Controllers\Cadastros\PessoaJuridicaController::class, 'store'])
             ->whereNumber('id')->name('pessoa-juridica.store');
+    });
+
+    Route::group(['prefix' => 'colaboradores'], function(){
+        $c = App\Http\Controllers\Cadastros\ColaboradorController::class;
+        Route::get('/', [$c, 'index'])->name('colaborador.index')->middleware('permission:colaborador-list');
+        Route::get('/sugestoes', [$c, 'sugestoes'])->name('colaborador.sugestoes')->middleware('permission:colaborador-create|colaborador-edit');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('colaborador.form')->middleware('permission:colaborador-create|colaborador-edit');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('colaborador.store')->middleware('permission:colaborador-create|colaborador-edit');
+        Route::post('/equipes/{id}/encerrar', [$c, 'equipeEncerrar'])->whereNumber('id')->name('colaborador.equipe.encerrar')->middleware('permission:colaborador-edit');
+        Route::post('/{id}/equipes', [$c, 'equipeStore'])->whereNumber('id')->name('colaborador.equipe.store')->middleware('permission:colaborador-edit');
+        Route::get('/{id}', [$c, 'show'])->whereNumber('id')->name('colaborador.show')->middleware('permission:colaborador-list');
     });
 
     Route::group(['prefix' => 'equipes'], function(){
