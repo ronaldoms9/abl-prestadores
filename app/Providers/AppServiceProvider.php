@@ -8,7 +8,10 @@ use App\Integrations\Uau\Sanitizador;
 use App\Integrations\Uau\UauClient;
 use App\Integrations\Uau\UauGateway;
 use App\Http\View\Composers\IndicadorIntegracao;
+use App\Models\Cargo;
+use App\Models\Colaborador;
 use App\Models\Empresa;
+use App\Models\Equipe;
 use App\Models\ImportacaoPessoa;
 use App\Models\Obra;
 use App\Models\PessoaFisica;
@@ -80,6 +83,9 @@ class AppServiceProvider extends ServiceProvider
             'obra' => Obra::class,
             'pessoa-fisica' => PessoaFisica::class,
             'pessoa-juridica' => PessoaJuridica::class,
+            'colaborador' => Colaborador::class,
+            'equipe' => Equipe::class,
+            'cargo' => Cargo::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
             'sincronizacao' => Sincronizacao::class,
             'integracao-log' => IntegracaoLog::class,
