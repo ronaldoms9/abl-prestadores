@@ -203,3 +203,103 @@ body.login-page{
 .app-sidebar .sidebar-menu .nav-item.menu-open > .nav-link .nav-arrow{
     color: #fff !important;
 }
+
+/* Modais nunca passam da altura da tela: cabeçalho e rodapé ficam fixos e só o corpo rola. */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+}
+.modal-content > .modal-header,
+.modal-content > .modal-footer { flex-shrink: 0; }
+.modal-content > .modal-body { overflow-y: auto; min-height: 0; flex: 1 1 auto; }
+@media (min-width: 576px) {
+    .modal-content {
+        max-height: calc(100vh - 3.5rem);
+        max-height: calc(100dvh - 3.5rem);
+    }
+}
+
+/* Ações de tabela em ícone: ocupam pouco espaço; o texto fica no title e no aria-label. */
+.acao-icone { text-decoration: none; font-size: 1.05rem; line-height: 1; display: inline-block; padding: 0.15rem 0.25rem; }
+.acao-icone:hover { opacity: .75; }
+.btn-link.acao-icone { padding: 0.15rem 0.25rem !important; }
+
+/* Formulários em modal: mais respiro entre campos e blocos separados por título. */
+.modal-content { border: 0; border-radius: .75rem; box-shadow: 0 1rem 3rem rgba(0, 0, 0, .25); overflow: hidden; }
+.modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--bs-border-color); }
+.modal-header .modal-title { font-weight: 600; }
+.modal-body { padding: 1.5rem; }
+.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--bs-border-color); background: var(--bs-tertiary-bg, #f8f9fa); }
+.modal-body .row { --bs-gutter-x: 1.5rem; --bs-gutter-y: 0; }
+.modal-body .form-group { margin-bottom: 1.25rem; }
+.modal-body label.small,
+.modal-body .form-label { margin-bottom: .4rem; display: inline-block; color: #4b5563; }
+.modal-body .form-control,
+.modal-body .form-select { padding: .55rem .8rem; }
+.modal-body .form-check { margin-bottom: .5rem; }
+.modal-body > .alert { margin-bottom: 1.25rem; }
+
+/* Título de bloco: separa as seções do formulário. */
+.modal-body h6.text-semibold {
+    margin: 2rem 0 1.1rem !important;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--bs-border-color);
+    font-size: .78rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--bs-primary);
+}
+.modal-body > h6.text-semibold:first-child { margin-top: 0 !important; padding-top: 0; border-top: 0; }
+.modal-body hr { margin: 1.75rem 0; }
+
+/* Cartão de conta bancária e de outros itens repetidos. */
+.modal-body .banco-linha { padding: 1.25rem 1.25rem .25rem !important; margin-bottom: 1rem !important; background: var(--bs-tertiary-bg, #f8f9fa); border-radius: .5rem; }
+.modal-body .table-responsive { margin-bottom: 1rem; }
+
+/* Modais de visualização: listas de dados (dl) e tabelas com o mesmo respiro dos formulários. */
+.modal-body dl.row { --bs-gutter-x: 0; margin-bottom: 1.5rem; }
+.modal-body dl.row > dt,
+.modal-body dl.row > dd {
+    margin: 0;
+    padding: .7rem .75rem;
+    border-bottom: 1px solid var(--bs-border-color-translucent, rgba(0, 0, 0, .08));
+}
+.modal-body dl.row > dt {
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #6b7280;
+    padding-top: .85rem;
+}
+.modal-body dl.row > dd { color: #111827; }
+@media (min-width: 576px) {
+    .modal-body dl.row > dt { padding-left: 0; }
+}
+
+.modal-body .table { margin-bottom: 1.25rem; }
+.modal-body .table > :not(caption) > * > * { padding: .65rem .85rem; }
+.modal-body .table > thead > tr > th {
+    font-size: .75rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #6b7280;
+    background: var(--bs-tertiary-bg, #f8f9fa);
+    border-bottom: 1px solid var(--bs-border-color);
+    white-space: nowrap;
+}
+.modal-body .table-responsive {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    margin-bottom: 1.25rem;
+}
+.modal-body .table-responsive > .table { margin-bottom: 0; }
+.modal-body .table-responsive > .table > tbody > tr:last-child > td { border-bottom: 0; }
+.modal-body p.text-muted { margin-bottom: 1.25rem; }
+.modal-body pre { padding: 1rem; background: var(--bs-tertiary-bg, #f8f9fa); border-radius: .5rem; }
+
+/* Modal largo: para telas com muitos dados (tabelas, históricos). Usa 94% da largura, até 1600 px. */
+.modal-dialog.modal-wide { --bs-modal-width: min(94vw, 1600px); max-width: min(94vw, 1600px); }
+@media (max-width: 575.98px) { .modal-dialog.modal-wide { max-width: none; } }

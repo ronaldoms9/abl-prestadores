@@ -62,7 +62,7 @@
 <!--begin::Body-->
 
 @auth
-<body class="fixed-header fixed-footer fixed-sidebar sidebar-expand-lg sidebar-mini bg-body-tertiary">
+<body class="layout-fixed fixed-header fixed-footer fixed-sidebar sidebar-expand-lg sidebar-mini bg-body-tertiary">
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

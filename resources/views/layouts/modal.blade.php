@@ -10,7 +10,7 @@
          </div>
 
 
-        <div class="modal-body " style="padding-left: 10px; padding-right: 10px">
+        <div class="modal-body">
             @yield('content')
         </div>
 

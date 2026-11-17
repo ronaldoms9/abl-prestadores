@@ -37,7 +37,7 @@
                     <td>@if ($q->certificado_path)<a href="{{ route('qualificacao.certificado', $q->id) }}">{{ $q->certificado_nome ?? 'Baixar' }}</a>@else —@endif</td>
                     <td class="text-end">
                         @permission('qualificacao-edit')
-                            <button type="button" class="btn btn-link btn-sm text-danger p-0" data-excluir-qualificacao="{{ route('qualificacao.excluir', $q->id) }}">Excluir</button>
+                            <button type="button" class="btn btn-link btn-sm text-danger p-0 acao-icone" data-excluir-qualificacao="{{ route('qualificacao.excluir', $q->id) }}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></button>
                         @endpermission
                     </td>
                 </tr>

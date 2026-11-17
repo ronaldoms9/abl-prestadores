@@ -1,4 +1,5 @@
 @extends('layouts.modal', [
+    'size' => 'modal-wide',
     'title' => $pessoa->razao_social,
 ])
 

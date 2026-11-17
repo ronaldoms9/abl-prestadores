@@ -1,4 +1,4 @@
 @permission('cargo-edit')
-    <a href="javascript:requestIntoModal('{{ route('cargo.form', $cargo->id) }}')" class="text-primary">Editar</a>
-    <a href="javascript:deleteDefault('{{ route('cargo.delete', $cargo->id) }}')" class="text-danger ms-2">Excluir</a>
+    <a href="javascript:requestIntoModal('{{ route('cargo.form', $cargo->id) }}')" class="text-primary acao-icone" title="Editar" aria-label="Editar"><i class="bi bi-pencil-square"></i></a>
+    <a href="javascript:deleteDefault('{{ route('cargo.delete', $cargo->id) }}')" class="text-danger ms-2 acao-icone" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></a>
 @endpermission

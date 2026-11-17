@@ -1,6 +1,6 @@
 @extends('layouts.modal', [
     'title' => $equipe->nome,
-    'size' => 'modal-lg',
+    'size' => 'modal-wide',
 ])
 
 @section('footer')

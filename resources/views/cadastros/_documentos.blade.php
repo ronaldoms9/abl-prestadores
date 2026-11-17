@@ -38,7 +38,7 @@
                     <td class="text-muted">{{ $documento->observacao ?? '' }}</td>
                     <td class="text-end">
                         @permission('documento-edit')
-                            <button type="button" class="btn btn-link btn-sm text-danger p-0" data-excluir-documento="{{ route('documento.excluir', $documento->id) }}">Excluir</button>
+                            <button type="button" class="btn btn-link btn-sm text-danger p-0 acao-icone" data-excluir-documento="{{ route('documento.excluir', $documento->id) }}" title="Excluir" aria-label="Excluir"><i class="bi bi-trash"></i></button>
                         @endpermission
                     </td>
                 </tr>

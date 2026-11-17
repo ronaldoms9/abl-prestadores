@@ -37,7 +37,7 @@
             <div class="col-sm-2 form-group">
                 <div class="form-check"><input class="form-check-input" type="radio" name="principal" data-campo="principal"><label class="form-check-label small">Principal</label></div>
             </div>
-            <div class="col-sm-2 form-group text-end"><button type="button" class="btn btn-link text-danger btn-sm" data-remover>Remover</button></div>
+            <div class="col-sm-2 form-group text-end"><button type="button" class="btn btn-link text-danger btn-sm acao-icone" data-remover title="Remover" aria-label="Remover"><i class="bi bi-trash"></i></button></div>
         </div>
     </div>
 </template>
