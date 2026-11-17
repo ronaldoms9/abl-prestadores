@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\RegistraAutoria;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Concerns\TemVigencia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /** Vínculo local entre uma pessoa jurídica e a pessoa física responsável por ela. */
 class ResponsavelPessoaJuridica extends Model
 {
-    use HasFactory, RegistraAutoria, SoftDeletes;
+    use HasFactory, RegistraAutoria, SoftDeletes, TemVigencia;
 
     protected $table = 'pessoa_juridica_responsaveis';
 
@@ -29,10 +29,6 @@ class ResponsavelPessoaJuridica extends Model
         ];
     }
 
-    public function scopeVigentes(Builder $query): Builder
-    {
-        return $query->whereNull('fim');
-    }
 
     public function pessoaJuridica(): BelongsTo
     {

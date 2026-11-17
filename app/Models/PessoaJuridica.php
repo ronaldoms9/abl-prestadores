@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -33,6 +34,7 @@ class PessoaJuridica extends Model
         'endereco',
         'ativo',
         'sincronizado_em',
+        'uau_alterado_em',
     ];
 
     /**
@@ -45,6 +47,7 @@ class PessoaJuridica extends Model
             'endereco' => AsEndereco::class,
             'ativo' => 'boolean',
             'sincronizado_em' => 'datetime',
+            'uau_alterado_em' => 'datetime',
         ];
     }
 
@@ -59,6 +62,21 @@ class PessoaJuridica extends Model
             ->withPivot('utilizado_em', 'importacao_pessoa_id')
             ->withTimestamps()
             ->wherePivotNull('deleted_at');
+    }
+
+    public function colaboradores(): HasMany
+    {
+        return $this->hasMany(Colaborador::class, 'pessoa_juridica_id');
+    }
+
+    public function dadosBancarios(): MorphMany
+    {
+        return $this->morphMany(DadoBancario::class, 'pessoa');
+    }
+
+    public function documentos(): MorphMany
+    {
+        return $this->morphMany(\App\Models\Documento::class, 'documentavel');
     }
 
     /** Histórico de responsáveis, do mais recente ao mais antigo. */

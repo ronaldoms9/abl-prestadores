@@ -18,6 +18,9 @@ class MigrationsTest extends TestCase
         $this->assertTrue(Schema::hasColumn('users', 'pessoa_fisica_id'));
         $this->assertTrue(Schema::hasTable('vinculos_sugeridos'));
         $this->assertTrue(Schema::hasTable('pessoa_juridica_responsaveis'));
+        foreach (['cargos', 'colaboradores', 'equipes', 'equipe_gestores', 'colaborador_equipes', 'dados_bancarios', 'documentos', 'reajustes', 'remuneracoes', 'qualificacao_tipos', 'cargo_qualificacoes', 'colaborador_qualificacoes', 'configuracoes'] as $tabela) {
+            $this->assertTrue(Schema::hasTable($tabela), $tabela);
+        }
 
         $this->artisanSemFalha('migrate:reset');
         $this->assertFalse(Schema::hasTable('users'));
