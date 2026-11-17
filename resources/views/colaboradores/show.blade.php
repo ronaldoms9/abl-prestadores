@@ -137,6 +137,10 @@
         @endif
     @endpermission
 
+    @permission('qualificacao-list')
+        @include('cadastros._qualificacoes', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
+    @endpermission
+
     @permission('documento-list')
         @include('cadastros._documentos', [
             'donoApelido' => 'colaborador',

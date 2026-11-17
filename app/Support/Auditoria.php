@@ -10,6 +10,7 @@ use App\Models\Equipe;
 use App\Models\IntegracaoLog;
 use App\Models\PessoaFisica;
 use App\Models\PessoaJuridica;
+use App\Models\QualificacaoTipo;
 use App\Models\Reajuste;
 use App\Models\Sincronizacao;
 use App\Models\User;
@@ -67,6 +68,12 @@ class Auditoria
         'documento-tipo-criado' => 'Tipo de documento criado',
         'documento-tipo-alterado' => 'Tipo de documento alterado',
         'documento-tipo-excluido' => 'Tipo de documento excluído',
+        'qualificacao-tipo-criado' => 'Tipo de qualificação criado',
+        'qualificacao-tipo-alterado' => 'Tipo de qualificação alterado',
+        'qualificacao-tipo-excluido' => 'Tipo de qualificação excluído',
+        'matriz-qualificacoes-alterada' => 'Matriz de qualificações alterada',
+        'qualificacao-registrada' => 'Qualificação registrada',
+        'qualificacao-excluida' => 'Qualificação excluída',
         'equipe-criado' => 'Equipe criada',
         'equipe-alterado' => 'Equipe alterada',
         'equipe-excluido' => 'Equipe excluída',
@@ -85,6 +92,7 @@ class Auditoria
         User::class => ['Usuário', 'name'],
         Equipe::class => ['Equipe', 'nome'],
         Cargo::class => ['Cargo', 'nome'],
+        QualificacaoTipo::class => ['Tipo de qualificação', 'nome'],
         DocumentoTipo::class => ['Tipo de documento', 'nome'],
         Reajuste::class => ['Reajuste', 'id'],
         Colaborador::class => ['Colaborador', 'id'],
@@ -116,6 +124,8 @@ class Auditoria
         'cnpj' => 'CNPJ',
         'aplica_a' => 'vale para',
         'exige_validade' => 'exige validade',
+        'categoria' => 'categoria',
+        'validade_meses' => 'validade (meses)',
         'faixa_min' => 'faixa mínima',
         'faixa_max' => 'faixa máxima',
         'pessoa_fisica_id' => 'pessoa física',

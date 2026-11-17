@@ -61,17 +61,17 @@ class PerfilSeeder extends Seeder
             'rh' => [
                 'display_name' => 'RH',
                 'description' => 'Cadastro de pessoas, carga de planilha e consulta de empresas e obras',
-                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir', 'alerta-documentos'],
+                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir', 'alerta-documentos', 'qualificacao-list', 'qualificacao-edit', 'qualificacao-tipo-gerir', 'alerta-qualificacoes'],
             ],
             'gestor' => [
                 'display_name' => 'Gestor',
                 'description' => 'Consulta de pessoas, empresas, obras e das equipes que gere',
-                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-gerir', 'colaborador-list'],
+                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-gerir', 'colaborador-list', 'qualificacao-list'],
             ],
             'financeiro' => [
                 'display_name' => 'Financeiro',
                 'description' => 'Consulta de cadastros e acompanhamento das integrações',
-                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'colaborador-list', 'cargo-list', 'remuneracao-list', 'documento-list', 'integracao-list', 'integracao-sincronizar', 'integracao-reenviar'],
+                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'colaborador-list', 'cargo-list', 'remuneracao-list', 'documento-list', 'qualificacao-list', 'integracao-list', 'integracao-sincronizar', 'integracao-reenviar'],
             ],
             'colaborador' => [
                 'display_name' => 'Colaborador',

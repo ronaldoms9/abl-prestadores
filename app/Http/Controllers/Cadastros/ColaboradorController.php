@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cadastros;
 
 use App\Actions\Cadastros\SalvarColaborador;
 use App\Actions\Documentos\DocumentosAVencer;
+use App\Actions\Qualificacoes\SituacaoQualificacoes;
 use App\Actions\Equipes\EncerrarVinculo;
 use App\Actions\Equipes\VincularColaborador;
 use App\Enums\StatusColaborador;
@@ -16,6 +17,7 @@ use App\Models\Empresa;
 use App\Models\Equipe;
 use App\Models\Obra;
 use App\Models\PessoaFisica;
+use App\Models\QualificacaoTipo;
 use App\Models\VinculoSugerido;
 use App\Support\Auditoria;
 use App\Support\Documento;
@@ -69,6 +71,7 @@ class ColaboradorController extends Controller
         $veRemuneracao = auth()->user()->can('remuneracao-list');
 
         $colaborador = Colaborador::visiveisPara(auth()->user())
+            ->when(auth()->user()->can('qualificacao-list'), fn ($q) => $q->with(['qualificacoes.tipo', 'cargo.exigencias' => fn ($e) => $e->where('obrigatoria', true), 'cargo.exigencias.tipo']))
             ->when(auth()->user()->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
             ->when($veRemuneracao, fn ($q) => $q->with(['remuneracoes' => fn ($r) => $r->orderByDesc('vigencia_inicio')->orderByDesc('id')]))
             ->with([
@@ -91,6 +94,8 @@ class ColaboradorController extends Controller
             'colaborador' => $colaborador,
             'equipesLivres' => $equipesLivres,
             'tiposDocumento' => auth()->user()->can('documento-edit') ? DocumentoTipo::paraDono('colaborador')->orderBy('nome')->get() : null,
+            'tiposQualificacao' => auth()->user()->can('qualificacao-edit') ? QualificacaoTipo::ativos()->orderBy('nome')->get() : null,
+            'situacaoQualificacoes' => auth()->user()->can('qualificacao-list') ? app(SituacaoQualificacoes::class)->situacao($colaborador, now(), (int) config('cadastros.alertas.qualificacoes_dias')) : null,
             'vencidos' => $verDocumentos ? app(DocumentosAVencer::class)->vencidosDoColaborador($colaborador, now()) : collect(),
         ]);
     }

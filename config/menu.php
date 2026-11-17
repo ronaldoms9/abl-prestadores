@@ -27,6 +27,11 @@ return [
         ['titulo' => 'Cargos', 'rota' => 'cargo.index', 'permissao' => 'cargo-list'],
         ['titulo' => 'Reajuste em lote', 'rota' => 'reajuste.lote', 'permissao' => 'remuneracao-reajustar'],
     ]],
+    ['titulo' => 'Qualificações', 'icone' => 'bi bi-award', 'itens' => [
+        ['titulo' => 'Pendências', 'rota' => 'qualificacao.pendentes', 'permissao' => 'qualificacao-list'],
+        ['titulo' => 'Tipos de qualificação', 'rota' => 'qualificacao-tipo.index', 'permissao' => 'qualificacao-tipo-gerir'],
+        ['titulo' => 'Matriz por cargo', 'rota' => 'qualificacao.matriz', 'permissao' => 'qualificacao-tipo-gerir'],
+    ]],
     ['titulo' => 'Equipes', 'icone' => 'bi bi-diagram-3', 'rota' => 'equipe.index', 'permissao' => 'equipe-list'],
     ['titulo' => 'Empresas', 'icone' => 'bi bi-building', 'rota' => 'empresa.index', 'permissao' => 'empresa-list'],
     ['titulo' => 'Obras', 'icone' => 'bi bi-cone-striped', 'rota' => 'obra.index', 'permissao' => 'obra-list'],

@@ -26,6 +26,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt('06:30')
             ->onOneServer()
             ->withoutOverlapping();
+
+        $schedule->command('alertas:qualificacoes')
+            ->dailyAt('06:45')
+            ->onOneServer()
+            ->withoutOverlapping();
     }
 
     /**

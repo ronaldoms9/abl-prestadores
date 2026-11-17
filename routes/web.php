@@ -109,6 +109,26 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('documento-tipo.delete');
     });
 
+    Route::group(['prefix' => 'qualificacoes'], function(){
+        $t = App\Http\Controllers\Cadastros\QualificacaoTipoController::class;
+        $m = App\Http\Controllers\Cadastros\MatrizQualificacoesController::class;
+        $q = App\Http\Controllers\Cadastros\QualificacaoController::class;
+
+        Route::get('/pendentes', [$q, 'pendentes'])->name('qualificacao.pendentes')->middleware('permission:qualificacao-list');
+        Route::get('/{id}/certificado', [$q, 'certificado'])->whereNumber('id')->name('qualificacao.certificado')->middleware('permission:qualificacao-list');
+        Route::post('/colaboradores/{id}', [$q, 'registrar'])->whereNumber('id')->name('qualificacao.registrar')->middleware('permission:qualificacao-edit');
+        Route::delete('/{id}', [$q, 'excluir'])->whereNumber('id')->name('qualificacao.excluir')->middleware('permission:qualificacao-edit');
+
+        Route::group(['middleware' => 'permission:qualificacao-tipo-gerir'], function() use ($t, $m){
+            Route::get('/tipos', [$t, 'index'])->name('qualificacao-tipo.index');
+            Route::get('/tipos/form/{id?}', [$t, 'form'])->whereNumber('id')->name('qualificacao-tipo.form');
+            Route::post('/tipos/store/{id?}', [$t, 'store'])->whereNumber('id')->name('qualificacao-tipo.store');
+            Route::delete('/tipos/delete/{id}', [$t, 'delete'])->whereNumber('id')->name('qualificacao-tipo.delete');
+            Route::get('/matriz', [$m, 'index'])->name('qualificacao.matriz');
+            Route::post('/matriz', [$m, 'salvar'])->name('qualificacao.matriz.salvar');
+        });
+    });
+
     Route::group(['prefix' => 'cargos'], function(){
         $c = App\Http\Controllers\Cadastros\CargoController::class;
         Route::get('/', [$c, 'index'])->name('cargo.index')->middleware('permission:cargo-list');

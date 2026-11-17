@@ -20,6 +20,7 @@ class ColaboradorQualificacao extends Model
         'data_conclusao',
         'data_validade',
         'certificado_path',
+        'certificado_nome',
         'instituicao',
     ];
 

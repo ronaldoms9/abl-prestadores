@@ -27,5 +27,6 @@ return [
     */
     'alertas' => [
         'documentos_dias' => 30,
+        'qualificacoes_dias' => 30,
     ],
 ];

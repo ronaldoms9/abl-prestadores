@@ -69,6 +69,11 @@ class PermissionSeeder extends Seeder
             ['name' => 'documento-tipo-gerir', 'display_name' => 'Gerir tipos de documento', 'description' => 'Cria e edita os tipos de documento e se exigem validade', 'module' => 'Documentos'],
             ['name' => 'alerta-documentos', 'display_name' => 'Receber alerta de documentos', 'description' => 'Recebe o resumo diário por e-mail de documentos vencidos e a vencer', 'module' => 'Documentos'],
 
+            ['name' => 'qualificacao-list', 'display_name' => 'Ver qualificações', 'description' => 'Vê as qualificações dos colaboradores, a lista de pendências e baixa certificados', 'module' => 'Qualificações'],
+            ['name' => 'qualificacao-edit', 'display_name' => 'Registrar qualificações', 'description' => 'Registra e exclui qualificações do colaborador', 'module' => 'Qualificações'],
+            ['name' => 'qualificacao-tipo-gerir', 'display_name' => 'Gerir tipos de qualificação e matriz', 'description' => 'Cria os tipos de qualificação e define o que cada cargo exige', 'module' => 'Qualificações'],
+            ['name' => 'alerta-qualificacoes', 'display_name' => 'Receber alerta de qualificações', 'description' => 'Recebe o resumo diário por e-mail de qualificações ausentes, vencidas e a vencer', 'module' => 'Qualificações'],
+
             ['name' => 'colaborador-list', 'display_name' => 'Ver colaboradores', 'description' => 'Quem tem equipe-gerir e não tem colaborador-edit vê só os colaboradores das equipes que gere hoje', 'module' => 'Colaboradores'],
             ['name' => 'colaborador-create', 'display_name' => 'Cadastrar colaboradores', 'description' => 'Liga uma pessoa física a uma pessoa jurídica, cargo, empresa e obra', 'module' => 'Colaboradores'],
             ['name' => 'colaborador-edit', 'display_name' => 'Editar colaboradores', 'description' => 'Edita colaboradores e os vínculos com equipes', 'module' => 'Colaboradores'],

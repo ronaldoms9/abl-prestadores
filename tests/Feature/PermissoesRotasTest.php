@@ -97,6 +97,17 @@ class PermissoesRotasTest extends TestCase
             'documento-tipo.form (editar)' => ['GET', 'documento-tipo.form', [':documento-tipo'], 'documento-tipo-gerir', 200],
             'documento-tipo.store' => ['POST', 'documento-tipo.store', [], 'documento-tipo-gerir', null],
             'documento-tipo.delete' => ['DELETE', 'documento-tipo.delete', [':documento-tipo'], 'documento-tipo-gerir', 201],
+            'qualificacao.pendentes' => ['GET', 'qualificacao.pendentes', [], 'qualificacao-list', 200],
+            'qualificacao.certificado' => ['GET', 'qualificacao.certificado', [':qualificacao'], 'qualificacao-list', 404],
+            'qualificacao.registrar' => ['POST', 'qualificacao.registrar', [':colaborador'], 'qualificacao-edit', null],
+            'qualificacao.excluir' => ['DELETE', 'qualificacao.excluir', [':qualificacao'], 'qualificacao-edit', 201],
+            'qualificacao-tipo.index' => ['GET', 'qualificacao-tipo.index', [], 'qualificacao-tipo-gerir', 200],
+            'qualificacao-tipo.form (criar)' => ['GET', 'qualificacao-tipo.form', [], 'qualificacao-tipo-gerir', 200],
+            'qualificacao-tipo.form (editar)' => ['GET', 'qualificacao-tipo.form', [':qualificacao-tipo'], 'qualificacao-tipo-gerir', 200],
+            'qualificacao-tipo.store' => ['POST', 'qualificacao-tipo.store', [], 'qualificacao-tipo-gerir', null],
+            'qualificacao-tipo.delete' => ['DELETE', 'qualificacao-tipo.delete', [':qualificacao-tipo'], 'qualificacao-tipo-gerir', 201],
+            'qualificacao.matriz' => ['GET', 'qualificacao.matriz', [], 'qualificacao-tipo-gerir', 200],
+            'qualificacao.matriz.salvar' => ['POST', 'qualificacao.matriz.salvar', [], 'qualificacao-tipo-gerir', null],
             'equipe.index' => ['GET', 'equipe.index', [], 'equipe-list', 200],
             'equipe.show' => ['GET', 'equipe.show', [':equipe'], 'equipe-list', 200],
             'equipe.form (criar)' => ['GET', 'equipe.form', [], 'equipe-create', 200],
@@ -130,7 +141,7 @@ class PermissoesRotasTest extends TestCase
     public function test_sem_a_permissao_recebe_403(string $metodo, string $rota, array $parametros, string $permissao, ?int $status): void
     {
         $outras = array_values(array_diff(
-            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir'],
+            ['user-list', 'user-create', 'user-edit', 'user-delete', 'grupo-list', 'grupo-create', 'grupo-edit', 'grupo-delete', 'auditoria-list', 'horizon-acessar', 'pessoa-importar', 'integracao-list', 'integracao-reenviar', 'integracao-sincronizar', 'pessoa-list', 'pessoa-create', 'pessoa-edit', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir', 'qualificacao-list', 'qualificacao-edit', 'qualificacao-tipo-gerir'],
             $this->permissoesQueLiberam($rota, $permissao),
         ));
 
@@ -179,6 +190,8 @@ class PermissoesRotasTest extends TestCase
             ':pessoa-juridica' => PessoaJuridica::factory()->create()->id,
             ':colaborador' => Colaborador::factory()->create()->id,
             ':vinculo-equipe' => ColaboradorEquipe::factory()->create()->id,
+            ':qualificacao' => \App\Models\ColaboradorQualificacao::factory()->create()->id,
+            ':qualificacao-tipo' => \App\Models\QualificacaoTipo::factory()->create()->id,
             ':documento' => \App\Models\Documento::factory()->create()->id,
             ':documento-tipo' => \App\Models\DocumentoTipo::factory()->create()->id,
             ':cargo' => \App\Models\Cargo::factory()->create()->id,
