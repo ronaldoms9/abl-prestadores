@@ -217,7 +217,7 @@ no mesmo layout da tela de login (tarefa 1.5). Com isso, sai
   - Conferir botões `.btn-primary` e `.text-bg-primary`: o AdminLTE 4 usa
     `--bs-btn-bg` nos botões, que talvez precise de override em `public/css/styles.css`.
 
-**Logo**: `public/images/brand.png` (sidebar) e `public/images/logo-login.png`.
+**Logo**: `public/images/brand.svg` (sidebar) e `public/images/logo-login.svg`.
 Sem o arquivo da ABL PRIME, o sidebar mostra `config('app.name')` em texto
 (`brand-text`, hoje comentado) e o login mostra o nome em `<h1>`.
 

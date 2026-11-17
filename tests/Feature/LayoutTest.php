@@ -41,6 +41,6 @@ class LayoutTest extends TestCase
             ->assertDontSee('Notifications')
             ->assertDontSee('AdminLTE v4')
             ->assertDontSee('apexcharts')
-            ->assertSee('--bs-primary: #0d6efd', false);
+            ->assertSee('--bs-primary: '.config('app.cor_primaria'), false);
     }
 }

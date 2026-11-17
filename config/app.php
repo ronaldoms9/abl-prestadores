@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'cor_primaria' => env('APP_COR_PRIMARIA') ?: '#0d6efd',
+    'cor_primaria' => env('APP_COR_PRIMARIA') ?: '#235A9A',
 
     /*
     |--------------------------------------------------------------------------

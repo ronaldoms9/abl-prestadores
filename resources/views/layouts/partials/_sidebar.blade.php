@@ -1,10 +1,10 @@
-<aside class="app-sidebar bg-body-tertiary shadow">
+<aside class="app-sidebar shadow" data-bs-theme="dark">
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand">
         <a href="{{ route('home') }}" class="brand-link">
-            @if (file_exists(public_path('images/brand.png')))
-                <img src="{{ asset('images/brand.png') }}" alt="{{ config('app.name') }}"
-                    class="brand-image opacity-75 shadow" />
+            @if (file_exists(public_path('images/brand.svg')))
+                <img src="{{ asset('images/brand.svg') }}" alt="{{ config('app.name') }}"
+                    class="brand-image" />
             @else
                 <span class="brand-text fw-semibold">{{ config('app.name') }}</span>
             @endif

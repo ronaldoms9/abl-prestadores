@@ -95,3 +95,102 @@ div.dataTables_wrapper div.dataTables_processing{
     --bs-pagination-active-bg: var(--bs-primary);
     --bs-pagination-active-border-color: var(--bs-primary);
 }
+
+/*
+ * IDENTIDADE VISUAL ABL PRIME (paleta do site 15anosprime.com.br)
+ * Azul-marinho #0C2440 / #07172A, azul #235A9A, azul-aço #2F4A67,
+ * dourado #D4BB8A, fundos claros #F0F4F7 e #DFE8F0. Fonte: Montserrat.
+ * A cor principal dos botões e links continua vindo de APP_COR_PRIMARIA.
+ */
+:root{
+    --abl-navy: #0C2440;
+    --abl-navy-dark: #07172A;
+    --abl-steel: #2F4A67;
+    --abl-blue: #235A9A;
+    --abl-gold: #D4BB8A;
+    --abl-bg: #F0F4F7;
+    --abl-bg-alt: #DFE8F0;
+    --bs-body-font-family: 'Montserrat', 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+[data-bs-theme="light"]{
+    --bs-body-bg: var(--abl-bg);
+    --bs-body-bg-rgb: 240, 244, 247;
+    --bs-secondary-bg: var(--abl-bg-alt);
+    --bs-tertiary-bg: var(--abl-bg);
+    --bs-body-color: #1d2b3a;
+    --bs-heading-color: var(--abl-navy);
+}
+body, .app-wrapper{
+    font-family: var(--bs-body-font-family);
+}
+/* Menu lateral */
+.app-sidebar{
+    --lte-sidebar-bg: var(--abl-navy);
+    background-color: var(--abl-navy);
+    border-right: 1px solid var(--abl-navy-dark);
+}
+.app-sidebar .sidebar-brand{
+    background-color: var(--abl-navy-dark);
+    border-bottom: 1px solid var(--abl-steel);
+}
+.app-sidebar .sidebar-brand .brand-text{
+    color: #fff;
+    letter-spacing: .02em;
+}
+.app-sidebar .sidebar-menu > .nav-item > .nav-link{
+    color: rgba(255, 255, 255, .8);
+}
+.app-sidebar .sidebar-menu .nav-link:hover{
+    background-color: var(--abl-steel);
+    color: #fff;
+}
+.app-sidebar .sidebar-menu .nav-link.active,
+.app-sidebar .sidebar-menu .menu-open > .nav-link{
+    background-color: var(--abl-blue);
+    color: #fff;
+    box-shadow: inset 3px 0 0 var(--abl-gold);
+}
+.app-sidebar .nav-header{
+    color: var(--abl-gold);
+}
+/* Topo */
+.app-header{
+    background-color: #fff;
+    border-bottom: 3px solid var(--abl-gold);
+}
+/* Cartões e tabelas */
+.card{
+    border-color: var(--abl-bg-alt);
+}
+.card-header{
+    color: var(--abl-navy);
+    font-weight: 600;
+}
+.card-primary.card-outline{
+    border-top-color: var(--abl-blue);
+}
+table.dataTable thead th,
+.table > thead > tr > th{
+    color: var(--abl-navy);
+    background-color: var(--abl-bg-alt);
+}
+/* Login */
+body.login-page{
+    background: linear-gradient(160deg, var(--abl-navy-dark), var(--abl-navy) 55%, var(--abl-steel));
+}
+.login-page .login-logo,
+.login-page .login-logo a,
+.login-page .login-logo h1{
+    color: #fff;
+}
+.login-page .card-outline.card-primary{
+    border-top: 3px solid var(--abl-gold);
+}
+.login-page .login-box-msg{
+    color: var(--abl-steel);
+}
+.app-sidebar .sidebar-brand .brand-image{
+    max-height: 34px;
+    width: auto;
+    margin-left: .25rem;
+}

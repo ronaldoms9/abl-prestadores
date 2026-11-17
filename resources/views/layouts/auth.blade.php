@@ -7,8 +7,8 @@
 @section('content')
     <div class="login-box">
         <div class="login-logo">
-            @if (file_exists(public_path('images/logo-login.png')))
-                <img src="{{ asset('images/logo-login.png') }}" alt="{{ config('app.name') }}" class="img-fluid">
+            @if (file_exists(public_path('images/logo-login.svg')))
+                <img src="{{ asset('images/logo-login.svg') }}" alt="{{ config('app.name') }}" class="img-fluid" style="max-width: 260px;">
             @else
                 <h1 class="h3 mb-0">{{ config('app.name') }}</h1>
             @endif
