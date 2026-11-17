@@ -5,6 +5,10 @@ solicitações passam por aprovação em níveis com e-mail, e o RH fecha o mês
 sistema calcula remuneração e benefícios proporcionais, o RH ajusta, o
 financeiro aprova e o fechamento fica imutável.
 
+## Situação
+
+Fatias 1 e 2 implementadas na branch `e3/fatia-1-models` (16 de 104 h), detalhadas em `entrega-4-fatia-1-models.md` e `entrega-4-fatia-2-periodos-saldo.md`. As fatias 3 a 7 não foram iniciadas; quase todas dependem das respostas da ABL PRIME da tabela abaixo.
+
 ## Antes de começar
 
 | Item | Responsável | Bloqueia |

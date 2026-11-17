@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserCreateSeeder::class,
             DocumentoTipoSeeder::class,
             AdmissaoChecklistItemSeeder::class,
+            FeriasNivelSeeder::class,
         ]);
     }
 }

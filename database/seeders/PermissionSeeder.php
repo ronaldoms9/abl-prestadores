@@ -96,6 +96,13 @@ class PermissionSeeder extends Seeder
             ['name' => 'admissao-gerir', 'display_name' => 'Gerir admissões', 'description' => 'Inicia a admissão, marca os itens do checklist e conclui a admissão; configura os itens do checklist', 'module' => 'Admissão e desligamento'],
             ['name' => 'colaborador-desligar', 'display_name' => 'Desligar colaboradores', 'description' => 'Registra o desligamento, gera o distrato e vê a prévia dos valores finais', 'module' => 'Admissão e desligamento'],
 
+            ['name' => 'ferias-list', 'display_name' => 'Ver férias e saldo', 'description' => 'Vê os períodos aquisitivos, o saldo e as solicitações de férias do colaborador', 'module' => 'Férias'],
+            ['name' => 'ferias-solicitar', 'display_name' => 'Solicitar férias', 'description' => 'Registra solicitação de férias de colaboradores; o gestor só dos que gere', 'module' => 'Férias'],
+            ['name' => 'ferias-aprovar-rh', 'display_name' => 'Aprovar férias (RH)', 'description' => 'Aprova férias no nível do RH (padrão: nível 2 do fluxo)', 'module' => 'Férias'],
+            ['name' => 'ferias-aprovar-qualquer', 'display_name' => 'Aprovar qualquer férias', 'description' => 'Recebe a solicitação quando nenhum nível tem aprovador elegível', 'module' => 'Férias'],
+            ['name' => 'ferias-niveis-configurar', 'display_name' => 'Configurar níveis de aprovação de férias', 'module' => 'Férias'],
+            ['name' => 'alerta-ferias', 'display_name' => 'Receber alerta de férias', 'description' => 'Recebe o resumo diário por e-mail de saldos de férias perto do limite de gozo', 'module' => 'Férias'],
+
             ['name' => 'integracao-list', 'display_name' => 'Ver monitoramento das integrações', 'module' => 'Integrações'],
             ['name' => 'integracao-sincronizar', 'display_name' => 'Sincronizar agora', 'module' => 'Integrações'],
             ['name' => 'integracao-reenviar', 'display_name' => 'Reprocessar falha de integração', 'module' => 'Integrações'],

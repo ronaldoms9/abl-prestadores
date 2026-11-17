@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Actions\Beneficios\DefinirValorBeneficio;
+use App\Actions\Ferias\AjustarSaldoFerias;
+use App\Actions\Ferias\GerarPeriodosAquisitivos;
 use App\Actions\Beneficios\SalvarBeneficiosPadraoCargo;
 use App\Actions\Beneficios\VincularBeneficio;
 use App\Actions\Cadastros\SalvarColaborador;
@@ -67,7 +69,7 @@ class DemoSeeder extends Seeder
             return;
         }
 
-        $this->call([PermissionSeeder::class, PerfilSeeder::class, UserCreateSeeder::class, DocumentoTipoSeeder::class, AdmissaoChecklistItemSeeder::class]);
+        $this->call([PermissionSeeder::class, PerfilSeeder::class, UserCreateSeeder::class, DocumentoTipoSeeder::class, AdmissaoChecklistItemSeeder::class, FeriasNivelSeeder::class]);
 
         $admin = User::where('email', 'ronaldo@rmsti.com.br')->first() ?? User::query()->orderBy('id')->firstOrFail();
         Auth::login($admin);
@@ -454,6 +456,12 @@ class DemoSeeder extends Seeder
             $vincular->executar($colaborador, $beneficios['va'], $admissao);
             if ($i % 2 === 0) {
                 $vincular->executar($colaborador, $beneficios['saude'], $admissao, $i === 0 ? 150 : null);
+            }
+
+            // Períodos de férias desde a admissão; alguns já com dias tirados.
+            $periodos = app(GerarPeriodosAquisitivos::class)->executar($colaborador);
+            if ($i % 3 === 0 && $periodos->isNotEmpty()) {
+                app(AjustarSaldoFerias::class)->baixar($periodos->first(), 10);
             }
 
             // Um contrato com prazo curto, para mostrar o alerta de vencimento.

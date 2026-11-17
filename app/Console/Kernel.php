@@ -32,6 +32,17 @@ class Kernel extends ConsoleKernel
             ->onOneServer()
             ->withoutOverlapping();
 
+        // E4, fatia 2: abre os períodos aquisitivos do dia e avisa saldos perto do limite de gozo.
+        $schedule->command('ferias:periodos')
+            ->dailyAt('05:30')
+            ->onOneServer()
+            ->withoutOverlapping();
+
+        $schedule->command('alertas:ferias')
+            ->dailyAt('07:15')
+            ->onOneServer()
+            ->withoutOverlapping();
+
         // E3, fatia 4: contratos vencidos e nos marcos de 30, 15 e 5 dias.
         $schedule->command('alertas:contratos')
             ->dailyAt('07:00')

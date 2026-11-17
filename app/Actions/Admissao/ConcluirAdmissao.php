@@ -3,6 +3,7 @@
 namespace App\Actions\Admissao;
 
 use App\Actions\Beneficios\AplicarBeneficiosPadrao;
+use App\Actions\Ferias\GerarPeriodosAquisitivos;
 use App\Actions\Remuneracoes\DefinirRemuneracaoInicial;
 use App\Enums\StatusColaborador;
 use App\Models\AdmissaoChecklist;
@@ -15,7 +16,7 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Conclui a admissão: o colaborador passa a ativo, com a data de admissão, a
- * remuneração inicial e os benefícios padrão do cargo. Exige todos os itens
+ * remuneração inicial, os benefícios padrão do cargo e o primeiro período de férias. Exige todos os itens
  * obrigatórios do checklist (os automáticos são reavaliados na hora).
  *
  * A remuneração inicial normalmente já foi definida antes, porque o contrato
@@ -29,6 +30,7 @@ class ConcluirAdmissao
         private readonly SincronizarItensAutomaticos $sincronizar,
         private readonly DefinirRemuneracaoInicial $definirRemuneracao,
         private readonly AplicarBeneficiosPadrao $beneficiosPadrao,
+        private readonly GerarPeriodosAquisitivos $periodosDeFerias,
     ) {
     }
 
@@ -66,6 +68,8 @@ class ConcluirAdmissao
             $colaborador->update(['status' => StatusColaborador::Ativo, 'data_admissao' => $inicio]);
 
             $beneficios = $this->beneficiosPadrao->executar($colaborador->refresh(), $inicio);
+            // O primeiro período aquisitivo de férias abre na admissão (E4, fatia 2).
+            $this->periodosDeFerias->executar($colaborador, $inicio);
 
             Auditoria::registrar('admissao-concluida', $colaborador, ['data_admissao' => $inicio->toDateString(), 'beneficios_padrao' => $beneficios->count()]);
 

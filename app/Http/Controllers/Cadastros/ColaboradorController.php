@@ -76,10 +76,12 @@ class ColaboradorController extends Controller
         $veBeneficios = auth()->user()->can('beneficio-list');
         $veContratos = auth()->user()->can('contrato-list');
         $gereAdmissao = auth()->user()->can('admissao-gerir');
+        $veFerias = auth()->user()->can('ferias-list');
 
         $colaborador = Colaborador::visiveisPara(auth()->user())
             ->when(auth()->user()->can('qualificacao-list'), fn ($q) => $q->with(['qualificacoes.tipo', 'cargo.exigencias' => fn ($e) => $e->where('obrigatoria', true), 'cargo.exigencias.tipo']))
             ->when(auth()->user()->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
+            ->when($veFerias, fn ($q) => $q->with(['feriasPeriodos' => fn ($f) => $f->orderByDesc('aquisitivo_inicio')]))
             ->when($gereAdmissao, fn ($q) => $q->with(['checklistAdmissao' => fn ($l) => $l->orderBy('ordem')->orderBy('id'), 'checklistAdmissao.concluidoPor']))
             ->when($veContratos, fn ($q) => $q->with(['contratos' => fn ($c) => $c->orderBy('id'), 'contratos.modelo']))
             ->when($veBeneficios, fn ($q) => $q->with(['beneficios' => fn ($b) => $b->orderByRaw('fim is not null')->orderByDesc('inicio'), 'beneficios.beneficio']))

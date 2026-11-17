@@ -36,6 +36,19 @@ return [
     ],
 
     /*
+    | Férias (E4, fatia 2). Todos os valores podem ser mudados em `configuracoes`
+    | (chaves ferias.dias_direito, ferias.limite_gozo_meses, ferias.alerta_dias);
+    | estes são os padrões. O período aquisitivo tem 12 meses a partir da admissão;
+    | o limite de gozo é o fim dele mais `limite_gozo_meses`. O alerta avisa quando
+    | o saldo está a `alerta_dias` dias do limite (ou já passou dele).
+    */
+    'ferias' => [
+        'dias_direito' => 30,
+        'limite_gozo_meses' => 12,
+        'alerta_dias' => 60,
+    ],
+
+    /*
     | Alertas por e-mail. A antecedência pode ser mudada em `configuracoes`
     | (chave alertas.documentos, campo dias); este é o padrão.
     */

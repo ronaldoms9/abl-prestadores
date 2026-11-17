@@ -99,6 +99,10 @@
         @endpermission
     @endpermission
 
+    @permission('ferias-list')
+        @include('colaboradores._ferias')
+    @endpermission
+
     @permission('admissao-gerir')
         @include('colaboradores._admissao', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
     @endpermission
