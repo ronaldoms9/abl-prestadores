@@ -37,7 +37,7 @@ O sistema avisa por e-mail quando a nota passa do prazo (dia 5 do mês seguinte,
 
 ## 4. Relatórios
 
-**Custo por obra** e **Benefícios** leem só competências aprovadas. **Notas pendentes** mostra quem ainda não tem nota válida. Todos exportam para Excel e PDF.
+**Custo por obra** e **Benefícios** leem só competências aprovadas. Quem atua em mais de uma obra aparece em cada uma, com a parte do rateio (a soma bate com o fechamento); o filtro por obra mostra só a parte dela. **Notas pendentes** mostra quem ainda não tem nota válida. Todos exportam para Excel e PDF.
 
 ## 5. Integrações
 

@@ -22,8 +22,9 @@ Na ficha do colaborador, seção **Férias**: período aquisitivo, datas de iní
 Regras importantes:
 
 - Você **nunca** decide as próprias férias: o pedido vai a outro gestor da equipe ou, se não houver, ao RH.
-- Se o colaborador não tem equipe, o nível do gestor é pulado e o pedido vai direto ao RH.
-- Se trocar a equipe de um colaborador com pedido pendente, quem passa a ser gestor dele passa a decidir.
+- Se o colaborador não tem equipe, o nível do gestor é pulado e o pedido vai ao próximo nível do fluxo (em geral, o RH).
+- Nem todo pedido passa por você: o caminho vem do fluxo do colaborador, definido pelo RH. Um gerente, por exemplo, pode ter só a aprovação do diretor; uma equipe pode ter você e depois o diretor.
+- Se trocar a equipe de um colaborador com pedido pendente, quem passa a ser gestor dele passa a decidir, exceto quando o fluxo é de uma equipe específica: aí decide quem gere essa equipe.
 
 ## 4. Calendário de ausências
 

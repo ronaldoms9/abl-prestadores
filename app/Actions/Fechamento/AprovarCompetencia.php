@@ -26,7 +26,7 @@ class AprovarCompetencia
                 throw ValidationException::withMessages(['competencia' => 'Só dá para aprovar uma competência em conferência.']);
             }
 
-            $fechamentos = $competencia->fechamentos()->with(['itens', 'colaborador.pessoaFisica'])->get();
+            $fechamentos = $competencia->fechamentos()->with(['itens', 'rateios', 'colaborador.pessoaFisica'])->get();
 
             if ($fechamentos->isEmpty()) {
                 throw ValidationException::withMessages(['competencia' => 'A competência não tem nenhum fechamento para aprovar.']);
@@ -55,6 +55,14 @@ class AprovarCompetencia
                         'total_beneficios' => $f->total_beneficios,
                         'total_ajustes' => $f->total_ajustes,
                         'total_liquido' => $f->total_liquido,
+                        'rateio' => $f->rateios->map(fn ($r) => [
+                            'obra_id' => $r->obra_id,
+                            'percentual' => $r->percentual,
+                            'valor_remuneracao' => $r->valor_remuneracao,
+                            'total_beneficios' => $r->total_beneficios,
+                            'total_ajustes' => $r->total_ajustes,
+                            'total_liquido' => $r->total_liquido,
+                        ])->all(),
                         'itens' => $f->itens->map(fn ($i) => [
                             'tipo' => $i->tipo->value,
                             'descricao' => $i->descricao,

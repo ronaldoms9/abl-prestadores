@@ -48,7 +48,7 @@ return [
         ['titulo' => 'Calendário', 'rota' => 'ferias.calendario', 'permissao' => 'ferias-list', 'ativo' => ['ferias.calendario', 'ferias.calendario.*']],
         ['titulo' => 'Feriados', 'rota' => 'feriado.index', 'permissao' => 'feriado-list', 'ativo' => ['feriado.*']],
         ['titulo' => 'Ocorrências', 'rota' => 'ocorrencia.index', 'permissao' => 'ocorrencia-list', 'ativo' => ['ocorrencia.*']],
-        ['titulo' => 'Níveis de aprovação', 'rota' => 'ferias-nivel.index', 'permissao' => 'ferias-niveis-configurar', 'ativo' => ['ferias-nivel.*']],
+        ['titulo' => 'Fluxos de aprovação', 'rota' => 'ferias-nivel.index', 'permissao' => 'ferias-niveis-configurar', 'ativo' => ['ferias-nivel.*', 'ferias-fluxo.*']],
     ]],
     ['titulo' => 'Fechamento mensal', 'icone' => 'bi bi-calculator', 'rota' => 'fechamento.index', 'permissao' => 'fechamento-list', 'ativo' => ['fechamento.*']],
     ['titulo' => 'Relatórios', 'icone' => 'bi bi-bar-chart-line', 'rota' => 'relatorio.index', 'permissao' => ['fechamento-list', 'ferias-list', 'qualificacao-list', 'contrato-list', 'nota-list'], 'ativo' => ['relatorio.*']],

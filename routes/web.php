@@ -227,6 +227,11 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/form/{id?}', [$n, 'form'])->whereNumber('id')->name('ferias-nivel.form');
             Route::post('/store/{id?}', [$n, 'store'])->whereNumber('id')->name('ferias-nivel.store');
             Route::delete('/delete/{id}', [$n, 'delete'])->whereNumber('id')->name('ferias-nivel.delete');
+
+            $f = App\Http\Controllers\Ferias\FeriasFluxoController::class;
+            Route::get('/fluxos/form/{id?}', [$f, 'form'])->whereNumber('id')->name('ferias-fluxo.form');
+            Route::post('/fluxos/store/{id?}', [$f, 'store'])->whereNumber('id')->name('ferias-fluxo.store');
+            Route::delete('/fluxos/delete/{id}', [$f, 'delete'])->whereNumber('id')->name('ferias-fluxo.delete');
         });
     });
 
@@ -309,6 +314,7 @@ Route::group(['middleware' => 'auth'], function () {
         $b = App\Http\Controllers\Cadastros\ColaboradorBeneficioController::class;
         Route::post('/{id}/beneficios', [$b, 'store'])->whereNumber('id')->name('colaborador.beneficio.store')->middleware('permission:colaborador-beneficio-edit');
         Route::post('/beneficios/{id}/encerrar', [$b, 'encerrar'])->whereNumber('id')->name('colaborador.beneficio.encerrar')->middleware('permission:colaborador-beneficio-edit');
+        Route::post('/{id}/obras', [$c, 'obrasStore'])->whereNumber('id')->name('colaborador.obras.store')->middleware('permission:colaborador-edit');
         Route::post('/{id}/equipes', [$c, 'equipeStore'])->whereNumber('id')->name('colaborador.equipe.store')->middleware('permission:colaborador-edit');
         Route::get('/{id}', [$c, 'show'])->whereNumber('id')->name('colaborador.show')->middleware('permission:colaborador-list');
     });

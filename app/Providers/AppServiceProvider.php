@@ -109,6 +109,8 @@ class AppServiceProvider extends ServiceProvider
             'ocorrencia' => \App\Models\Ocorrencia::class,
             'competencia' => \App\Models\Competencia::class,
             'fechamento' => \App\Models\Fechamento::class,
+            'colaborador-obra' => \App\Models\ColaboradorObra::class,
+            'fechamento-rateio' => \App\Models\FechamentoRateio::class,
             'nota-fiscal' => \App\Models\NotaFiscal::class,
             'nota-retencao' => \App\Models\NotaRetencao::class,
             'titulo-pagar' => \App\Models\TituloPagar::class,

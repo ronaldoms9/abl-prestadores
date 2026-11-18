@@ -48,7 +48,7 @@ class NotasPendentes implements Relatorio
             ->with(['colaborador.pessoaFisica', 'colaborador.obra', 'competencia', 'nota'])
             ->where('status', StatusFechamento::AguardandoNota->value)
             ->whereHas('competencia', fn ($q) => $q->when($filtros['competencia'] ?? null, fn ($w, $m) => $w->where('ano_mes', $m)))
-            ->whereHas('colaborador', fn ($q) => $q->visiveisPara($usuario)->when($filtros['obra_id'] ?? null, fn ($w, $o) => $w->where('colaboradores.obra_id', $o)))
+            ->whereHas('colaborador', fn ($q) => $q->visiveisPara($usuario)->when($filtros['obra_id'] ?? null, fn ($w, $o) => $w->naObra($o)))
             ->get()
             ->filter(function (Fechamento $f) use ($status) {
                 $atual = ($f->nota?->status ?? StatusNota::Aguardando);

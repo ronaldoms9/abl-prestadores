@@ -8,9 +8,11 @@ use App\Enums\StatusColaborador;
 use App\Enums\StatusFechamento;
 use App\Models\Colaborador;
 use App\Models\ColaboradorEquipe;
+use App\Models\ColaboradorObra;
 use App\Models\Competencia;
 use App\Models\Fechamento;
 use App\Models\IntegracaoLog;
+use App\Models\Obra;
 use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
@@ -52,11 +54,23 @@ class IndicadoresPainel
                 ->whereNotIn('colaboradores.id', ColaboradorEquipe::query()->vigentesEm($hoje)->select('colaborador_id'))
                 ->count();
 
-            $dados['por_obra'] = $escopo()->where('colaboradores.status', StatusColaborador::Ativo->value)
-                ->leftJoin('obras', 'obras.id', '=', 'colaboradores.obra_id')
-                ->selectRaw("coalesce(obras.descricao, 'Sem obra') as obra, count(*) as total")
-                ->groupBy('obras.descricao')->orderByDesc('total')->orderBy('obra')
-                ->get()->map(fn ($l) => ['obra' => $l->obra, 'total' => (int) $l->total])->all();
+            // Colaborador em várias obras conta em cada uma; sem rateio vigente, vale a obra do cadastro.
+            $ativos = fn () => $escopo()->where('colaboradores.status', StatusColaborador::Ativo->value);
+            $comRateio = ColaboradorObra::query()->vigentesEm($hoje)->whereIn('colaborador_id', $ativos()->select('colaboradores.id'))
+                ->selectRaw('obra_id, count(distinct colaborador_id) as total')->groupBy('obra_id')->pluck('total', 'obra_id')->all();
+            $semRateio = $ativos()->whereNotIn('colaboradores.id', ColaboradorObra::query()->vigentesEm($hoje)->select('colaborador_id'))
+                ->selectRaw('colaboradores.obra_id as obra_id, count(*) as total')->groupBy('colaboradores.obra_id')->pluck('total', 'obra_id')->all();
+
+            $totais = [];
+            foreach ([$comRateio, $semRateio] as $grupo) {
+                foreach ($grupo as $obraId => $total) {
+                    $totais[(string) $obraId] = ($totais[(string) $obraId] ?? 0) + (int) $total;
+                }
+            }
+            $nomes = Obra::query()->whereIn('id', array_filter(array_keys($totais)))->pluck('descricao', 'id');
+            $dados['por_obra'] = collect($totais)
+                ->map(fn ($total, $obraId) => ['obra' => $obraId === '' ? 'Sem obra' : ($nomes[(int) $obraId] ?? 'Sem obra'), 'total' => $total])
+                ->sortBy([['total', 'desc'], ['obra', 'asc']])->values()->all();
         }
 
         if ($usuario->can('fechamento-list')) {

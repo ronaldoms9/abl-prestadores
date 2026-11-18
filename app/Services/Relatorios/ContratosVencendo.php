@@ -44,7 +44,7 @@ class ContratosVencendo implements Relatorio
     {
         $r = $this->contratos->consultar(range(0, max(0, (int) ($filtros['dias'] ?? 30))), now());
         $visiveis = Colaborador::visiveisPara($usuario)
-            ->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->where('colaboradores.obra_id', $o))
+            ->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->naObra($o))
             ->pluck('colaboradores.id')->flip();
 
         $linhas = $r['vencidos']->concat($r['marcos'])

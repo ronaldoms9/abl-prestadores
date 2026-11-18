@@ -5,6 +5,7 @@ namespace App\Actions\Cadastros;
 use App\Enums\StatusColaborador;
 use App\Events\CargoDoColaboradorAlterado;
 use App\Models\Colaborador;
+use App\Models\ColaboradorObra;
 use App\Models\Obra;
 use App\Models\PessoaFisica;
 use App\Models\VinculoSugerido;
@@ -44,6 +45,13 @@ class SalvarColaborador
             $this->conferirObra($dados['empresa_id'] ?? null, $dados['obra_id'] ?? null);
 
             $cargoAnterior = $colaborador->cargo_id;
+            $obraAnterior = $colaborador->obra_id;
+
+            // Colaborador em várias obras tem a obra definida pelo rateio, não por este campo.
+            $emVariasObras = ! $novo && ColaboradorObra::query()->where('colaborador_id', $colaborador->id)->vigentesEm(now())->count() > 1;
+            if ($emVariasObras) {
+                $dados['obra_id'] = $obraAnterior;
+            }
 
             $colaborador->fill([
                 'pessoa_fisica_id' => $pessoaFisicaId,
@@ -52,6 +60,8 @@ class SalvarColaborador
                 'empresa_id' => $dados['empresa_id'] ?? null,
                 'obra_id' => $dados['obra_id'] ?? null,
             ])->save();
+
+            $this->sincronizarObraUnica($colaborador, $novo, $obraAnterior, $emVariasObras);
 
             // Quem já foi admitido e muda de cargo ganha um rascunho de aditivo (E3, fatia 9).
             $cargoNovo = $colaborador->cargo_id;
@@ -67,6 +77,26 @@ class SalvarColaborador
 
             return $colaborador;
         });
+    }
+
+    /** Obra única = rateio de 100% nela; trocar a obra troca o rateio, e tirar a obra encerra o rateio (E4, fatia 10). */
+    private function sincronizarObraUnica(Colaborador $colaborador, bool $novo, ?int $obraAnterior, bool $emVariasObras): void
+    {
+        if ($emVariasObras || (! $novo && $obraAnterior === $colaborador->obra_id)) {
+            return;
+        }
+
+        if ($colaborador->obra_id === null) {
+            ColaboradorObra::query()->where('colaborador_id', $colaborador->id)->vigentes()->get()->each->update(['fim' => now()->toDateString()]);
+
+            return;
+        }
+
+        app(DefinirRateioObras::class)->executar(
+            $colaborador,
+            [['obra_id' => $colaborador->obra_id, 'percentual' => 100]],
+            $novo ? ($colaborador->data_admissao ?? now()) : now(),
+        );
     }
 
     private function conferirObra(mixed $empresaId, mixed $obraId): void

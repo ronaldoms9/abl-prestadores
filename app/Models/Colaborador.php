@@ -69,6 +69,26 @@ class Colaborador extends Model
         return $this->belongsTo(Obra::class);
     }
 
+    /** Partes do colaborador em cada obra, com vigência (rateio). */
+    public function obras(): HasMany
+    {
+        return $this->hasMany(ColaboradorObra::class, 'colaborador_id');
+    }
+
+    /**
+     * Colaboradores que atuam na obra na data (hoje, por padrão): pelo rateio vigente ou,
+     * sem rateio, pela obra do cadastro.
+     */
+    public function scopeNaObra(Builder $query, int|string $obraId, CarbonInterface|string|null $data = null): Builder
+    {
+        $data ??= now();
+
+        return $query->where(fn (Builder $q) => $q
+            ->where(fn (Builder $sem) => $sem->where('colaboradores.obra_id', $obraId)
+                ->whereNotIn('colaboradores.id', ColaboradorObra::query()->vigentesEm($data)->select('colaborador_id')))
+            ->orWhereIn('colaboradores.id', ColaboradorObra::query()->vigentesEm($data)->where('obra_id', $obraId)->select('colaborador_id')));
+    }
+
     public function remuneracoes(): HasMany
     {
         return $this->hasMany(Remuneracao::class, 'colaborador_id');

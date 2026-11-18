@@ -44,7 +44,7 @@ class QualificacoesVencendo implements Relatorio
     public function executar(array $filtros, User $usuario): ResultadoRelatorio
     {
         $hoje = now()->startOfDay();
-        $escopo = Colaborador::visiveisPara($usuario)->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->where('colaboradores.obra_id', $o));
+        $escopo = Colaborador::visiveisPara($usuario)->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->naObra($o));
 
         $linhas = [];
         foreach ($this->situacao->analisar($hoje, (int) ($filtros['dias'] ?? 30), $escopo, $filtros['cargo_id'] ?? null) as $s) {

@@ -107,6 +107,7 @@ class Auditoria
         'ferias-periodos-gerados' => 'Períodos aquisitivos de férias gerados',
         'ferias-saldo-baixado' => 'Saldo de férias baixado',
         'ferias-saldo-devolvido' => 'Saldo de férias devolvido',
+        'rateio-obras-definido' => 'Rateio de obras do colaborador definido',
         'ferias-solicitada' => 'Férias solicitadas',
         'ferias-nivel-aprovado' => 'Nível de aprovação de férias concluído',
         'ferias-aprovada' => 'Férias aprovadas',

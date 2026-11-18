@@ -12,6 +12,25 @@ class FechamentoFactory extends Factory
 {
     protected $model = Fechamento::class;
 
+    /** Fechamento nasce com o rateio de 100% na obra do colaborador, como o cálculo grava (E4, fatia 10). */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Fechamento $f) {
+            if ($f->rateios()->exists()) {
+                return;
+            }
+
+            $f->rateios()->create([
+                'obra_id' => Colaborador::query()->whereKey($f->colaborador_id)->value('obra_id'),
+                'percentual' => 100,
+                'valor_remuneracao' => $f->valor_remuneracao,
+                'total_beneficios' => $f->total_beneficios,
+                'total_ajustes' => $f->total_ajustes,
+                'total_liquido' => $f->total_liquido,
+            ]);
+        });
+    }
+
     public function definition(): array
     {
         return [

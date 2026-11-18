@@ -6,6 +6,7 @@ use App\Enums\StatusColaborador;
 use App\Enums\StatusSolicitacaoFerias;
 use App\Models\ColaboradorEquipe;
 use App\Models\Colaborador;
+use App\Models\ColaboradorObra;
 use App\Models\FeriasSolicitacao;
 use Carbon\CarbonInterface;
 
@@ -22,12 +23,18 @@ class ConflitosFerias
             ->where(fn ($q) => $q->whereDate('inicio', '<=', $fim)->where(fn ($w) => $w->whereNull('fim')->orWhereDate('fim', '>=', $inicio)))
             ->select('colaborador_id');
 
+        $obrasEmComum = ColaboradorObra::query()->where('colaborador_id', $colaborador->id)->vigentesEm($inicio)->pluck('obra_id')->unique()->values()->all();
+        if ($obrasEmComum === [] && $colaborador->obra_id !== null) {
+            $obrasEmComum = [$colaborador->obra_id];
+        }
+
         $solicitacoes = FeriasSolicitacao::query()
             ->with('colaborador.pessoaFisica')
             ->where(fn ($q) => $q
                 ->whereIn('colaborador_id', $mesmaEquipe)
-                ->when($colaborador->obra_id !== null, fn ($w) => $w->orWhereIn('colaborador_id', Colaborador::query()
-                    ->where('obra_id', $colaborador->obra_id)->where('id', '!=', $colaborador->id)
+                ->when($obrasEmComum !== [], fn ($w) => $w->orWhereIn('colaborador_id', Colaborador::query()
+                    ->where(fn ($c) => collect($obrasEmComum)->each(fn ($obra) => $c->orWhere(fn ($o) => $o->naObra($obra, $inicio))))
+                    ->where('id', '!=', $colaborador->id)
                     ->where('status', StatusColaborador::Ativo->value)->select('id'))))
             ->whereIn('status', [StatusSolicitacaoFerias::Pendente->value, StatusSolicitacaoFerias::Aprovada->value])
             ->whereDate('inicio', '<=', $fim)->whereDate('fim', '>=', $inicio)

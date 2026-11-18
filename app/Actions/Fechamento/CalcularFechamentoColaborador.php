@@ -8,7 +8,10 @@ use App\Models\Competencia;
 use App\Models\Fechamento;
 use App\Models\FechamentoItem;
 use App\Services\Fechamento\CalculadoraFechamento;
+use App\Models\FechamentoRateio;
 use App\Services\Fechamento\ItemCalculado;
+use App\Services\Fechamento\ResultadoFechamento;
+use App\Services\Fechamento\RateioDoFechamento;
 use App\Support\Dinheiro;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +23,7 @@ use Illuminate\Validation\ValidationException;
  */
 class CalcularFechamentoColaborador
 {
-    public function __construct(private readonly CalculadoraFechamento $calculadora)
+    public function __construct(private readonly CalculadoraFechamento $calculadora, private readonly RateioDoFechamento $rateio)
     {
     }
 
@@ -39,6 +42,7 @@ class CalcularFechamentoColaborador
             if ($resultado === null) {
                 if ($existente) {
                     FechamentoItem::query()->where('fechamento_id', $existente->id)->delete();
+                    FechamentoRateio::query()->where('fechamento_id', $existente->id)->delete();
                     $existente->delete();
                 }
 
@@ -62,8 +66,30 @@ class CalcularFechamentoColaborador
                 $this->gravarItem($fechamento, $item);
             }
 
+            $this->gravarRateio($fechamento, $colaborador, $resultado);
+
             return $fechamento->load('itens');
         });
+    }
+
+    /** Reparte o fechamento entre as obras do colaborador no período (E4, fatia 10). */
+    private function gravarRateio(Fechamento $fechamento, Colaborador $colaborador, ResultadoFechamento $resultado): void
+    {
+        FechamentoRateio::query()->where('fechamento_id', $fechamento->id)->delete();
+
+        $partes = $this->rateio->calcular($colaborador, $resultado->inicio, $resultado->fim, $resultado->remuneracao(), $resultado->beneficios(), $resultado->ajustes());
+
+        foreach ($partes as $p) {
+            FechamentoRateio::create([
+                'fechamento_id' => $fechamento->id,
+                'obra_id' => $p['obra_id'],
+                'percentual' => $p['percentual'],
+                'valor_remuneracao' => Dinheiro::decimal($p['remuneracao']),
+                'total_beneficios' => Dinheiro::decimal($p['beneficios']),
+                'total_ajustes' => Dinheiro::decimal($p['ajustes']),
+                'total_liquido' => Dinheiro::decimal($p['liquido']),
+            ]);
+        }
     }
 
     private function gravarItem(Fechamento $fechamento, ItemCalculado $item): void

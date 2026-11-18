@@ -43,7 +43,7 @@ class NotaController extends Controller
                 ->with(['colaborador.pessoaFisica', 'colaborador.obra', 'nota'])
                 ->where('competencia_id', $competencia->id)
                 ->where('status', StatusFechamento::AguardandoNota->value)
-                ->when($filtros['obra_id'] ?? null, fn ($q, $obra) => $q->whereHas('colaborador', fn ($c) => $c->where('obra_id', $obra)))
+                ->when($filtros['obra_id'] ?? null, fn ($q, $obra) => $q->whereHas('colaborador', fn ($c) => $c->naObra($obra)))
                 ->when(trim($filtros['busca'] ?? '') !== '', fn ($q) => $q->whereHas('colaborador.pessoaFisica', fn ($p) => $p->where('nome', 'like', '%'.trim($filtros['busca']).'%')))
                 ->get()
                 ->filter(fn (Fechamento $f) => ! isset($filtros['status']) || ($f->nota?->status ?? StatusNota::Aguardando)->value === $filtros['status'])

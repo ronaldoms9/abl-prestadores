@@ -32,6 +32,27 @@
         </table>
     </div>
 
+    @if ($fechamento->rateios->count() > 1 || $fechamento->rateios->first()?->obra_id === null)
+        <h6 class="text-semibold mt-3">Rateio por obra</h6>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead><tr><th>Obra</th><th class="text-end">Parte</th><th class="text-end">Remuneração</th><th class="text-end">Benefícios</th><th class="text-end">Ajustes</th><th class="text-end">Total</th></tr></thead>
+                <tbody>
+                @foreach ($fechamento->rateios->sortByDesc('percentual') as $r)
+                    <tr>
+                        <td>{{ $r->obra?->descricao ?? 'Sem obra' }}</td>
+                        <td class="text-end">{{ rtrim(rtrim(number_format((float) $r->percentual, 4, ',', '.'), '0'), ',') }}%</td>
+                        <td class="text-end">{{ $fmt($r->valor_remuneracao) }}</td>
+                        <td class="text-end">{{ $fmt($r->total_beneficios) }}</td>
+                        <td class="text-end">{{ $fmt($r->total_ajustes) }}</td>
+                        <td class="text-end">{{ $fmt($r->total_liquido) }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+
     <h6 class="text-semibold mt-3">Ajustes avulsos</h6>
     @if ($ajustes->isEmpty())
         <p class="text-muted small">Nenhum ajuste neste mês.</p>

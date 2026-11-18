@@ -25,8 +25,14 @@
         <dt class="col-sm-3">Empresa</dt>
         <dd class="col-sm-9">{{ $colaborador->empresa?->razao_social ?? '—' }}</dd>
 
-        <dt class="col-sm-3">Obra</dt>
-        <dd class="col-sm-9">{{ $colaborador->obra?->descricao ?? '—' }}</dd>
+        <dt class="col-sm-3">{{ $colaborador->obras->count() > 1 ? 'Obras' : 'Obra' }}</dt>
+        <dd class="col-sm-9">
+            @if ($colaborador->obras->count() > 1)
+                {{ $colaborador->obras->where('inicio', '<=', now())->map(fn ($o) => $o->obra->descricao.' ('.number_format((float) $o->percentual, 2, ',', '.').'%)')->implode(' · ') }}
+            @else
+                {{ $colaborador->obra?->descricao ?? '—' }}
+            @endif
+        </dd>
 
         <dt class="col-sm-3">Admissão</dt>
         <dd class="col-sm-9">{{ $colaborador->data_admissao?->format('d/m/Y') ?? '—' }}</dd>
@@ -98,6 +104,8 @@
             @endif
         @endpermission
     @endpermission
+
+    @include('colaboradores._obras', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
 
     @permission('ferias-list')
         @include('colaboradores._ferias', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])

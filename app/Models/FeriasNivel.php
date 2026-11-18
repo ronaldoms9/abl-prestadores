@@ -18,9 +18,11 @@ class FeriasNivel extends Model
     protected $table = 'ferias_niveis';
 
     protected $fillable = [
+        'fluxo_id',
         'ordem',
         'tipo_aprovador',
         'permission_id',
+        'user_id',
         'ativo',
     ];
 
@@ -34,6 +36,24 @@ class FeriasNivel extends Model
             'tipo_aprovador' => TipoAprovadorFerias::class,
             'ativo' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        // Nível criado sem fluxo cai no padrão.
+        static::creating(function (self $nivel) {
+            $nivel->fluxo_id ??= FeriasFluxo::padrao()->id;
+        });
+    }
+
+    public function fluxo(): BelongsTo
+    {
+        return $this->belongsTo(FeriasFluxo::class, 'fluxo_id');
+    }
+
+    public function usuario(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function permissao(): BelongsTo

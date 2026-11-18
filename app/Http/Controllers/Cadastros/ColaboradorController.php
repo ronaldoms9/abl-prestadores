@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cadastros;
 
 use App\Actions\Beneficios\BeneficioVigente;
+use App\Actions\Cadastros\DefinirRateioObras;
 use App\Actions\Cadastros\SalvarColaborador;
 use App\Models\Beneficio;
 use App\Support\Admissao\ItensAutomaticos;
@@ -88,6 +89,8 @@ class ColaboradorController extends Controller
             ->when($veRemuneracao, fn ($q) => $q->with(['remuneracoes' => fn ($r) => $r->orderByDesc('vigencia_inicio')->orderByDesc('id')]))
             ->with([
                 'pessoaFisica', 'pessoaJuridica', 'cargo', 'empresa', 'obra',
+                'obras' => fn ($o) => $o->where(fn ($w) => $w->whereNull('fim')->orWhereDate('fim', '>', now()->toDateString()))->orderBy('inicio'),
+                'obras.obra',
                 'vinculosEquipe' => fn ($q) => $q->orderByRaw('fim is not null')->orderByDesc('inicio'),
                 'vinculosEquipe.equipe',
                 // Quem não vê remuneração também não vê, no histórico, que ela foi definida.
@@ -105,6 +108,7 @@ class ColaboradorController extends Controller
         return view('colaboradores.show', [
             'colaborador' => $colaborador,
             'equipesLivres' => $equipesLivres,
+            'obrasDisponiveis' => auth()->user()->can('colaborador-edit') ? Obra::ativos()->when($colaborador->empresa_id, fn ($q, $e) => $q->where('empresa_id', $e))->orderBy('descricao')->get(['id', 'codigo', 'descricao']) : collect(),
             'tiposDocumento' => auth()->user()->can('documento-edit') ? DocumentoTipo::paraDono('colaborador')->orderBy('nome')->get() : null,
             'tiposQualificacao' => auth()->user()->can('qualificacao-edit') ? QualificacaoTipo::ativos()->orderBy('nome')->get() : null,
             'situacaoQualificacoes' => auth()->user()->can('qualificacao-list') ? app(SituacaoQualificacoes::class)->situacao($colaborador, now(), (int) config('cadastros.alertas.qualificacoes_dias')) : null,
@@ -196,6 +200,27 @@ class ColaboradorController extends Controller
         Auditoria::registrar('colaborador-equipe-vinculado', $colaborador, ['equipe' => $vinculo->equipe->nome ?? Equipe::find($vinculo->equipe_id)->nome, 'inicio' => $vinculo->inicio->toDateString()]);
 
         return response()->json(['success' => true, 'message' => 'Colaborador incluído na equipe.', 'data' => []]);
+    }
+
+    /** Define em quais obras o colaborador atua e quanto de cada uma, a partir de uma data (E4, fatia 10). */
+    public function obrasStore(Request $request, DefinirRateioObras $definir, $id)
+    {
+        $colaborador = Colaborador::findOrFail($id);
+
+        $validos = $this->validarFormulario($request, $request->all(), [
+            'inicio' => ['required', 'date'],
+            'obras' => ['required', 'array', 'min:1'],
+            'obras.*.obra_id' => ['required', 'integer'],
+            'obras.*.percentual' => ['required', 'numeric'],
+        ], ['inicio' => 'data de início', 'obras' => 'obras', 'obras.*.obra_id' => 'obra', 'obras.*.percentual' => 'percentual']);
+
+        try {
+            $definir->executar($colaborador, array_values($validos['obras']), Carbon::parse($validos['inicio']));
+        } catch (ValidationException $e) {
+            return response()->json(['success' => false, 'message' => implode(' ', $e->validator->errors()->all()), 'data' => null], 422);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Rateio de obras salvo.', 'data' => []]);
     }
 
     public function equipeEncerrar(Request $request, EncerrarVinculo $encerrar, $id)

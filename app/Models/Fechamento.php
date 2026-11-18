@@ -67,4 +67,10 @@ class Fechamento extends Model
     {
         return $this->hasMany(FechamentoItem::class, 'fechamento_id');
     }
+
+    /** Parte do fechamento que cabe a cada obra (E4, fatia 10). */
+    public function rateios(): HasMany
+    {
+        return $this->hasMany(FechamentoRateio::class, 'fechamento_id');
+    }
 }

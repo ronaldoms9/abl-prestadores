@@ -5,6 +5,7 @@ namespace App\Services\Fechamento;
 use App\Enums\AbrangenciaFeriado;
 use App\Enums\StatusSolicitacaoFerias;
 use App\Models\Colaborador;
+use App\Models\ColaboradorObra;
 use App\Models\Configuracao;
 use App\Models\Feriado;
 use App\Models\FeriasSolicitacao;
@@ -67,10 +68,16 @@ class CalendarioTrabalho
     {
         $folgas = [];
 
+        // Feriado de qualquer obra em que o colaborador atuou no período (rateio) ou, sem rateio, da obra do cadastro.
+        $obras = ColaboradorObra::query()->where('colaborador_id', $colaborador->id)
+            ->whereDate('inicio', '<=', $fim->toDateString())
+            ->where(fn ($q) => $q->whereNull('fim')->orWhereDate('fim', '>', $inicio->toDateString()))
+            ->pluck('obra_id')->push($colaborador->obra_id)->filter()->unique()->values()->all();
+
         Feriado::query()
             ->whereDate('data', '>=', $inicio)->whereDate('data', '<=', $fim)
             ->where(fn ($q) => $q->where('abrangencia', AbrangenciaFeriado::Nacional->value)
-                ->when($colaborador->obra_id, fn ($w) => $w->orWhere('obra_id', $colaborador->obra_id)))
+                ->when($obras !== [], fn ($w) => $w->orWhereIn('obra_id', $obras)))
             ->get()
             ->each(function (Feriado $f) use (&$folgas) {
                 $folgas[] = $f->data->toDateString();

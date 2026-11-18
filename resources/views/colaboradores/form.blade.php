@@ -54,7 +54,7 @@
         </div>
         <div class="col-sm-4 form-group">
             <label for="obra_id" class="text-semibold small">Obra (centro de custo)</label>
-            <select id="obra_id" name="obra_id" class="form-select">
+            <select id="obra_id" name="obra_id" class="form-select" @disabled($colaborador->exists && $colaborador->obras()->vigentesEm(now())->count() > 1)>
                 <option value="">Sem obra</option>
                 @foreach ($obras as $obra)
                     <option value="{{ $obra->id }}" data-empresa="{{ $obra->empresa_id }}" @selected($colaborador->obra_id === $obra->id)>{{ $obra->descricao }}</option>

@@ -27,6 +27,7 @@ class SolicitarFerias
         private readonly SincronizarFilaFerias $fila,
         private readonly ConflitosFerias $conflitos,
         private readonly PrimeiroMesFechado $meses,
+        private readonly \App\Support\Ferias\FluxoFerias $fluxos,
     ) {
     }
 
@@ -42,6 +43,7 @@ class SolicitarFerias
 
             $solicitacao = FeriasSolicitacao::create([
                 'colaborador_id' => $colaborador->id,
+                'fluxo_id' => $this->fluxos->paraColaborador($colaborador, now())->id,
                 'ferias_periodo_id' => $periodo->id,
                 'inicio' => $inicio,
                 'fim' => $fim,

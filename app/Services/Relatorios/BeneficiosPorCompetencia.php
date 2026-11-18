@@ -53,10 +53,11 @@ class BeneficiosPorCompetencia implements Relatorio
             ->when($filtros['de'] ?? null, fn ($q, $de) => $q->where('competencias.ano_mes', '>=', $de))
             ->when($filtros['ate'] ?? null, fn ($q, $ate) => $q->where('competencias.ano_mes', '<=', $ate))
             ->when($filtros['beneficio_id'] ?? null, fn ($q, $b) => $q->where('beneficios.id', $b))
-            ->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->where('colaboradores.obra_id', $o))
+            // Com filtro de obra, entra só a parte do rateio que cabe a ela.
+            ->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->join('fechamento_rateios', fn ($j) => $j->on('fechamento_rateios.fechamento_id', '=', 'fechamentos.id')->where('fechamento_rateios.obra_id', '=', $o)))
             ->whereIn('colaboradores.id', Colaborador::visiveisPara($usuario)->select('colaboradores.id'))
             ->groupBy('beneficios.id', 'beneficios.nome')
-            ->selectRaw('beneficios.nome as beneficio, count(distinct fechamentos.colaborador_id) as colaboradores, sum(fechamento_itens.valor_total) as total')
+            ->selectRaw(($filtros['obra_id'] ?? null) ? 'beneficios.nome as beneficio, count(distinct fechamentos.colaborador_id) as colaboradores, sum(fechamento_itens.valor_total * fechamento_rateios.percentual / 100) as total' : 'beneficios.nome as beneficio, count(distinct fechamentos.colaborador_id) as colaboradores, sum(fechamento_itens.valor_total) as total')
             ->orderBy('beneficios.nome')
             ->get();
 

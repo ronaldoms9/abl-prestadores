@@ -45,7 +45,7 @@ class FeriasESaldos implements Relatorio
 
         $colaboradores = Colaborador::visiveisPara($usuario)
             ->where('colaboradores.status', StatusColaborador::Ativo->value)
-            ->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->where('colaboradores.obra_id', $o))
+            ->when($filtros['obra_id'] ?? null, fn ($q, $o) => $q->naObra($o))
             ->when($filtros['equipe_id'] ?? null, fn ($q, $e) => $q->whereIn('colaboradores.id', ColaboradorEquipe::query()->vigentesEm($hoje)->where('equipe_id', $e)->select('colaborador_id')))
             ->with(['pessoaFisica', 'obra', 'feriasPeriodos', 'feriasSolicitacoes' => fn ($q) => $q->where('status', StatusSolicitacaoFerias::Aprovada->value)->whereDate('fim', '>=', $hoje)])
             ->get();

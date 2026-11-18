@@ -71,7 +71,7 @@ class FechamentoController extends Controller
 
     public function detalhe($id)
     {
-        $fechamento = Fechamento::query()->with(['competencia', 'colaborador.pessoaFisica', 'itens'])->findOrFail($id);
+        $fechamento = Fechamento::query()->with(['competencia', 'colaborador.pessoaFisica', 'itens', 'rateios.obra'])->findOrFail($id);
         $ajustes = AjusteAvulso::query()->where('competencia_id', $fechamento->competencia_id)->where('colaborador_id', $fechamento->colaborador_id)->orderBy('id')->get();
 
         return view('fechamento.detalhe', ['fechamento' => $fechamento, 'ajustes' => $ajustes, 'tipos' => TipoAjuste::cases()]);

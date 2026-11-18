@@ -24,7 +24,7 @@ class EventosCalendario
     {
         $colaboradores = fn (Builder $q) => $q
             ->visiveisPara($usuario)
-            ->when($obraId, fn ($w) => $w->where('obra_id', $obraId))
+            ->when($obraId, fn ($w) => $w->naObra($obraId))
             ->when($equipeId, fn ($w) => $w->whereIn('colaboradores.id', ColaboradorEquipe::query()
                 ->where('equipe_id', $equipeId)
                 ->whereDate('inicio', '<=', $fim)

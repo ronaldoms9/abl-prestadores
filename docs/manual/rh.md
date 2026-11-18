@@ -7,6 +7,7 @@ Este manual cobre o dia a dia do RH no sistema: cadastrar, admitir, contratar, l
 **Colaboradores** lista todos, com busca por nome, CPF ou CNPJ e filtro de situação (pré-admissão, ativo, desligado). Clique no olho para abrir a **ficha**: dados, remuneração, férias, contratos, benefícios, equipes, qualificações e documentos ficam numa tela só.
 
 - **Novo colaborador:** escolha a pessoa física, a pessoa jurídica (o prestador), o cargo, a empresa contratante e a obra. Ele nasce em **pré-admissão**.
+- **Várias obras e rateio:** quem atua em mais de uma obra tem o que recebe repartido entre elas. Na ficha, seção **Obras e rateio**, escolha as obras e o percentual de cada uma (a soma é sempre 100%) e a data em que passa a valer. O fechamento reparte remuneração, benefícios e ajustes pelo percentual, dia a dia: se o rateio muda no meio do mês, cada parte pesa os dias em que valeu. A obra escolhida no cadastro vale quando há uma só; com várias, a ficha mostra todas. Não dá para começar um rateio em mês já aprovado.
 - Pessoas e empresas vêm do UAU: se alguém não aparece, a sincronização das 05:00 ainda não trouxe, ou use **Pessoas › Carregar planilha**.
 
 ## 2. Admitir um colaborador
@@ -45,7 +46,8 @@ Na ficha, **Desligar colaborador**: informe o **último dia de trabalho** e o mo
 
 ## 6. Férias, feriados e faltas
 
-- **Férias:** na ficha, seção Férias, escolha o período aquisitivo, as datas e clique em **Solicitar**. O pedido passa pelos níveis (gestor da equipe, depois RH) e o saldo só baixa na aprovação final. **Férias e ausências › Solicitações de férias** mostra o que espera a sua decisão.
+- **Férias:** na ficha, seção Férias, escolha o período aquisitivo, as datas e clique em **Solicitar**. O pedido segue o **fluxo de aprovação** do colaborador (por exemplo, gestor da equipe e depois o RH) e o saldo só baixa na aprovação final. **Férias e ausências › Solicitações de férias** mostra o que espera a sua decisão.
+- **Fluxos de aprovação** (**Férias e ausências › Fluxos de aprovação**): cada fluxo tem uma lista de níveis, e cada nível é o gestor da equipe, quem tem uma permissão (por exemplo, o diretor) ou um usuário específico. Há o **fluxo padrão** (vale para quem não tem fluxo próprio) e fluxos para um colaborador, para uma equipe, para uma função (cargo) ou para uma função dentro de uma equipe. Vale o mais específico: colaborador, função na equipe, equipe, função, padrão. Exemplos: o padrão com só o gestor; uma equipe com gestor e depois o diretor; os gerentes só com o diretor. Mudar um fluxo vale para os pedidos novos; os pendentes seguem o fluxo em que foram feitos.
 - **Calendário:** férias aprovadas e pendentes, faltas, afastamentos e feriados, com filtro por obra e equipe.
 - **Feriados:** nacionais podem ser importados do ano; estaduais e municipais são cadastrados por obra.
 - **Ocorrências:** lance faltas e afastamentos. Marque **abonada** quando for justificada (não desconta o benefício por dia).

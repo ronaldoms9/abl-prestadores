@@ -28,8 +28,9 @@ class AprovadoresFerias
     public function doNivel(FeriasSolicitacao $solicitacao, FeriasNivel $nivel, CarbonInterface $data, ?array $lote = null): Collection
     {
         $usuarios = match ($nivel->tipo_aprovador) {
-            TipoAprovadorFerias::GestorEquipe => $this->gestoresDasEquipes($solicitacao, $data, $lote),
+            TipoAprovadorFerias::GestorEquipe => $this->gestoresDasEquipes($solicitacao, $nivel, $data, $lote),
             TipoAprovadorFerias::Permissao => $nivel->permissao === null ? collect() : $this->comPermissao($nivel->permissao->name, $lote),
+            TipoAprovadorFerias::Usuario => $this->usuarioDoNivel($nivel, $lote),
         };
 
         return $this->semOsImpedidos($usuarios, $solicitacao);
@@ -46,14 +47,14 @@ class AprovadoresFerias
      * das equipes dos colaboradores), para decidir muitas solicitações sem uma consulta por linha.
      *
      * @param  Collection<int, FeriasSolicitacao>  $solicitacoes
-     * @return array{niveis: Collection<int, FeriasNivel>, permissoes: array<string, Collection<int, User>>, gestores: array<int, Collection<int, User>>}
+     * @return array{niveis: Collection<int, Collection<int, FeriasNivel>>, permissoes: array<string, Collection<int, User>>, gestores: array<int, array<int, Collection<int, User>>>}
      */
     public function carregarLote(Collection $solicitacoes, CarbonInterface $data): array
     {
-        $niveis = FeriasNivel::query()->with('permissao')->where('ativo', true)->orderBy('ordem')->get();
+        $niveis = FeriasNivel::query()->with(['permissao', 'fluxo', 'usuario'])->where('ativo', true)->orderBy('ordem')->get()->groupBy('fluxo_id');
 
         $permissoes = [];
-        foreach ($niveis->pluck('permissao.name')->filter()->push(self::PERMISSAO_QUALQUER)->unique() as $nome) {
+        foreach ($niveis->flatten(1)->pluck('permissao.name')->filter()->push(self::PERMISSAO_QUALQUER)->unique() as $nome) {
             $permissoes[$nome] = $this->comPermissao($nome);
         }
 
@@ -61,10 +62,13 @@ class AprovadoresFerias
         $gestoresPorEquipe = EquipeGestor::query()->whereIn('equipe_id', $vinculos->pluck('equipe_id')->unique())->vigentesEm($data)->get(['equipe_id', 'user_id'])->groupBy('equipe_id');
         $usuarios = User::query()->ativos()->whereIn('id', $gestoresPorEquipe->flatten(1)->pluck('user_id')->unique())->orderBy('id')->get()->keyBy('id');
 
+        // colaborador => equipe => gestores ativos.
         $gestores = [];
         foreach ($vinculos->groupBy('colaborador_id') as $colaboradorId => $linhas) {
-            $ids = $linhas->flatMap(fn ($v) => ($gestoresPorEquipe[$v->equipe_id] ?? collect())->pluck('user_id'))->unique();
-            $gestores[(int) $colaboradorId] = $usuarios->only($ids->all())->sortKeys()->values();
+            foreach ($linhas->pluck('equipe_id')->unique() as $equipeId) {
+                $ids = ($gestoresPorEquipe[$equipeId] ?? collect())->pluck('user_id')->unique();
+                $gestores[(int) $colaboradorId][(int) $equipeId] = $usuarios->only($ids->all())->sortKeys()->values();
+            }
         }
 
         return ['niveis' => $niveis, 'permissoes' => $permissoes, 'gestores' => $gestores];
@@ -77,7 +81,9 @@ class AprovadoresFerias
      */
     public function resolver(FeriasSolicitacao $solicitacao, CarbonInterface $data, ?array $lote = null): array
     {
-        $niveis = $lote['niveis'] ?? FeriasNivel::query()->with('permissao')->where('ativo', true)->orderBy('ordem')->get();
+        $niveis = $lote !== null
+            ? ($lote['niveis'][$solicitacao->fluxo_id] ?? collect())
+            : FeriasNivel::query()->with(['permissao', 'fluxo', 'usuario'])->where('fluxo_id', $solicitacao->fluxo_id)->where('ativo', true)->orderBy('ordem')->get();
         $restantes = $niveis->filter(fn (FeriasNivel $n) => $n->ordem >= $solicitacao->nivel_atual)->values();
         $puladas = [];
 
@@ -107,18 +113,41 @@ class AprovadoresFerias
             && $this->resolver($solicitacao, $data, $lote)['usuarios']->contains('id', $usuario->id);
     }
 
-    /** @return Collection<int, User> */
-    private function gestoresDasEquipes(FeriasSolicitacao $solicitacao, CarbonInterface $data, ?array $lote = null): Collection
+    /**
+     * Gestores das equipes do colaborador; em fluxo de uma equipe só, os gestores dessa equipe.
+     *
+     * @return Collection<int, User>
+     */
+    private function gestoresDasEquipes(FeriasSolicitacao $solicitacao, FeriasNivel $nivel, CarbonInterface $data, ?array $lote = null): Collection
     {
+        $equipeDoFluxo = $nivel->fluxo?->equipe_id;
+
         if ($lote !== null) {
-            return $lote['gestores'][$solicitacao->colaborador_id] ?? collect();
+            $porEquipe = collect($lote['gestores'][$solicitacao->colaborador_id] ?? []);
+
+            return ($equipeDoFluxo === null ? $porEquipe->flatten(1) : ($porEquipe[$equipeDoFluxo] ?? collect()))->unique('id')->sortBy('id')->values();
         }
 
-        $equipes = $solicitacao->colaborador->equipesVigentesEm($data)->select('equipes.id');
+        $equipes = $solicitacao->colaborador->equipesVigentesEm($data)->select('equipes.id')
+            ->when($equipeDoFluxo, fn ($q) => $q->where('equipes.id', $equipeDoFluxo));
 
         $ids = EquipeGestor::query()->whereIn('equipe_id', $equipes)->vigentesEm($data)->pluck('user_id')->unique();
 
         return User::query()->ativos()->whereIn('id', $ids)->orderBy('id')->get();
+    }
+
+    /** @return Collection<int, User> */
+    private function usuarioDoNivel(FeriasNivel $nivel, ?array $lote = null): Collection
+    {
+        if ($nivel->user_id === null) {
+            return collect();
+        }
+
+        if ($lote !== null) {
+            return collect([$nivel->usuario])->filter(fn (?User $u) => $u !== null && $u->ativo)->values();
+        }
+
+        return User::query()->ativos()->whereKey($nivel->user_id)->get();
     }
 
     /** @return Collection<int, User> */

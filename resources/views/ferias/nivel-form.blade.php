@@ -9,6 +9,8 @@
 @endsection
 
 @section('content')
+    <input type="hidden" name="fluxo_id" value="{{ $nivel->fluxo_id }}">
+    <p class="small text-muted mb-2">Fluxo: <strong>{{ $fluxo->nome }}</strong></p>
     <div class="row g-3">
         <div class="col-sm-3">
             <label for="ordem" class="text-semibold small">Ordem</label>
@@ -22,12 +24,21 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-12" id="bloco-permissao" {{ $nivel->tipo_aprovador === \App\Enums\TipoAprovadorFerias::GestorEquipe ? 'hidden' : '' }}>
+        <div class="col-12" id="bloco-permissao" {{ $nivel->tipo_aprovador === \App\Enums\TipoAprovadorFerias::Permissao ? '' : 'hidden' }}>
             <label for="permission_id" class="text-semibold small">Permissão</label>
             <select id="permission_id" name="permission_id" class="form-select">
                 <option value="">Selecione</option>
                 @foreach ($permissoes as $p)
                     <option value="{{ $p->id }}" @selected($nivel->permission_id === $p->id)>{{ $p->display_name }} ({{ $p->name }})</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-12" id="bloco-usuario" {{ $nivel->tipo_aprovador === \App\Enums\TipoAprovadorFerias::Usuario ? '' : 'hidden' }}>
+            <label for="user_id" class="text-semibold small">Usuário</label>
+            <select id="user_id" name="user_id" class="form-select">
+                <option value="">Selecione</option>
+                @foreach ($usuarios as $u)
+                    <option value="{{ $u->id }}" @selected($nivel->user_id === $u->id)>{{ $u->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -41,7 +52,8 @@
     </div>
     <script>
         document.getElementById('tipo_aprovador').addEventListener('change', function () {
-            document.getElementById('bloco-permissao').hidden = this.value === 'gestor_equipe';
+            document.getElementById('bloco-permissao').hidden = this.value !== 'permissao';
+            document.getElementById('bloco-usuario').hidden = this.value !== 'usuario';
         });
     </script>
 @endsection

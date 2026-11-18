@@ -19,6 +19,7 @@ class FeriasSolicitacao extends Model
 
     protected $fillable = [
         'colaborador_id',
+        'fluxo_id',
         'ferias_periodo_id',
         'inicio',
         'fim',
@@ -46,6 +47,19 @@ class FeriasSolicitacao extends Model
     public function colaborador(): BelongsTo
     {
         return $this->belongsTo(Colaborador::class);
+    }
+
+    protected static function booted(): void
+    {
+        // Solicitação sem fluxo definido segue o padrão.
+        static::creating(function (self $solicitacao) {
+            $solicitacao->fluxo_id ??= FeriasFluxo::padrao()->id;
+        });
+    }
+
+    public function fluxo(): BelongsTo
+    {
+        return $this->belongsTo(FeriasFluxo::class, 'fluxo_id');
     }
 
     public function periodo(): BelongsTo
