@@ -228,4 +228,48 @@ class RelatoriosTest extends TestCase
         $this->get(route('relatorio.exportar', ['custo-por-obra', 'pdf']))->assertStatus(503)->assertJsonFragment(['success' => false]);
         $this->get(route('relatorio.exportar', ['custo-por-obra', 'odt']))->assertNotFound();
     }
+
+    public function test_relatorio_grande_vai_para_job_e_chega_por_email_com_link_so_de_quem_pediu(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('local');
+        \Illuminate\Support\Facades\Notification::fake();
+        $this->fechamento($this->ativo(['obra_id' => Obra::factory()->create(['descricao' => 'Alfa'])->id]), '2026-09', 1000, 100);
+        $this->fechamento($this->ativo(['obra_id' => Obra::factory()->create(['descricao' => 'Beta'])->id]), '2026-09', 2000, 0);
+        config(['cadastros.relatorios.limite_sincrono' => 1]);
+        $quem = $this->usuarioCom('fechamento-list');
+        $this->actingAs($quem);
+
+        // QUEUE_CONNECTION=sync nos testes: o job roda na própria requisição, o que já prova o caminho completo.
+        $this->get(route('relatorio.exportar', ['custo-por-obra', 'xlsx', 'de' => '2026-09']))
+            ->assertStatus(202)->assertJsonPath('data.em_segundo_plano', true);
+        \Illuminate\Support\Facades\Storage::disk('local')->deleteDirectory('relatorios');
+        \Illuminate\Support\Facades\Notification::fake();
+
+        \App\Jobs\ExportarRelatorio::dispatchSync('custo-por-obra', ['de' => '2026-09'], 'xlsx', $quem->id);
+
+        $arquivos = \Illuminate\Support\Facades\Storage::disk('local')->files('relatorios');
+        $this->assertCount(1, $arquivos);
+        $nome = basename($arquivos[0]);
+        $link = null;
+        \Illuminate\Support\Facades\Notification::assertSentTo($quem, \App\Notifications\ExportacaoPronta::class, function ($n) use ($quem, &$link) {
+            $link = $n->toMail($quem)->actionUrl;
+
+            return true;
+        });
+        $this->assertStringContainsString('signature=', $link);
+        $this->get($link)->assertOk();
+
+        $this->actingAs($this->usuarioCom('fechamento-list'))->get($link)->assertForbidden();
+        $this->actingAs($quem)->get(route('relatorio.arquivo', ['arquivo' => $nome, 'usuario' => $quem->id]))->assertForbidden(); // sem assinatura
+    }
+
+    public function test_job_de_exportacao_respeita_o_escopo_de_quem_pediu(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('local');
+        \Illuminate\Support\Facades\Notification::fake();
+        $semPermissao = $this->usuarioCom('colaborador-list');
+
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        \App\Jobs\ExportarRelatorio::dispatchSync('custo-por-obra', [], 'xlsx', $semPermissao->id);
+    }
 }

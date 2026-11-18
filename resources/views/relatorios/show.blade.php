@@ -7,8 +7,8 @@
             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                 <h5 class="mb-0 me-auto">{{ $relatorio->titulo() }}</h5>
                 <a href="{{ route('relatorio.index') }}" class="btn btn-link btn-sm">Todos os relatórios</a>
-                <a href="{{ route('relatorio.exportar', [$relatorio->slug(), 'xlsx'] + request()->query()) }}" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel"></i> Excel</a>
-                <a href="{{ route('relatorio.exportar', [$relatorio->slug(), 'pdf'] + request()->query()) }}" class="btn btn-outline-danger btn-sm" id="btn-pdf"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+                <a href="{{ route('relatorio.exportar', [$relatorio->slug(), 'xlsx'] + request()->query()) }}" class="btn btn-outline-success btn-sm" data-exportar="xlsx"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+                <a href="{{ route('relatorio.exportar', [$relatorio->slug(), 'pdf'] + request()->query()) }}" class="btn btn-outline-danger btn-sm" data-exportar="pdf"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
             </div>
             <p class="text-muted small mb-2">{{ $relatorio->descricao() }}</p>
             <form method="GET" class="row g-2 align-items-end">
@@ -55,16 +55,21 @@
 
 @push('js')
 <script>
-    document.getElementById('btn-pdf')?.addEventListener('click', function (ev) {
+    // Exportação: arquivo na hora, ou (relatório grande) aviso de que chegará por e-mail.
+    document.querySelectorAll('[data-exportar]').forEach((a) => a.addEventListener('click', function (ev) {
         ev.preventDefault();
-        axios.get(this.href, { responseType: 'blob', headers: { Accept: 'application/pdf' } }).then((r) => {
-            const url = URL.createObjectURL(r.data); const a = document.createElement('a');
-            a.href = url; a.download = 'relatorio.pdf'; a.click(); URL.revokeObjectURL(url);
+        axios.get(this.href, { responseType: 'blob' }).then(async (r) => {
+            if ((r.headers['content-type'] || '').includes('application/json')) {
+                showNotify('Sucesso', JSON.parse(await r.data.text()).message);
+                return;
+            }
+            const url = URL.createObjectURL(r.data); const l = document.createElement('a');
+            l.href = url; l.download = 'relatorio.' + this.dataset.exportar; l.click(); URL.revokeObjectURL(url);
         }).catch(async (e) => {
-            let msg = 'Não foi possível gerar o PDF.';
+            let msg = 'Não foi possível gerar o arquivo.';
             try { msg = JSON.parse(await e.response.data.text()).message || msg; } catch (_) {}
             showNotify('Atenção', msg, 'error');
         });
-    });
+    }));
 </script>
 @endpush

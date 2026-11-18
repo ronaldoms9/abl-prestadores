@@ -358,6 +358,30 @@ class SolicitacaoAprovacaoTest extends TestCase
         $this->assertSame([$gestorB->id], app(AprovadoresFerias::class)->resolver($s->fresh(), now())['usuarios']->pluck('id')->all());
     }
 
+    public function test_resolver_em_lote_da_o_mesmo_resultado_que_um_a_um(): void
+    {
+        $this->niveisPadrao();
+        $rh = $this->rh();
+        $solicitacoes = collect();
+        foreach ([true, false, true] as $temEquipe) {
+            $c = $this->colaborador();
+            if ($temEquipe) {
+                $this->equipeComGestor($c);
+            }
+            $solicitacoes->push($this->solicitar($c, $this->periodo($c), solicitante: User::factory()->create())->load('colaborador'));
+        }
+        $servico = app(AprovadoresFerias::class);
+        $lote = $servico->carregarLote($solicitacoes, now());
+
+        foreach ($solicitacoes as $s) {
+            $sozinha = $servico->resolver($s->fresh('colaborador'), now());
+            $emLote = $servico->resolver($s, now(), $lote);
+            $this->assertSame($sozinha['nivel'], $emLote['nivel']);
+            $this->assertSame($sozinha['usuarios']->pluck('id')->all(), $emLote['usuarios']->pluck('id')->all());
+        }
+        $this->assertContains($rh->id, $servico->resolver($solicitacoes[1], now(), $lote)['usuarios']->pluck('id')->all(), 'Sem equipe, o nível 1 é pulado e o RH decide');
+    }
+
     public function test_lembrete_diario_chega_a_quem_e_aprovador_hoje_inclusive_o_novo_gestor(): void
     {
         $this->niveisPadrao();

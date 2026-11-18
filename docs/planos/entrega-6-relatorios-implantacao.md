@@ -7,7 +7,7 @@ monitoramento de erros, e a equipe da ABL PRIME treinada. Começa a garantia de
 
 ## Situação
 
-Fatias 1 a 3 implementadas na branch `e3/fatia-1-models` (46 de 80 h): painel com indicadores, seis relatórios e exportação em Excel e PDF (`entrega-6-fatia-1-painel.md` e `entrega-6-fatia-2-3-relatorios.md`). O PDF depende do dompdf. Faltam os testes finais, a produção (depende da ABL PRIME) e o treinamento.
+Implementadas na branch `e3/fatia-1-models`: fatias 1 a 3 (painel, seis relatórios, Excel e PDF), a parte da fatia 4 que não depende da ABL PRIME e a fatia 6 (manuais). Detalhes em `entrega-6-fatia-1-painel.md`, `entrega-6-fatia-2-3-relatorios.md` e `entrega-6-fatia-4-6-qualidade-e-manuais.md`. Faltam a produção (fatia 5, depende do servidor e da ABL PRIME), o ciclo completo com o UAU de homologação e a correção dos apontamentos das homologações.
 
 ## Antes de começar
 

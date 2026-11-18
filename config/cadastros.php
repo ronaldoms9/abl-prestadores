@@ -50,6 +50,15 @@ return [
     ],
 
     /*
+    | Relatórios (E6, fatia 4): exportações com mais de `limite_sincrono` linhas
+    | rodam em job e chegam por e-mail com link assinado; arquivos em disco privado.
+    */
+    'relatorios' => [
+        'disco' => env('RELATORIOS_DISCO', 'local'),
+        'limite_sincrono' => 1000,
+    ],
+
+    /*
     | Painel (E6, fatia 1): indicadores em cache por usuário, em segundos (0 desliga).
     */
     'painel' => [

@@ -62,6 +62,7 @@ return [
     ['titulo' => 'Empresas', 'icone' => 'bi bi-building', 'rota' => 'empresa.index', 'permissao' => 'empresa-list'],
     ['titulo' => 'Obras', 'icone' => 'bi bi-cone-striped', 'rota' => 'obra.index', 'permissao' => 'obra-list'],
     ['titulo' => 'Integrações', 'icone' => 'bi bi-arrow-left-right', 'rota' => 'integracao.index', 'permissao' => 'integracao-list'],
+    ['titulo' => 'Ajuda', 'icone' => 'bi bi-question-circle', 'rota' => 'ajuda.index', 'permissao' => ['colaborador-edit', 'colaborador-create', 'admissao-gerir', 'contrato-gerar', 'ferias-aprovar-rh', 'equipe-gerir', 'fechamento-aprovar', 'nota-decidir', 'portal-acessar', 'grupo-edit', 'fechamento-reabrir', 'horizon-acessar'], 'ativo' => ['ajuda.*']],
     ['titulo' => 'Configurações', 'icone' => 'bi bi-gear', 'itens' => [
         ['titulo' => 'Usuários', 'rota' => 'user.index', 'permissao' => 'user-list'],
         ['titulo' => 'Perfis', 'rota' => 'grupo.index', 'permissao' => 'grupo-list'],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Relatorios;
 
 use App\Enums\StatusNota;
 use App\Exports\RelatorioExport;
+use App\Jobs\ExportarRelatorio;
 use App\Http\Controllers\Controller;
 use App\Models\Beneficio;
 use App\Models\Cargo;
@@ -21,8 +22,6 @@ use Maatwebsite\Excel\Facades\Excel;
 /** Os seis relatórios da proposta, com filtros, e a exportação em Excel e PDF (E6, fatias 2 e 3). */
 class RelatorioController extends Controller
 {
-    public const LIMITE_EXPORTACAO = 5000;
-
     public function index(Request $request, Relatorios $catalogo)
     {
         return view('relatorios.index', ['relatorios' => $catalogo->visiveisPara($request->user())]);
@@ -48,8 +47,11 @@ class RelatorioController extends Controller
         $filtros = $this->filtros($request, $relatorio);
         $resultado = $relatorio->executar($filtros, $request->user());
 
-        if (count($resultado->linhas) > self::LIMITE_EXPORTACAO) {
-            return response()->json(['success' => false, 'message' => 'O relatório tem mais de '.self::LIMITE_EXPORTACAO.' linhas; refine os filtros para exportar.', 'data' => null], 422);
+        // Volume grande: gera em segundo plano e avisa por e-mail, em vez de segurar a requisição.
+        if (count($resultado->linhas) > (int) config('cadastros.relatorios.limite_sincrono')) {
+            ExportarRelatorio::dispatch($relatorio->slug(), $filtros, $formato, $request->user()->id);
+
+            return response()->json(['success' => true, 'message' => 'O relatório é grande e está sendo gerado. Você receberá um e-mail com o link para baixar quando ficar pronto.', 'data' => ['em_segundo_plano' => true]], 202);
         }
 
         $arquivo = $relatorio->slug().'-'.now()->format('Y-m-d');
@@ -67,6 +69,18 @@ class RelatorioController extends Controller
         }
 
         return response($bytes, 200, ['Content-Type' => 'application/pdf', 'Content-Disposition' => 'attachment; filename="'.$arquivo.'.pdf"']);
+    }
+
+    /** Download do arquivo de uma exportação grande: link assinado, só de quem pediu. */
+    public function arquivo(Request $request, string $arquivo)
+    {
+        abort_unless(preg_match('/^[A-Za-z0-9-]+\.(xlsx|pdf)$/', $arquivo) === 1, 404);
+        abort_unless((int) $request->query('usuario') === $request->user()->id, 403);
+
+        $disco = \Illuminate\Support\Facades\Storage::disk(config('cadastros.relatorios.disco'));
+        abort_unless($disco->exists('relatorios/'.$arquivo), 404);
+
+        return $disco->download('relatorios/'.$arquivo, 'relatorio-'.now()->format('Y-m-d').'.'.pathinfo($arquivo, PATHINFO_EXTENSION));
     }
 
     /** @return array<string, mixed> */

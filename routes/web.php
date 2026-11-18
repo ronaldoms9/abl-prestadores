@@ -230,9 +230,13 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
+    Route::get('/ajuda', [App\Http\Controllers\AjudaController::class, 'index'])->name('ajuda.index');
+    Route::get('/ajuda/{slug}', [App\Http\Controllers\AjudaController::class, 'show'])->name('ajuda.show');
+
     Route::group(['prefix' => 'relatorios'], function(){
         $c = App\Http\Controllers\Relatorios\RelatorioController::class;
         Route::get('/', [$c, 'index'])->name('relatorio.index')->middleware('permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list');
+        Route::get('/arquivo/{arquivo}', [$c, 'arquivo'])->name('relatorio.arquivo')->middleware(['signed', 'permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list']);
         Route::get('/{slug}', [$c, 'show'])->name('relatorio.show')->middleware('permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list');
         Route::get('/{slug}/exportar/{formato}', [$c, 'exportar'])->whereIn('formato', ['xlsx', 'pdf'])->name('relatorio.exportar')->middleware('permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list');
     });

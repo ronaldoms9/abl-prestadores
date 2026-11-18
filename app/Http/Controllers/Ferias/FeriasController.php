@@ -36,15 +36,17 @@ class FeriasController extends Controller
             ->whereHas('colaborador', fn ($q) => $q->visiveisPara($usuario));
 
         if ($visao === 'decidir') {
-            $solicitacoes = $query->where('status', StatusSolicitacaoFerias::Pendente->value)->orderBy('inicio')->limit(self::LIMITE)->get()
-                ->filter(fn (FeriasSolicitacao $s) => $aprovadores->podeDecidir($s, $usuario, now()))->values();
+            $solicitacoes = $query->where('status', StatusSolicitacaoFerias::Pendente->value)->orderBy('inicio')->limit(self::LIMITE)->get();
+            $lote = $aprovadores->carregarLote($solicitacoes, now());
+            $solicitacoes = $solicitacoes->filter(fn (FeriasSolicitacao $s) => $aprovadores->podeDecidir($s, $usuario, now(), $lote))->values();
         } else {
             $solicitacoes = $query->when($status, fn ($q) => $q->where('status', $status->value))->orderByDesc('inicio')->limit(self::LIMITE)->get();
+            $lote = $aprovadores->carregarLote($solicitacoes->where('status', StatusSolicitacaoFerias::Pendente), now());
         }
 
         $podeDecidir = $visao === 'decidir'
             ? $solicitacoes->pluck('id')->all()
-            : $solicitacoes->filter(fn (FeriasSolicitacao $s) => $aprovadores->podeDecidir($s, $usuario, now()))->pluck('id')->all();
+            : $solicitacoes->filter(fn (FeriasSolicitacao $s) => $aprovadores->podeDecidir($s, $usuario, now(), $lote))->pluck('id')->all();
 
         return view('ferias.index', [
             'visao' => $visao,
