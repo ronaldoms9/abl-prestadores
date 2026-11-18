@@ -100,7 +100,7 @@
     @endpermission
 
     @permission('ferias-list')
-        @include('colaboradores._ferias')
+        @include('colaboradores._ferias', ['recarregarUrl' => route('colaborador.show', $colaborador->id)])
     @endpermission
 
     @permission('admissao-gerir')

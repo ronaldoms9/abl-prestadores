@@ -186,6 +186,20 @@ class AditivoAutomaticoTest extends TestCase
         $this->assertSame(['Benefício incluído: Vale transporte', 'Benefício encerrado: Vale transporte'], $this->aditivos()->map(fn ($c) => $c->dados['beneficios_alteracao'])->all());
     }
 
+    public function test_modelo_generico_com_detalhe_gera_para_qualquer_motivo(): void
+    {
+        $this->modeloAditivo(null, '<p>{{aditivo.motivo}}: {{aditivo.detalhe}}</p>');
+        $colaborador = $this->colaboradorComContrato();
+        $beneficio = Beneficio::factory()->create(['nome' => 'Vale transporte']);
+        $this->actingAs($this->usuarioCom('colaborador-beneficio-edit'));
+        $this->postJson(route('colaborador.beneficio.store', $colaborador->id), ['beneficio_id' => $beneficio->id, 'inicio' => '2026-07-01'])->assertOk();
+
+        $aditivo = $this->aditivos()->firstOrFail();
+        $gerado = app(\App\Actions\Contratos\GerarContrato::class)->executar($aditivo, \Carbon\Carbon::parse('2026-07-01'));
+
+        $this->assertStringContainsString('Benefício incluído: Vale transporte.', $gerado->conteudo_renderizado);
+    }
+
     public function test_beneficios_padrao_da_admissao_nao_geram_aditivo(): void
     {
         $this->modeloAditivo(MotivoAditivo::Beneficios);

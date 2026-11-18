@@ -162,6 +162,23 @@ class ContratoTest extends TestCase
         $this->assertSame(StatusContrato::Rascunho, $rascunho->fresh()->status);
     }
 
+    public function test_previa_nao_trata_o_numero_nem_a_falta_de_beneficios_como_dado_faltando(): void
+    {
+        $modelo = $this->modelo(TipoContrato::Contrato, '<p>{{contrato.numero}}</p>{{beneficios.lista}}');
+        $rascunho = $this->rascunho($this->colaborador(), $modelo);
+
+        $resultado = app(GerarContrato::class)->previa($rascunho);
+
+        $this->assertTrue($resultado->completo(), implode(', ', $resultado->faltantes));
+        $this->assertStringContainsString('número definido ao gerar', $resultado->html);
+        $this->assertStringContainsString('Nenhum benefício.', $resultado->html);
+        $this->assertNull($rascunho->fresh()->numero);
+
+        $gerado = app(GerarContrato::class)->executar($rascunho, Carbon::parse('2026-03-02'));
+        $this->assertSame('2026/0001', $gerado->numero);
+        $this->assertStringContainsString('<p>2026/0001</p>', $gerado->conteudo_renderizado);
+    }
+
     public function test_contrato_gerado_e_imutavel_mas_aceita_arquivos_e_status(): void
     {
         $contrato = $this->gerado($this->colaborador());

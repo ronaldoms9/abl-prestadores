@@ -94,6 +94,11 @@ class Colaborador extends Model
         return $this->hasMany(ColaboradorBeneficio::class, 'colaborador_id');
     }
 
+    public function feriasSolicitacoes(): HasMany
+    {
+        return $this->hasMany(FeriasSolicitacao::class, 'colaborador_id');
+    }
+
     public function feriasPeriodos(): HasMany
     {
         return $this->hasMany(FeriasPeriodo::class, 'colaborador_id');

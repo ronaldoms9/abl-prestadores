@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompNfse xmlns="http://www.abrasf.org.br/nfse.xsd">
+  <Nfse>
+    <InfNfse>
+      <Numero>1234</Numero>
+      <CodigoVerificacao>ABCD1234</CodigoVerificacao>
+      <DataEmissao>2026-10-02T10:15:00</DataEmissao>
+      <DeclaracaoPrestacaoServico>
+        <InfDeclaracaoPrestacaoServico>
+          <Rps><IdentificacaoRps><Numero>77</Numero><Serie>A1</Serie><Tipo>1</Tipo></IdentificacaoRps></Rps>
+        </InfDeclaracaoPrestacaoServico>
+      </DeclaracaoPrestacaoServico>
+      <PrestadorServico>
+        <IdentificacaoPrestador><CpfCnpj><Cnpj>12.345.678/0001-95</Cnpj></CpfCnpj></IdentificacaoPrestador>
+      </PrestadorServico>
+      <TomadorServico>
+        <IdentificacaoTomador><CpfCnpj><Cnpj>45723174000110</Cnpj></CpfCnpj></IdentificacaoTomador>
+      </TomadorServico>
+      <Servico>
+        <Valores>
+          <ValorServicos>5300.00</ValorServicos>
+          <ValorIr>79.50</ValorIr>
+          <ValorInss>0.00</ValorInss>
+          <ValorIss>265.00</ValorIss>
+          <IssRetido>2</IssRetido>
+        </Valores>
+      </Servico>
+      <ValoresNfse><ValorLiquidoNfse>5220.50</ValorLiquidoNfse></ValoresNfse>
+    </InfNfse>
+  </Nfse>
+</CompNfse>

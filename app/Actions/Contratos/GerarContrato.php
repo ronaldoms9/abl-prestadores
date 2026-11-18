@@ -32,7 +32,11 @@ class GerarContrato
     {
         $contrato->loadMissing(['modelo', 'colaborador']);
 
-        $valores = $this->valores->executar($contrato->colaborador, $contrato, $contrato->dados ?? [], $hoje);
+        // O número só sai ao gerar; na prévia ele aparece como aviso, não como dado faltando.
+        $provisorio = clone $contrato;
+        $provisorio->setAttribute('numero', '[número definido ao gerar]');
+
+        $valores = $this->valores->executar($contrato->colaborador, $provisorio, $contrato->dados ?? [], $hoje);
 
         return $this->renderizador->renderizar($contrato->modelo->corpo_html, $valores);
     }

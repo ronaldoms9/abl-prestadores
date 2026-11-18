@@ -63,7 +63,7 @@ class ColaboradorController extends Controller
         return view('cadastros.index', [
             'titulo' => 'Colaboradores',
             'placeholder' => 'Nome, CPF, razão social ou CNPJ',
-            'aviso' => 'O gestor vê só os colaboradores das equipes que gere hoje. A admissão (contrato e checklist) é da Entrega 3.',
+            'aviso' => 'O gestor vê só os colaboradores das equipes que gere hoje.',
             'html' => $html,
             'situacoes' => self::SITUACOES,
             'novo' => auth()->user()->can('colaborador-create') ? ['rota' => route('colaborador.form'), 'rotulo' => 'Novo colaborador'] : null,
@@ -81,7 +81,7 @@ class ColaboradorController extends Controller
         $colaborador = Colaborador::visiveisPara(auth()->user())
             ->when(auth()->user()->can('qualificacao-list'), fn ($q) => $q->with(['qualificacoes.tipo', 'cargo.exigencias' => fn ($e) => $e->where('obrigatoria', true), 'cargo.exigencias.tipo']))
             ->when(auth()->user()->can('documento-list'), fn ($q) => $q->with(['documentos' => fn ($d) => $d->orderByRaw('validade is null')->orderBy('validade'), 'documentos.tipoDocumento']))
-            ->when($veFerias, fn ($q) => $q->with(['feriasPeriodos' => fn ($f) => $f->orderByDesc('aquisitivo_inicio')]))
+            ->when($veFerias, fn ($q) => $q->with(['feriasPeriodos' => fn ($f) => $f->orderByDesc('aquisitivo_inicio'), 'feriasSolicitacoes' => fn ($f) => $f->orderByDesc('inicio')]))
             ->when($gereAdmissao, fn ($q) => $q->with(['checklistAdmissao' => fn ($l) => $l->orderBy('ordem')->orderBy('id'), 'checklistAdmissao.concluidoPor']))
             ->when($veContratos, fn ($q) => $q->with(['contratos' => fn ($c) => $c->orderBy('id'), 'contratos.modelo']))
             ->when($veBeneficios, fn ($q) => $q->with(['beneficios' => fn ($b) => $b->orderByRaw('fim is not null')->orderByDesc('inicio'), 'beneficios.beneficio']))

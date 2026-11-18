@@ -43,6 +43,17 @@ class Kernel extends ConsoleKernel
             ->onOneServer()
             ->withoutOverlapping();
 
+        $schedule->command('ferias:pendentes')
+            ->dailyAt('07:20')
+            ->withoutOverlapping()
+            ->onOneServer();
+
+        // E5, fatia 5: notas fiscais que passaram do prazo.
+        $schedule->command('alertas:notas')
+            ->dailyAt('08:00')
+            ->onOneServer()
+            ->withoutOverlapping();
+
         // E3, fatia 4: contratos vencidos e nos marcos de 30, 15 e 5 dias.
         $schedule->command('alertas:contratos')
             ->dailyAt('07:00')

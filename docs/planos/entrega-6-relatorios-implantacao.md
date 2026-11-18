@@ -5,6 +5,10 @@ os seis relatórios da proposta exportáveis em Excel/PDF, backups e
 monitoramento de erros, e a equipe da ABL PRIME treinada. Começa a garantia de
 90 dias.
 
+## Situação
+
+Fatias 1 a 3 implementadas na branch `e3/fatia-1-models` (46 de 80 h): painel com indicadores, seis relatórios e exportação em Excel e PDF (`entrega-6-fatia-1-painel.md` e `entrega-6-fatia-2-3-relatorios.md`). O PDF depende do dompdf. Faltam os testes finais, a produção (depende da ABL PRIME) e o treinamento.
+
 ## Antes de começar
 
 | Item | Responsável | Bloqueia |

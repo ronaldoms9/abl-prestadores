@@ -7,7 +7,7 @@ financeiro aprova e o fechamento fica imutável.
 
 ## Situação
 
-Fatias 1 e 2 implementadas na branch `e3/fatia-1-models` (16 de 104 h), detalhadas em `entrega-4-fatia-1-models.md` e `entrega-4-fatia-2-periodos-saldo.md`. As fatias 3 a 7 não foram iniciadas; quase todas dependem das respostas da ABL PRIME da tabela abaixo.
+Fatias 1 a 7 implementadas na branch `e3/fatia-1-models` (98 de 104 h), detalhadas em `entrega-4-fatia-{1..7}-*.md`. Falta a fatia 8 (homologação com fechamento paralelo de um mês real, roteiro em `docs/homologacao/roteiro-validacao-e4.md`). Os padrões de proporcionalidade, sábado, férias e benefício fixo estão assumidos por configuração; os valores precisam ser validados com o RH num mês real.
 
 ## Antes de começar
 

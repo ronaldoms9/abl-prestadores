@@ -61,22 +61,22 @@ class PerfilSeeder extends Seeder
             'rh' => [
                 'display_name' => 'RH',
                 'description' => 'Cadastro de pessoas, carga de planilha e consulta de empresas e obras',
-                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir', 'alerta-documentos', 'qualificacao-list', 'qualificacao-edit', 'qualificacao-tipo-gerir', 'alerta-qualificacoes', 'beneficio-list', 'beneficio-gerir', 'colaborador-beneficio-edit', 'contrato-list', 'contrato-gerar', 'contrato-assinar', 'contrato-modelo-gerir', 'alerta-contratos', 'admissao-gerir', 'colaborador-desligar', 'ferias-list', 'ferias-solicitar', 'ferias-aprovar-rh', 'alerta-ferias'],
+                'permissoes' => ['pessoa-list', 'pessoa-create', 'pessoa-edit', 'pessoa-importar', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-create', 'equipe-edit', 'colaborador-list', 'colaborador-create', 'colaborador-edit', 'cargo-list', 'cargo-create', 'cargo-edit', 'remuneracao-list', 'remuneracao-reajustar', 'documento-list', 'documento-edit', 'documento-tipo-gerir', 'alerta-documentos', 'qualificacao-list', 'qualificacao-edit', 'qualificacao-tipo-gerir', 'alerta-qualificacoes', 'beneficio-list', 'beneficio-gerir', 'colaborador-beneficio-edit', 'contrato-list', 'contrato-gerar', 'contrato-assinar', 'contrato-modelo-gerir', 'alerta-contratos', 'admissao-gerir', 'colaborador-desligar', 'ferias-list', 'ferias-solicitar', 'ferias-aprovar-rh', 'alerta-ferias', 'feriado-list', 'feriado-gerir', 'ocorrencia-list', 'ocorrencia-gerir', 'fechamento-list', 'fechamento-conferir', 'nota-list', 'nota-enviar'],
             ],
             'gestor' => [
                 'display_name' => 'Gestor',
                 'description' => 'Consulta de pessoas, empresas, obras e das equipes que gere',
-                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-gerir', 'colaborador-list', 'qualificacao-list', 'ferias-list', 'ferias-solicitar'],
+                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'equipe-gerir', 'colaborador-list', 'qualificacao-list', 'ferias-list', 'ferias-solicitar', 'feriado-list', 'ocorrencia-list'],
             ],
             'financeiro' => [
                 'display_name' => 'Financeiro',
                 'description' => 'Consulta de cadastros e acompanhamento das integrações',
-                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'colaborador-list', 'cargo-list', 'remuneracao-list', 'documento-list', 'qualificacao-list', 'beneficio-list', 'contrato-list', 'ferias-list', 'integracao-list', 'integracao-sincronizar', 'integracao-reenviar'],
+                'permissoes' => ['pessoa-list', 'empresa-list', 'obra-list', 'equipe-list', 'colaborador-list', 'cargo-list', 'remuneracao-list', 'documento-list', 'qualificacao-list', 'beneficio-list', 'contrato-list', 'ferias-list', 'feriado-list', 'ocorrencia-list', 'fechamento-list', 'fechamento-aprovar', 'nota-list', 'nota-enviar', 'nota-decidir', 'alerta-notas', 'integracao-list', 'integracao-sincronizar', 'integracao-reenviar'],
             ],
             'colaborador' => [
                 'display_name' => 'Colaborador',
-                'description' => 'Sem acesso administrativo (portal na E5)',
-                'permissoes' => [],
+                'description' => 'Acessa só o portal do colaborador (férias e notas fiscais próprias)',
+                'permissoes' => ['portal-acessar'],
             ],
         ];
     }

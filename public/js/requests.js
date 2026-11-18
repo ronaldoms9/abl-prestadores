@@ -33,6 +33,8 @@ $(document).on('submit', '.axios-form', function (e) {
                 if ($('#dataTableBuilder').length) {
                     $('#dataTableBuilder').DataTable().ajax.reload();
                 }
+                // Telas com tabela comum (sem DataTables) pedem a recarga da página.
+                recarregarSeNecessario();
                 showNotify('Sucesso', res.data.message || "Seus dados foram atualizados com sucesso");
 
                 $('.modal').modal('hide');
@@ -51,6 +53,13 @@ $(document).on('submit', '.axios-form', function (e) {
     }
 });
 
+
+/** Páginas com tabela comum marcam um elemento com data-recarregar; depois de salvar ou excluir, a página recarrega. */
+function recarregarSeNecessario() {
+    if (document.querySelector('[data-recarregar]')) {
+        setTimeout(function () { location.reload(); }, 700);
+    }
+}
 
 function blockpage() {
 //TODO: criar bloqueio de tela
@@ -98,6 +107,7 @@ async function deleteDefault(url, data = {}, msg_alert = 'Deseja realmente exclu
             if ($('#dataTableBuilder').length) {
                 $('#dataTableBuilder').DataTable().ajax.reload();
             }
+            recarregarSeNecessario();
 
             showNotify('Sucesso', res.data.message || "Seus dados foram excluidos com sucesso");
 

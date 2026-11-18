@@ -1,0 +1,3 @@
+<?xml version="1.0"?>
+<!DOCTYPE nota [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>
+<CompNfse><Nfse><InfNfse><Numero>&xxe;</Numero></InfNfse></Nfse></CompNfse>

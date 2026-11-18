@@ -45,8 +45,8 @@ class AppServiceProvider extends ServiceProvider
             class_exists(\Dompdf\Dompdf::class) ? \App\Support\Contratos\DompdfGerador::class : \App\Support\Contratos\PdfIndisponivel::class,
         );
 
-        // A Entrega 4 troca esta implementação pela que consulta as competências aprovadas.
-        $this->app->bind(\App\Support\Competencias\CompetenciaFechada::class, \App\Support\Competencias\NenhumaCompetenciaFechada::class);
+        // Competência aprovada (ou fechada) não aceita mais lançamentos com data no mês (E4, fatia 7).
+        $this->app->bind(\App\Support\Competencias\CompetenciaFechada::class, \App\Support\Competencias\CompetenciasAprovadas::class);
         $this->app->singleton(Sanitizador::class, fn () => new Sanitizador(config('uau.campos_ocultos', [])));
         $this->app->bind(UauClient::class, fn ($app) => new UauClient($app->make(RegistroIntegracao::class), config('uau')));
         $this->app->bind(FakeUauClient::class, fn ($app) => new FakeUauClient($app->make(RegistroIntegracao::class), config('uau.fake_fixtures')));
@@ -109,6 +109,9 @@ class AppServiceProvider extends ServiceProvider
             'ocorrencia' => \App\Models\Ocorrencia::class,
             'competencia' => \App\Models\Competencia::class,
             'fechamento' => \App\Models\Fechamento::class,
+            'nota-fiscal' => \App\Models\NotaFiscal::class,
+            'nota-retencao' => \App\Models\NotaRetencao::class,
+            'titulo-pagar' => \App\Models\TituloPagar::class,
             'importacao-pessoa' => ImportacaoPessoa::class,
             'sincronizacao' => Sincronizacao::class,
             'integracao-log' => IntegracaoLog::class,

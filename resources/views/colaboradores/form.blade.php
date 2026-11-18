@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <p class="text-muted small mb-0 mt-2">O colaborador nasce em pré-admissão. Contrato e admissão são da Entrega 3.</p>
+    <p class="text-muted small mb-0 mt-2">O colaborador nasce em pré-admissão. A admissão (checklist e contrato) é feita na ficha do colaborador.</p>
 
     @push('scripts')
     <script>

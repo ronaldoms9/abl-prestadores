@@ -37,7 +37,7 @@ return [
 
     /*
     | Férias (E4, fatia 2). Todos os valores podem ser mudados em `configuracoes`
-    | (chaves ferias.dias_direito, ferias.limite_gozo_meses, ferias.alerta_dias);
+    | (chaves ferias.dias_direito, ferias.limite_gozo_meses, ferias.alerta_dias, ferias.fracionamento_minimo_dias);
     | estes são os padrões. O período aquisitivo tem 12 meses a partir da admissão;
     | o limite de gozo é o fim dele mais `limite_gozo_meses`. O alerta avisa quando
     | o saldo está a `alerta_dias` dias do limite (ou já passou dele).
@@ -46,6 +46,25 @@ return [
         'dias_direito' => 30,
         'limite_gozo_meses' => 12,
         'alerta_dias' => 60,
+        'fracionamento_minimo_dias' => 5,
+    ],
+
+    /*
+    | Painel (E6, fatia 1): indicadores em cache por usuário, em segundos (0 desliga).
+    */
+    'painel' => [
+        'cache_segundos' => (int) env('PAINEL_CACHE', 300),
+    ],
+
+    /*
+    | Notas fiscais (E5). Os arquivos (XML e PDF) ficam em disco privado, em
+    | notas/{ano_mes}/{colaborador_id}/. Tolerância de valor (notas.tolerancia_valor,
+    | em reais) e prazo de envio (notas.prazo_dia, dia do mês seguinte) são
+    | configuráveis em `configuracoes`; a ABL PRIME ainda vai definir os valores.
+    */
+    'notas' => [
+        'disco' => env('NOTAS_DISCO', 'local'),
+        'prazo_dia' => 5,
     ],
 
     /*

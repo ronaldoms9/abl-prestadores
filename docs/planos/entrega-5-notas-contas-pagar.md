@@ -5,6 +5,10 @@ XML e confere com o fechamento, o financeiro aprova, e o título de contas a
 pagar é lançado no UAU com a nota anexada. O pagamento continua sendo feito
 pelo UAU.
 
+## Situação
+
+Implementadas na branch `e3/fatia-1-models` (52 de 88 h): fatia 1 (migrations e models), fatia 2 (portal e telas internas), fatia 4 (conferência, aprovação e recusa), fatia 5 (alertas e ZIP em lote) e, **parcialmente**, a fatia 3 (infraestrutura do leitor e os padrões nacional e ABRASF, com XML sintético). Faltam os layouts municipais reais (amostras da ABL PRIME), a fatia 6 (título no UAU, depende do UAU de homologação) e a fatia 7. Detalhes em `entrega-5-fatia-{1,2,3,4}-*.md`.
+
 ## Antes de começar
 
 | Item | Responsável | Bloqueia |

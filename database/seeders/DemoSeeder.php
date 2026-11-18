@@ -442,7 +442,7 @@ class DemoSeeder extends Seeder
         $modelo('Aditivo de prorrogação (exemplo)', 'aditivo', MotivoAditivo::Prorrogacao->value, '<h3>ADITIVO {{contrato.numero}}</h3>'
             .'<p>Fica prorrogado o contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}} até {{aditivo.nova_vigencia_fim}}.</p><p>Goiânia, {{contrato.data}}.</p>');
         $modelo('Aditivo genérico (exemplo)', 'aditivo', null, '<h3>ADITIVO {{contrato.numero}}</h3>'
-            .'<p>Ao contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}}, a partir de {{contrato.vigencia_inicio}}: {{aditivo.motivo}}. {{aditivo.cargo_anterior}} {{aditivo.cargo_novo}} {{aditivo.beneficios_alteracao}}</p>');
+            .'<p>Ao contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}}, a partir de {{contrato.vigencia_inicio}}: {{aditivo.motivo}}. {{aditivo.detalhe}}</p>');
         $modelo('Distrato (exemplo)', 'distrato', null, '<h3>DISTRATO {{contrato.numero}}</h3>'
             .'<p>As partes distratam o contrato {{contrato.numero_pai}} firmado com {{pj.razao_social}}, com efeitos a partir de {{desligamento.data}}. Motivo: {{desligamento.motivo}}.</p><p>Goiânia, {{contrato.data}}.</p>');
 

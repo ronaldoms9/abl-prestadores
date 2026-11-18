@@ -6,7 +6,9 @@ use App\Models\ImportacaoPessoa;
 use App\Models\Beneficio;
 use App\Models\Cargo;
 use App\Models\Colaborador;
+use App\Models\Competencia;
 use App\Models\Contrato;
+use App\Models\NotaFiscal;
 use App\Models\ContratoModelo;
 use App\Models\DocumentoTipo;
 use App\Models\Equipe;
@@ -105,6 +107,11 @@ class Auditoria
         'ferias-periodos-gerados' => 'Períodos aquisitivos de férias gerados',
         'ferias-saldo-baixado' => 'Saldo de férias baixado',
         'ferias-saldo-devolvido' => 'Saldo de férias devolvido',
+        'ferias-solicitada' => 'Férias solicitadas',
+        'ferias-nivel-aprovado' => 'Nível de aprovação de férias concluído',
+        'ferias-aprovada' => 'Férias aprovadas',
+        'ferias-recusada' => 'Férias recusadas',
+        'ferias-cancelada' => 'Férias canceladas',
         'ferias-solicitacao-criado' => 'Solicitação de férias criada',
         'ferias-solicitacao-alterado' => 'Solicitação de férias alterada',
         'ferias-solicitacao-excluido' => 'Solicitação de férias excluída',
@@ -114,6 +121,18 @@ class Auditoria
         'ocorrencia-criado' => 'Ocorrência criada',
         'ocorrencia-alterado' => 'Ocorrência alterada',
         'ocorrencia-excluido' => 'Ocorrência excluída',
+        'competencia-aberta' => 'Competência aberta',
+        'competencia-calculada' => 'Competência calculada',
+        'fechamento-recalculado' => 'Fechamento recalculado',
+        'ajuste-avulso-removido' => 'Ajuste avulso removido',
+        'competencia-aprovada' => 'Competência aprovada',
+        'competencia-reaberta' => 'Competência reaberta',
+        'nota-fiscal-criado' => 'Nota fiscal criada',
+        'nota-fiscal-alterado' => 'Nota fiscal alterada',
+        'nota-fiscal-excluido' => 'Nota fiscal excluída',
+        'nota-enviada' => 'Nota fiscal enviada',
+        'nota-aprovada' => 'Nota fiscal aprovada',
+        'nota-recusada' => 'Nota fiscal recusada',
         'ajuste-avulso-criado' => 'Ajuste avulso criado',
         'ajuste-avulso-alterado' => 'Ajuste avulso alterado',
         'ajuste-avulso-excluido' => 'Ajuste avulso excluído',
@@ -137,6 +156,8 @@ class Auditoria
         Contrato::class => ['Contrato', 'numero'],
         Beneficio::class => ['Benefício', 'nome'],
         Colaborador::class => ['Colaborador', 'id'],
+        Competencia::class => ['Competência', 'ano_mes'],
+        NotaFiscal::class => ['Nota fiscal', 'numero'],
         PessoaFisica::class => ['Pessoa física', 'nome'],
         PessoaJuridica::class => ['Pessoa jurídica', 'razao_social'],
         Role::class => ['Perfil', 'display_name'],

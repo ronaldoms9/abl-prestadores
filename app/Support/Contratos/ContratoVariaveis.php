@@ -67,6 +67,7 @@ class ContratoVariaveis
         'aditivo.cargo_novo' => ['Aditivo', 'Novo cargo', 'Mestre de obras'],
         'aditivo.nova_vigencia_fim' => ['Aditivo', 'Nova data de fim', '01/03/2028'],
         'aditivo.beneficios_alteracao' => ['Aditivo', 'Alteração de benefícios', 'Benefício incluído: Vale transporte'],
+        'aditivo.detalhe' => ['Aditivo', 'Resumo do que mudou (serve a qualquer motivo)', 'Remuneração de R$ 5.000,00 para R$ 5.250,00.'],
 
         'desligamento.data' => ['Desligamento', 'Data do desligamento', '30/06/2026'],
         'desligamento.motivo' => ['Desligamento', 'Motivo do desligamento', 'Término da obra'],
@@ -185,6 +186,7 @@ class ContratoVariaveis
             'aditivo.cargo_anterior' => $dados['cargo_anterior'] ?? null,
             'aditivo.cargo_novo' => $dados['cargo_novo'] ?? null,
             'aditivo.beneficios_alteracao' => $dados['beneficios_alteracao'] ?? null,
+            'aditivo.detalhe' => self::detalheDoAditivo($dados, $moeda),
             'aditivo.nova_vigencia_fim' => isset($dados['nova_vigencia_fim']) ? date('d/m/Y', strtotime($dados['nova_vigencia_fim'])) : null,
 
             'desligamento.data' => $data($colaborador->data_desligamento),
@@ -197,12 +199,44 @@ class ContratoVariaveis
         return array_filter($valores, fn ($valor) => $valor !== null && $valor !== '');
     }
 
+    /**
+     * Frase única com tudo o que o aditivo mudou, para modelos genéricos que não
+     * sabem de antemão se o motivo é reajuste, cargo, benefícios ou prazo.
+     *
+     * @param  array<string, mixed>  $dados
+     */
+    private static function detalheDoAditivo(array $dados, \Closure $moeda): ?string
+    {
+        $partes = [];
+
+        if (isset($dados['valor_anterior'], $dados['valor_novo'])) {
+            $partes[] = 'Remuneração de '.$moeda((int) $dados['valor_anterior']).' para '.$moeda((int) $dados['valor_novo']);
+        }
+        if (isset($dados['cargo_anterior'], $dados['cargo_novo'])) {
+            $partes[] = 'Cargo de '.$dados['cargo_anterior'].' para '.$dados['cargo_novo'];
+        }
+        if (! empty($dados['beneficios_alteracao'])) {
+            $partes[] = $dados['beneficios_alteracao'];
+        }
+        if (! empty($dados['nova_vigencia_fim'])) {
+            $partes[] = 'Nova data de fim: '.date('d/m/Y', strtotime($dados['nova_vigencia_fim']));
+        }
+
+        return $partes === [] ? null : implode('; ', $partes).'.';
+    }
+
     /** @param  Collection<int, array{beneficio: \App\Models\Beneficio, valor: ?int, personalizado: bool}>  $beneficios */
     private static function listaBeneficios(Collection $beneficios): ?HtmlString
     {
+        // Sem nenhum benefício vinculado é uma situação normal: o contrato diz isso.
+        // Vínculo sem valor definido continua faltando (o cadastro está incompleto).
+        if ($beneficios->isEmpty()) {
+            return new HtmlString('<p>Nenhum benefício.</p>');
+        }
+
         $itens = $beneficios->filter(fn ($b) => $b['valor'] !== null);
 
-        if ($itens->isEmpty()) {
+        if ($itens->count() < $beneficios->count()) {
             return null;
         }
 

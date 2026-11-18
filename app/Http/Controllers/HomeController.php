@@ -21,9 +21,15 @@ class HomeController extends Controller
      * de onde o dado vem, e a contagem de colaboradores respeita a visibilidade
      * do gestor (README D7).
      */
-    public function index(DocumentosAVencer $documentos, SituacaoQualificacoes $qualificacoes)
+    public function index(DocumentosAVencer $documentos, SituacaoQualificacoes $qualificacoes, \App\Services\Painel\IndicadoresPainel $indicadores)
     {
         $user = auth()->user();
+
+        // Quem só tem o portal (colaborador) entra direto nele.
+        if ($user->can('portal-acessar') && ! $user->can('colaborador-list')) {
+            return redirect()->route('portal.index');
+        }
+
         $hoje = now();
         $dados = [];
 
@@ -60,6 +66,8 @@ class HomeController extends Controller
             $dias = (int) config('cadastros.alertas.qualificacoes_dias');
             $dados['qualificacoes'] = $qualificacoes->analisar($hoje, $dias, Colaborador::visiveisPara($user));
         }
+
+        $dados['indicadores'] = $indicadores->para($user, $hoje);
 
         return view('dashboard', ['d' => $dados]);
     }

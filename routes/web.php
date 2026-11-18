@@ -210,6 +210,91 @@ Route::group(['middleware' => 'auth'], function () {
         });
     });
 
+    Route::group(['prefix' => 'ferias'], function(){
+        $c = App\Http\Controllers\Ferias\FeriasController::class;
+        $n = App\Http\Controllers\Ferias\FeriasNivelController::class;
+        $cal = App\Http\Controllers\Ferias\CalendarioController::class;
+        Route::get('/calendario', [$cal, 'index'])->name('ferias.calendario')->middleware('permission:ferias-list');
+        Route::get('/calendario/eventos', [$cal, 'eventos'])->name('ferias.calendario.eventos')->middleware('permission:ferias-list');
+        Route::get('/', [$c, 'index'])->name('ferias.index')->middleware('permission:ferias-list|ferias-aprovar-rh|ferias-aprovar-qualquer');
+        Route::post('/colaboradores/{id}/solicitar', [$c, 'solicitar'])->whereNumber('id')->name('ferias.solicitar')->middleware('permission:ferias-solicitar');
+        Route::get('/{id}/decidir', [$c, 'decidirForm'])->whereNumber('id')->name('ferias.decidir.form')->middleware('permission:ferias-list|ferias-aprovar-rh|ferias-aprovar-qualquer');
+        Route::post('/{id}/decidir', [$c, 'decidir'])->whereNumber('id')->name('ferias.decidir')->middleware('permission:ferias-list|ferias-aprovar-rh|ferias-aprovar-qualquer');
+        Route::post('/{id}/cancelar', [$c, 'cancelar'])->whereNumber('id')->name('ferias.cancelar')->middleware('permission:ferias-solicitar');
+
+        Route::group(['prefix' => 'niveis', 'middleware' => 'permission:ferias-niveis-configurar'], function() use ($n){
+            Route::get('/', [$n, 'index'])->name('ferias-nivel.index');
+            Route::get('/form/{id?}', [$n, 'form'])->whereNumber('id')->name('ferias-nivel.form');
+            Route::post('/store/{id?}', [$n, 'store'])->whereNumber('id')->name('ferias-nivel.store');
+            Route::delete('/delete/{id}', [$n, 'delete'])->whereNumber('id')->name('ferias-nivel.delete');
+        });
+    });
+
+    Route::group(['prefix' => 'relatorios'], function(){
+        $c = App\Http\Controllers\Relatorios\RelatorioController::class;
+        Route::get('/', [$c, 'index'])->name('relatorio.index')->middleware('permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list');
+        Route::get('/{slug}', [$c, 'show'])->name('relatorio.show')->middleware('permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list');
+        Route::get('/{slug}/exportar/{formato}', [$c, 'exportar'])->whereIn('formato', ['xlsx', 'pdf'])->name('relatorio.exportar')->middleware('permission:fechamento-list|ferias-list|qualificacao-list|contrato-list|nota-list');
+    });
+
+    Route::group(['prefix' => 'portal', 'middleware' => 'permission:portal-acessar'], function(){
+        $c = App\Http\Controllers\Portal\PortalController::class;
+        Route::get('/', [$c, 'index'])->name('portal.index');
+        Route::get('/ferias', [$c, 'ferias'])->name('portal.ferias');
+        Route::post('/ferias', [$c, 'feriasSolicitar'])->name('portal.ferias.solicitar');
+        Route::post('/ferias/{id}/cancelar', [$c, 'feriasCancelar'])->whereNumber('id')->name('portal.ferias.cancelar');
+        Route::get('/notas', [$c, 'notas'])->name('portal.notas');
+        Route::post('/notas/previa', [$c, 'notaPrevia'])->name('portal.nota.previa');
+        Route::get('/notas/{fechamento}/enviar', [$c, 'notaForm'])->whereNumber('fechamento')->name('portal.nota.form');
+        Route::post('/notas/{fechamento}/enviar', [$c, 'notaEnviar'])->whereNumber('fechamento')->name('portal.nota.enviar');
+        Route::get('/notas/{id}/arquivo/{tipo}', [$c, 'notaArquivo'])->whereNumber('id')->whereIn('tipo', ['pdf', 'xml'])->name('portal.nota.arquivo');
+    });
+
+    Route::group(['prefix' => 'notas'], function(){
+        $c = App\Http\Controllers\Notas\NotaController::class;
+        Route::get('/', [$c, 'index'])->name('nota.index')->middleware('permission:nota-list');
+        Route::get('/zip/{arquivo}', [$c, 'zipBaixar'])->name('nota.zip.baixar')->middleware(['signed', 'permission:nota-list']);
+        Route::post('/competencias/{competencia}/zip', [$c, 'zip'])->whereNumber('competencia')->name('nota.zip')->middleware('permission:nota-list');
+        Route::post('/previa', [$c, 'previa'])->name('nota.previa')->middleware('permission:nota-enviar');
+        Route::get('/enviar/{fechamento}', [$c, 'enviarForm'])->whereNumber('fechamento')->name('nota.enviar.form')->middleware('permission:nota-enviar');
+        Route::post('/enviar/{fechamento}', [$c, 'enviar'])->whereNumber('fechamento')->name('nota.enviar')->middleware('permission:nota-enviar');
+        Route::get('/{id}', [$c, 'show'])->whereNumber('id')->name('nota.show')->middleware('permission:nota-list');
+        Route::get('/{id}/arquivo/{tipo}', [$c, 'arquivo'])->whereNumber('id')->whereIn('tipo', ['pdf', 'xml'])->name('nota.arquivo')->middleware('permission:nota-list');
+        Route::get('/{id}/decidir', [$c, 'decidirForm'])->whereNumber('id')->name('nota.decidir.form')->middleware('permission:nota-decidir');
+        Route::post('/{id}/decidir', [$c, 'decidir'])->whereNumber('id')->name('nota.decidir')->middleware('permission:nota-decidir');
+    });
+
+    Route::group(['prefix' => 'fechamento'], function(){
+        $c = App\Http\Controllers\Fechamento\FechamentoController::class;
+        Route::get('/', [$c, 'index'])->name('fechamento.index')->middleware('permission:fechamento-list');
+        Route::post('/abrir', [$c, 'abrir'])->name('fechamento.abrir')->middleware('permission:fechamento-conferir');
+        Route::get('/competencias/{id}', [$c, 'show'])->whereNumber('id')->name('fechamento.show')->middleware('permission:fechamento-list');
+        Route::post('/competencias/{id}/recalcular-todos', [$c, 'recalcularTodos'])->whereNumber('id')->name('fechamento.recalcular-todos')->middleware('permission:fechamento-conferir');
+        Route::post('/competencias/{id}/aprovar', [$c, 'aprovar'])->whereNumber('id')->name('fechamento.aprovar')->middleware('permission:fechamento-aprovar');
+        Route::post('/competencias/{id}/reabrir', [$c, 'reabrir'])->whereNumber('id')->name('fechamento.reabrir')->middleware('permission:fechamento-reabrir');
+        Route::get('/{id}', [$c, 'detalhe'])->whereNumber('id')->name('fechamento.detalhe')->middleware('permission:fechamento-list');
+        Route::post('/{id}/recalcular', [$c, 'recalcular'])->whereNumber('id')->name('fechamento.recalcular')->middleware('permission:fechamento-conferir');
+        Route::post('/{id}/ajustes', [$c, 'ajusteStore'])->whereNumber('id')->name('fechamento.ajuste.store')->middleware('permission:fechamento-conferir');
+        Route::delete('/ajustes/{id}', [$c, 'ajusteDelete'])->whereNumber('id')->name('fechamento.ajuste.delete')->middleware('permission:fechamento-conferir');
+    });
+
+    Route::group(['prefix' => 'feriados'], function(){
+        $c = App\Http\Controllers\Cadastros\FeriadoController::class;
+        Route::get('/', [$c, 'index'])->name('feriado.index')->middleware('permission:feriado-list');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('feriado.form')->middleware('permission:feriado-gerir');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('feriado.store')->middleware('permission:feriado-gerir');
+        Route::post('/importar', [$c, 'importar'])->name('feriado.importar')->middleware('permission:feriado-gerir');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('feriado.delete')->middleware('permission:feriado-gerir');
+    });
+
+    Route::group(['prefix' => 'ocorrencias'], function(){
+        $c = App\Http\Controllers\Cadastros\OcorrenciaController::class;
+        Route::get('/', [$c, 'index'])->name('ocorrencia.index')->middleware('permission:ocorrencia-list');
+        Route::get('/form/{id?}', [$c, 'form'])->whereNumber('id')->name('ocorrencia.form')->middleware('permission:ocorrencia-gerir');
+        Route::post('/store/{id?}', [$c, 'store'])->whereNumber('id')->name('ocorrencia.store')->middleware('permission:ocorrencia-gerir');
+        Route::delete('/delete/{id}', [$c, 'delete'])->whereNumber('id')->name('ocorrencia.delete')->middleware('permission:ocorrencia-gerir');
+    });
+
     Route::group(['prefix' => 'colaboradores'], function(){
         $c = App\Http\Controllers\Cadastros\ColaboradorController::class;
         Route::get('/', [$c, 'index'])->name('colaborador.index')->middleware('permission:colaborador-list');
